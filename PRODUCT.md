@@ -27,6 +27,9 @@ surfaces.
 - Browse by type, language, region, genre; search across title, creator,
   tags, language, and type.
 - Detail pages with original language, signals, and external deep links.
+- **Feed agents** from a title: structured JSON packet + Markdown brief
+  (copy / download; optional webhook). Agents ingest context without
+  scraping the UI or hosting audio.
 - Built-in translation with a clean `Translator` interface:
   local curated fallback, optional LibreTranslate.
 - A seed catalogue that already spans dozens of languages and regions.
@@ -48,6 +51,14 @@ LibriVox / site), generated cover art, and diversity / popularity signals.
 4. In-copyright audiobooks are cards + store/publisher links.
 5. YouTube is a channel/series index, not a mirror.
 6. Diversity weighting is editorial, not a raw download rank.
+7. Agent packets are metadata, quotes, and links — never media files.
+
+## Agent feed
+
+When something in the catalogue is worth keeping, **Feed agents** on the
+title page packages it in one or two clicks. Default intent is `distill`.
+Copy and download work offline. `AGENT_FEED_WEBHOOK_URL` is optional and
+documented in `.env.example`; no key is invented for the demo.
 
 ## Roadmap
 

@@ -529,6 +529,115 @@ main {
   margin: 0.5rem 0 1rem;
 }
 
+.title-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.title-actions .btn-ghost {
+  margin-top: 0;
+}
+
+.filter-field textarea {
+  width: 100%;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  padding: 0.6rem 0.7rem;
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+.feed-agents {
+  margin-top: 2.8rem;
+  padding: 1.4rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.feed-agents-intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.feed-agents-intro h2 {
+  margin: 0 0 0.4rem;
+  font-size: 2rem;
+}
+
+.feed-agents-intro p,
+.feed-agents-form .translate-note {
+  color: var(--ink-2);
+  max-width: 40rem;
+}
+
+.feed-agents-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.feed-intent {
+  border: 1px solid var(--rule);
+  padding: 0.8rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.feed-intent legend {
+  padding: 0 0.4rem;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.feed-intent label,
+.feed-check {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.feed-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.feed-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.feed-status {
+  margin: 0;
+}
+
+.feed-status-ok {
+  color: var(--audiobook);
+}
+
+.feed-status-err {
+  color: var(--youtube);
+}
+
+@media (max-width: 640px) {
+  .feed-agents-intro,
+  .feed-row {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+}
+
 .title-hero {
   display: grid;
   grid-template-columns: minmax(14rem, 22rem) 1fr;

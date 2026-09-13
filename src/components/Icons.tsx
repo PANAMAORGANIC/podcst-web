@@ -95,3 +95,13 @@ export function TranslateIcon(props: IconProps) {
     </Svg>
   );
 }
+
+export function FeedIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 12h12" />
+      <path d="m12 6 6 6-6 6" />
+      <path d="M20 5v14" />
+    </Svg>
+  );
+}

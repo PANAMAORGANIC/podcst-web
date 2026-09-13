@@ -44,6 +44,8 @@ npm run build
 - Open a title page and follow RSS / YouTube / LibriVox / store links
 - Translate non-English titles and descriptions (local seed, or a live
   translator if you configure one)
+- **Feed agents** from a title page: copy or download a structured packet
+  (JSON + Markdown brief), or POST it to a webhook if configured
 
 ## Translation
 
@@ -59,6 +61,27 @@ LIBRETRANSLATE_API_KEY=   # optional; only if the instance requires one
 ```
 
 Do not commit real keys. The app never invents credentials.
+
+## Feed agents
+
+On any title page, **Feed agents** builds a stable packet agents can ingest
+without scraping the UI: source, type, title, creators, language, region,
+tags, URLs, selected text / quote, note, optional timestamp, intent
+(`distill` | `research` | `remember`).
+
+Copy JSON or a Markdown “distill a source” brief, or download either file.
+That path needs no key.
+
+To POST the bundle `{ packet, markdown }` to your own agent inbox:
+
+```bash
+AGENT_FEED_WEBHOOK_URL=https://your-agent.example/ingest
+AGENT_FEED_WEBHOOK_SECRET=   # optional
+AGENT_FEED_WEBHOOK_HEADER=X-Agent-Feed-Secret
+```
+
+The webhook URL and secret stay on the server. If the URL is unset, Send
+is hidden and copy/download still work.
 
 ## Ingest (metadata only)
 

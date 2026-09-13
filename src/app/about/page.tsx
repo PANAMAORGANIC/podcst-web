@@ -59,6 +59,13 @@ npm run ingest:audiobooks
 npm run ingest:youtube`}
         </code>
       </pre>
+      <h2>Feed agents</h2>
+      <p>
+        On a title page, package the card as a JSON packet or a Markdown distill
+        brief and send it to your agents — copy, download, or an optional
+        webhook (<code>AGENT_FEED_WEBHOOK_URL</code>). Metadata and links only;
+        no audio files.
+      </p>
       <h2>Translation</h2>
       <p>
         The interface is English. Titles and descriptions can be shown in

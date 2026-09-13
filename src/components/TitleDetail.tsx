@@ -6,6 +6,8 @@ import { getRegion } from '@/catalog/regions';
 import type { CatalogEntry } from '@/catalog/types';
 import { CoverArt } from './CoverArt';
 import { ExternalLinks } from './ExternalLinks';
+import { FeedAgents } from './FeedAgents';
+import { FeedIcon } from './Icons';
 import { TranslateToggle } from './TranslateToggle';
 import { TypeBadge } from './TypeBadge';
 
@@ -30,11 +32,17 @@ export function TitleDetail({ entry }: { entry: CatalogEntry }) {
           </p>
           <h1 lang={showEnglish ? 'en' : entry.originalLanguage}>{title}</h1>
           <p className="title-creators">{entry.creators.join(' · ')}</p>
-          <TranslateToggle
-            enabled={translated}
-            available={Boolean(english) && entry.originalLanguage !== 'en'}
-            onToggle={() => setTranslated((value) => !value)}
-          />
+          <div className="title-actions">
+            <TranslateToggle
+              enabled={translated}
+              available={Boolean(english) && entry.originalLanguage !== 'en'}
+              onToggle={() => setTranslated((value) => !value)}
+            />
+            <a className="btn btn-primary" href="#feed-agents">
+              <FeedIcon />
+              Feed agents
+            </a>
+          </div>
           <dl className="title-facts">
             <div>
               <dt>Original language</dt>
@@ -102,6 +110,7 @@ export function TitleDetail({ entry }: { entry: CatalogEntry }) {
           publisher, feed, library, or platform.
         </p>
         <ExternalLinks entry={entry} />
+        <FeedAgents entry={entry} displayedDescription={description} />
       </section>
     </article>
   );
