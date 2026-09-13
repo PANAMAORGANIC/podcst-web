@@ -12,7 +12,7 @@ export default function NotFound() {
       <p>
         <Link href="/">Return home</Link>
         {' · '}
-        <Link href="/browse">Browse</Link>
+        <Link href="/for-you">For you</Link>
       </p>
     </div>
   );

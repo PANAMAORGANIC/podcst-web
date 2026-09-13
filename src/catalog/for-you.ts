@@ -3,6 +3,14 @@ import { join } from 'node:path';
 import { listFavoriteSeedIds } from '@/catalog/likes';
 import type { CatalogRail } from '@/catalog/rails';
 import {
+  type ExploreOptions,
+  epsilonGreedySample,
+  exploreRate,
+  makeRng,
+  neighborhoodSize,
+  requestExploreSeed,
+} from '@/catalog/random';
+import {
   loadRuntimeLikedIds,
   loadUserSignals,
   type UserSignals,
@@ -65,11 +73,14 @@ export function rankForYouFrom(
   limit = 36,
   now = new Date(),
   excludeIds: string[] = [],
+  options: ExploreOptions = {},
 ): CatalogEntry[] {
   const liked = new Set(likedIds);
   const excluded = new Set(excludeIds);
   const day = dayKey(now);
-  return catalog
+  const rate = options.exploreRate ?? exploreRate();
+  const seed = options.seed ?? `${day}:${rate}`;
+  const scored = catalog
     .map((title) => ({
       title,
       score:
@@ -77,12 +88,18 @@ export function rankForYouFrom(
         (hashMix(`${title.id}:${day}`) % 17) / 100,
     }))
     .filter((row) => row.score > 0 && !excluded.has(row.title.id))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
+    .sort((a, b) => b.score - a.score);
+  const pool = scored
+    .slice(0, neighborhoodSize(limit, options.neighborhood))
     .map((row) => row.title);
+  return epsilonGreedySample(pool, limit, rate, makeRng(seed));
 }
 
-export function rankForYou(limit = 36, now = new Date()): CatalogEntry[] {
+export function rankForYou(
+  limit = 36,
+  now = new Date(),
+  options: ExploreOptions = {},
+): CatalogEntry[] {
   const known = [
     ...new Set([...listFavoriteSeedIds(), ...loadRuntimeLikedIds()]),
   ];
@@ -93,12 +110,13 @@ export function rankForYou(limit = 36, now = new Date()): CatalogEntry[] {
     limit,
     now,
     known,
+    options,
   );
 }
 
 export function writeForYouSnapshot(now = new Date()): ForYouSnapshot {
   const signals = loadUserSignals();
-  const titles = rankForYou(48, now);
+  const titles = rankForYou(120, now, { exploreRate: 0 });
   const snapshot: ForYouSnapshot = {
     generatedAt: now.toISOString(),
     learnedAt: signals.learnedAt,
@@ -130,17 +148,27 @@ export function loadForYouSnapshot(): ForYouSnapshot | null {
   }
 }
 
-export function loadForYouTitles(limit = 36): CatalogEntry[] {
+export function loadForYouTitles(
+  limit = 36,
+  options: ExploreOptions = {},
+): CatalogEntry[] {
   const snapshot = loadForYouSnapshot();
   const catalog = getCatalog();
   const byId = new Map(catalog.map((title) => [title.id, title]));
+  let pool: CatalogEntry[] = [];
   if (snapshot?.ids.length) {
-    const fromSnapshot = snapshot.ids
+    pool = snapshot.ids
       .map((id) => byId.get(id))
       .filter((title): title is CatalogEntry => Boolean(title));
-    if (fromSnapshot.length >= 8) return fromSnapshot.slice(0, limit);
   }
-  return rankForYou(limit);
+  if (pool.length < 8) {
+    pool = rankForYou(Math.max(limit * 4, 48), new Date(), {
+      exploreRate: 0,
+    });
+  }
+  const rate = options.exploreRate ?? exploreRate();
+  const seed = options.seed ?? requestExploreSeed();
+  return epsilonGreedySample(pool, limit, rate, makeRng(seed));
 }
 
 export function forYouRail(limit = 8): CatalogRail {
@@ -148,10 +176,33 @@ export function forYouRail(limit = 8): CatalogRail {
   const learned = signals.learnedAt
     ? `Last learned ${signals.learnedAt.slice(0, 10)}.`
     : 'Weights start from owner favorites.';
+  const rate = exploreRate();
   return {
     id: 'for-you',
     title: 'For you',
-    lede: `Learned from your likes and YouTube signals — not a homepage scrape. ${learned}`,
+    lede: `Learned from your likes and YouTube signals — not a homepage scrape. Explore rate ${rate}. ${learned}`,
     items: loadForYouTitles(limit),
+  };
+}
+
+export function exploreNeighborhoodTitles(
+  limit = 16,
+  options: ExploreOptions = {},
+): CatalogEntry[] {
+  const rate = Math.max(options.exploreRate ?? exploreRate(), 0.25);
+  return loadForYouTitles(limit, {
+    ...options,
+    exploreRate: rate,
+    seed: options.seed ?? `explore:${requestExploreSeed()}`,
+  });
+}
+
+export function exploreRail(limit = 8): CatalogRail {
+  const rate = Math.max(exploreRate(), 0.25);
+  return {
+    id: 'explore',
+    title: 'Explore',
+    lede: `Surprising-but-related finds inside your topic neighborhood (epsilon-greedy, rate ${rate}). Not random junk from unrelated shelves.`,
+    items: exploreNeighborhoodTitles(limit, { exploreRate: rate }),
   };
 }

@@ -25,9 +25,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
     <div className="page-browse">
       <header className="page-header">
         <p className="eyebrow">Search</p>
-        <h1>{q ? `Results for “${q}”` : 'Search the repository'}</h1>
+        <h1>{q ? `Results for “${q}”` : 'Search the ingest pool'}</h1>
         <p className="lede">
-          Matches title, creator, tags, language name, region, and type.
+          Matches title, creator, tags, language name, region, and type inside
+          the backend catalogue. Your shelf is For You, not this list.
         </p>
       </header>
       <p className="result-count" role="status">

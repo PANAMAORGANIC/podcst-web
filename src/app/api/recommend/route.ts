@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { listSeedEntries, resolveLikeIds, uniqueIds } from '@/catalog/likes';
+import { exploreRate } from '@/catalog/random';
 import { recommendRails } from '@/catalog/recommend';
 import { getCatalog, getEntry } from '@/catalog/store';
 
@@ -21,7 +22,11 @@ export async function GET(request: Request) {
       );
     }
     const rails = recommendRails([seed], catalog, limit);
-    return NextResponse.json({ rails, seed: compact(seed) });
+    return NextResponse.json({
+      rails,
+      seed: compact(seed),
+      exploreRate: exploreRate(),
+    });
   }
 
   const requested = uniqueIds(
@@ -37,6 +42,7 @@ export async function GET(request: Request) {
   return NextResponse.json({
     rails,
     seeds: seeds.map(compact),
+    exploreRate: exploreRate(),
   });
 }
 

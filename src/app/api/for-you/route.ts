@@ -4,6 +4,7 @@ import {
   loadForYouTitles,
   writeForYouSnapshot,
 } from '@/catalog/for-you';
+import { exploreRate } from '@/catalog/random';
 import {
   applyManualYoutubeSignal,
   loadUserSignals,
@@ -28,6 +29,7 @@ export async function GET() {
     importedYoutubeChannelIds: signals.importedYoutubeChannelIds,
     importedYoutubeVideoIds: signals.importedYoutubeVideoIds,
     homepageScrape: false,
+    exploreRate: exploreRate(),
     ids: titles.map((title) => title.id),
   });
 }

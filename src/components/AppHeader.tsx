@@ -8,11 +8,10 @@ import { SearchBox } from './SearchBox';
 import { ThemeToggle } from './ThemeToggle';
 
 const NAV = [
-  { href: '/', label: 'Explore' },
-  { href: '/podcasts', label: 'Podcasts' },
-  { href: '/audiobooks', label: 'Audiobooks' },
-  { href: '/youtube', label: 'YouTube' },
+  { href: '/', label: 'Shelf' },
   { href: '/for-you', label: 'For you' },
+  { href: '/recommendations', label: 'Because you like' },
+  { href: '/explore', label: 'Explore' },
   { href: '/about', label: 'About' },
 ];
 

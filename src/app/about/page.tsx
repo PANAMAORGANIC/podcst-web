@@ -15,9 +15,10 @@ export default function AboutPage() {
       <p className="eyebrow">About</p>
       <h1>World Audio Repository</h1>
       <p className="lede">
-        A global catalogue whose principal job is completeness across podcasts,
-        audiobooks, and long-form YouTube — in as many languages and regions as
-        we can honestly describe.
+        A curated shelf for RED. The interface is For You, Because you like, and
+        Explore — learned from favorites, likes, and YouTube signals. The large
+        ingest catalogue is a backend pool for related search, not a public
+        directory homepage.
       </p>
       <h2>What this is</h2>
       <p>
@@ -40,13 +41,16 @@ export default function AboutPage() {
           the YouTube Data API when you configure a key or OAuth token.
         </li>
       </ul>
-      <h2>This demo slice</h2>
+      <h2>This slice</h2>
       <p>
-        The running app uses a curated seed of {stats.titles} titles in{' '}
-        {stats.languages} languages and {stats.regions} regions. It is large
-        enough to search and filter seriously, and small enough to run with{' '}
-        <code>npm install</code> and <code>npm run dev</code> — no Postgres,
-        Redis, or API key required.
+        Home leads with your graph (Radio Semilla, EcoJustice Radio, 632nm,
+        Tangentially Speaking, Planet: Critical, The Great Simplification) and
+        learned topics — ecology, climate, agroecology, seeds, science
+        interviews, energy. Ranking is never fully deterministic:{' '}
+        <code>FOR_YOU_RANDOMNESS</code> (default 0.2) is an epsilon-greedy
+        explore rate over the related neighborhood. The ingest pool behind the
+        scenes has {stats.titles} titles so related search has somewhere to
+        look. No Postgres, Redis, or API key required to run.
       </p>
       <h2 id="ingest">Ingest path</h2>
       <p>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { loadForYouSnapshot, loadForYouTitles } from '@/catalog/for-you';
+import { exploreRate } from '@/catalog/random';
 import { loadUserSignals, topWeightedTopics } from '@/catalog/signals';
 import { CatalogGrid } from '@/components/CatalogGrid';
 import { YoutubeSignalForm } from '@/components/YoutubeSignalForm';
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
 export default function ForYouPage() {
   const signals = loadUserSignals();
   const snapshot = loadForYouSnapshot();
+  const rate = exploreRate();
   const titles = loadForYouTitles(36);
   const topics = topWeightedTopics(signals, 12);
   const learnedAt = signals.learnedAt;
@@ -27,12 +29,13 @@ export default function ForYouPage() {
         <p className="eyebrow">For you</p>
         <h1>Learned from your likes &amp; YouTube signals</h1>
         <p className="lede">
-          This mix is ranked from the live catalogue using topic weights that
-          update as you like shows and add YouTube channels. It is{' '}
-          <strong>not a youtube.com homepage scrape</strong> — Google does not
-          offer a supported API for that feed, and scraping it is out of scope.
-          Subscriptions and liked videos can join later through the YouTube Data
-          API (API key for public search; OAuth for private lists).
+          Ranked from your likes and YouTube signals, then sampled with
+          epsilon-greedy explore (rate {rate}, <code>FOR_YOU_RANDOMNESS</code>).
+          Refresh for another related draw. It is{' '}
+          <strong>not a youtube.com homepage scrape</strong> and not a world
+          podcast directory. Google does not offer a supported API for that
+          feed. Subscriptions and liked videos can join later through the
+          YouTube Data API.
         </p>
         <p className="learned-meta">
           Last learned:{' '}
@@ -60,9 +63,9 @@ export default function ForYouPage() {
         ) : null}
         <YoutubeSignalForm />
         <p className="lede">
-          <Link href="/recommendations">Because you like (seed rails)</Link>
+          <Link href="/recommendations">Because you like</Link>
           {' · '}
-          <Link href="/about#ingest">How ingest works</Link>
+          <Link href="/explore">Explore</Link>
           {' · '}
           <code>npm run ingest:for-you</code>
         </p>

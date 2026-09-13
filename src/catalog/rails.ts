@@ -1,5 +1,4 @@
-import { queryCatalog } from './query';
-import { getCatalog } from './store';
+import { curatedHomeRails } from './curated';
 import type { CatalogEntry } from './types';
 
 export interface CatalogRail {
@@ -9,98 +8,7 @@ export interface CatalogRail {
   items: CatalogEntry[];
 }
 
-const UNDERREPRESENTED = new Set([
-  'am',
-  'cy',
-  'eu',
-  'ha',
-  'km',
-  'mi',
-  'ne',
-  'qu',
-  'sa',
-  'so',
-  'ta',
-  'yo',
-  'zu',
-]);
-
+/** Owner home: taste-derived rails only. The ingest catalog stays a backend pool. */
 export function homeRails(): CatalogRail[] {
-  const catalog = getCatalog();
-  const beyondCharts = [...catalog]
-    .sort((a, b) => b.signals.diversity - a.signals.diversity)
-    .slice(0, 10);
-
-  const publicDomain = catalog
-    .filter(
-      (item) =>
-        item.tags.includes('public-domain') ||
-        item.tags.includes('librivox') ||
-        Boolean(item.externalUrls.librivox),
-    )
-    .slice(0, 10);
-
-  const fromTheSouth = catalog
-    .filter((item) =>
-      [
-        'andes',
-        'arabia',
-        'east-africa',
-        'horn-of-africa',
-        'india',
-        'latin-america',
-        'lusophone-africa',
-        'maghreb',
-        'mesoamerica',
-        'sahel',
-        'southeast-asia',
-        'southern-africa',
-        'west-africa',
-      ].includes(item.region),
-    )
-    .sort((a, b) => b.signals.diversity - a.signals.diversity)
-    .slice(0, 10);
-
-  const minorityLanguages = catalog
-    .filter((item) => UNDERREPRESENTED.has(item.originalLanguage))
-    .slice(0, 10);
-
-  const longVideo = queryCatalog({
-    type: 'youtube',
-    sort: 'diversity',
-    limit: 10,
-  }).items;
-
-  return [
-    {
-      id: 'beyond-charts',
-      title: 'Beyond the usual charts',
-      lede: 'Weighted for linguistic and regional range, not download rank.',
-      items: beyondCharts,
-    },
-    {
-      id: 'public-domain',
-      title: 'Open voices',
-      lede: 'Public-domain recitations and volunteer libraries. Listen where the licence is already free.',
-      items: publicDomain,
-    },
-    {
-      id: 'global-south',
-      title: 'From the Global South',
-      lede: 'Desks, epics, and channels that do not treat London or Los Angeles as the default centre.',
-      items: fromTheSouth,
-    },
-    {
-      id: 'fewer-records',
-      title: 'Languages with fewer records',
-      lede: 'Cataloguing is uneven. These titles keep smaller and historically suppressed languages on the first page.',
-      items: minorityLanguages,
-    },
-    {
-      id: 'long-video',
-      title: 'Long-form on video',
-      lede: 'YouTube as an audio-adjacent archive: lectures, correspondents, blackboards.',
-      items: longVideo,
-    },
-  ];
+  return curatedHomeRails();
 }

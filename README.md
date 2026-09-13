@@ -1,8 +1,9 @@
 # World Audio Repository
 
-A production-quality catalogue of **podcasts**, **audiobooks**, and
-**long-form YouTube** — built for linguistic and regional range, not a
-single popularity chart.
+A **curated shelf for RED** — podcasts and long-form YouTube ranked from
+favorites, likes, and YouTube signals. The large ingest catalogue is a
+backend pool for related search. The homepage is not a public world
+directory.
 
 The interface is English. Titles and descriptions can be translated in
 place. We store metadata and deep links. We do not host audio files.
@@ -37,17 +38,16 @@ npm run build
 
 ## What you can do
 
-- Search titles, creators, tags, languages, and types
-- Browse **Podcasts**, **Audiobooks**, and **YouTube**
-- Filter by language, region, and genre
-- Sort by diversity (default) or popularity
-- Open a title page and follow RSS / YouTube / LibriVox / store links
-- Translate non-English titles and descriptions (local seed, or a live
-  translator if you configure one)
-- **Feed agents** from a title page: copy or download a structured packet
-  (JSON + Markdown brief), or POST it to a webhook if configured
-- **For you** — a learned mix from likes and optional YouTube Data API
-  signals (not a youtube.com homepage scrape)
+- **Shelf / For you / Because you like / Explore** — taste-derived only
+- Search the ingest pool when you already know a title
+- Open a title page and follow RSS / YouTube / store links
+- Translate non-English titles and descriptions
+- **Feed agents** from a title page
+- Stochastic explore (`FOR_YOU_RANDOMNESS`, default 0.2) so ranking is
+  never fully deterministic — still inside the related neighborhood
+
+Primary IA is not Podcasts / Audiobooks / YouTube doors or global
+diversity shelves. Those pool routes still exist for lookup.
 
 ## Translation
 
@@ -196,12 +196,11 @@ show** stores the id in `localStorage` (`war-liked-ids`) and POSTs to
 `/api/likes`, which writes `data/sources/liked.json` (gitignored) so
 ingest can read extra likes on this machine.
 
-`/for-you` is the learned daily mix. Home and `/recommendations` still
-show **Because you like {show}** rails.
-`GET /api/recommend?seed=id` (or `?seeds=id,id`) ranks the live catalog:
-same language and shared tags/genres first, then hub/network peers
-(Pacifica near EcoJustice), then popularity, with a diversity tilt so a
-Spanish seed does not collapse to a US-only chart.
+Home leads with **For you** and **Because you like**. `/explore` is a
+higher-epsilon draw from the same neighborhood (not random junk from
+unrelated categories). `GET /api/recommend?seed=id` ranks related
+neighbours, then epsilon-greedy samples them (`FOR_YOU_RANDOMNESS`).
+Spanish seeds stay Spanish-first.
 
 ```bash
 # Pull related shows from Podcast Index + Apple for every favorite seed
@@ -234,7 +233,8 @@ update over time**. Each `npm run ingest:for-you` (or a daily cron):
 
 The UI explains this is **learned from your likes & YouTube signals
 (not homepage scrape)** and shows last learned-at. You can paste a
-YouTube channel or video URL as a strong positive signal.
+YouTube channel or video URL as a strong positive signal. Each page
+load samples the related pool with `FOR_YOU_RANDOMNESS` (default 0.2).
 
 `GET /api/for-you` and `GET /api/health` dump `LEARNED_TOPICS` for
 debugging. Signal state lives in `data/sources/user-signals.json`.

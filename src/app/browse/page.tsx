@@ -33,11 +33,11 @@ export default async function BrowsePage({ searchParams }: PageProps) {
   return (
     <div className="page-browse">
       <header className="page-header">
-        <p className="eyebrow">Browse</p>
-        <h1>Filter the repository</h1>
+        <p className="eyebrow">Ingest pool</p>
+        <h1>Search the backend catalogue</h1>
         <p className="lede">
-          Search title, creator, tags, language, and type. Default sort prefers
-          diversity over popularity.
+          This filter is for looking up a known title in the ingest pool. The
+          home shelf is For You and Because you like — not a world directory.
         </p>
       </header>
       <FilterBar

@@ -22,19 +22,19 @@ export default function RecommendationsPage() {
     <div className="page-recommend">
       <header className="page-header">
         <p className="eyebrow">Because you like</p>
-        <h1>Recommendations from the catalogue</h1>
+        <h1>Related to shows you already like</h1>
         <p className="lede">
           Seeds start as the owner favorites (Radio Semilla, EcoJustice Radio,
           632nm, Tangentially Speaking, Planet: Critical, The Great
-          Simplification). Like more titles to widen the rails. Related cards
-          come from Podcast Index and Apple ingest — not Castbox. Ranking keeps
-          the seed’s language first so a Spanish like does not collapse to a US
-          chart.
+          Simplification). Each rail samples related neighbours with an explore
+          rate so the order is not fully deterministic. Spanish seeds stay
+          Spanish-first. Not a genre directory.
         </p>
         <p className="lede">
-          The learned daily mix lives on <Link href="/for-you">For you</Link>
-          {' — '}
-          likes and optional YouTube API signals, not a homepage scrape.
+          The learned mix lives on <Link href="/for-you">For you</Link>
+          {' · '}
+          <Link href="/explore">Explore</Link> walks the same neighborhood with
+          a higher explore rate.
         </p>
         <p className="lede">
           <Link href="/about#ingest">How ingest works</Link>

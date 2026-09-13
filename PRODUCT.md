@@ -1,7 +1,9 @@
 # World Audio Repository — product
 
-World Audio Repository (WAR) is a **catalogue-first** web app for the spoken
-and audio-adjacent record: podcasts, audiobooks, and long-form YouTube.
+World Audio Repository (WAR) is a **curated shelf for RED** — podcasts
+and long-form YouTube ranked from that owner’s favorites, likes, and
+YouTube signals. The ingest catalogue is a backend pool. The UI is not
+a generic world directory.
 
 The interface language is English. Titles and descriptions can be translated
 in place. Media stays with publishers, feeds, libraries, and platforms.
@@ -23,9 +25,14 @@ surfaces.
 
 ## What v1 is (this slice)
 
-- Home search, type doors, and **diversity rails** (not popularity-only).
-- Browse by type, language, region, genre; search across title, creator,
-  tags, language, and type.
+- **Curated-for-owner IA:** home is For You + Because you like + Explore.
+  No Podcasts / Audiobooks / YouTube doors and no generic diversity /
+  Global South / public-domain shelves on the home page.
+- **Stochastic explore:** `FOR_YOU_RANDOMNESS` (default 0.2) is an
+  epsilon-greedy rate over the related neighborhood. Ranking is never
+  fully deterministic. Explore is surprising-but-related, not junk from
+  unrelated categories.
+- Search still hits the ingest pool when you already know a title.
 - Detail pages with original language, signals, and external deep links.
 - **Feed agents** from a title: structured JSON packet + Markdown brief
   (copy / download; optional webhook). Agents ingest context without
@@ -92,7 +99,8 @@ documented in `.env.example`; no key is invented for the demo.
 
 ## Success for this repository
 
-The product is working when a listener in Lagos, Lima, or Lahore can find
-something in their language *without* it being a translation of an American
-chart, and when a researcher can trust that a copyrighted novel is a card
-— not a file we should not have.
+The product is working when opening the app feels like RED’s shelf —
+Radio Semilla, EcoJustice, climate/energy interviews, Spanish
+regenerative shows that follow from those seeds — plus surprising but
+related finds, not a public podcast directory. Copyrighted works stay
+cards, not files we should not have.

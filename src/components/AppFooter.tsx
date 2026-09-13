@@ -1,32 +1,28 @@
 import Link from 'next/link';
-import { catalogStats } from '@/catalog/store';
+import { exploreRate } from '@/catalog/random';
 
 export function AppFooter() {
-  const stats = catalogStats();
+  const rate = exploreRate();
   return (
     <footer className="site-footer">
       <div className="site-footer-inner">
         <div>
           <p className="footer-mark">World Audio Repository</p>
           <p className="footer-copy">
-            A catalogue of podcasts, audiobooks, and long-form video. Metadata
-            and deep links only — we do not host audio files.
+            Curated for RED from likes, favorites, and YouTube signals. Metadata
+            and deep links only — we do not host audio files. The ingest
+            catalogue is a backend pool, not the homepage.
           </p>
         </div>
         <ul className="footer-stats">
+          <li>Explore rate {rate}</li>
           <li>
-            <strong>{stats.titles}</strong> titles in this demo slice
-          </li>
-          <li>
-            <strong>{stats.languages}</strong> languages
-          </li>
-          <li>
-            <strong>{stats.regions}</strong> regions
+            <code>FOR_YOU_RANDOMNESS</code>
           </li>
         </ul>
         <nav aria-label="Footer">
-          <Link href="/browse">Browse</Link>
           <Link href="/for-you">For you</Link>
+          <Link href="/explore">Explore</Link>
           <Link href="/about">About</Link>
           <Link href="/about#ingest">Ingest</Link>
         </nav>

@@ -62,7 +62,9 @@ describe('recommend ranking', () => {
       genres: ['comedy'],
       signals: { popularity: 99, diversity: 10 },
     });
-    const ranked = recommendFor(semilla, [semilla, spanishPeer, usChart], 5);
+    const ranked = recommendFor(semilla, [semilla, spanishPeer, usChart], 5, {
+      exploreRate: 0,
+    });
     assert.equal(ranked[0]?.id, 'es-peer');
     assert.ok(!ranked.some((item) => item.id === 'en-chart'));
   });
@@ -82,7 +84,9 @@ describe('recommend ranking', () => {
       genres: ['news'],
       signals: { popularity: 90, diversity: 20 },
     });
-    const ranked = recommendFor(eco, [eco, randomNews, kpfk], 5);
+    const ranked = recommendFor(eco, [eco, randomNews, kpfk], 5, {
+      exploreRate: 0,
+    });
     assert.equal(ranked[0]?.id, 'it-kpfk');
     assert.ok(
       scoreRecommendation(eco, kpfk).score >
@@ -103,7 +107,9 @@ describe('recommend ranking', () => {
       tags: ['climate', 'ecojustice'],
       genres: ['news'],
     });
-    const ranked = recommendFor(eco, [eco, peer, namesake], 8);
+    const ranked = recommendFor(eco, [eco, peer, namesake], 8, {
+      exploreRate: 0,
+    });
     assert.ok(!ranked.some((item) => item.id === eco.id));
     assert.ok(!ranked.some((item) => item.title === eco.title));
   });
@@ -130,8 +136,43 @@ describe('recommend ranking', () => {
       genres: ['news'],
       signals: { popularity: 98, diversity: 12 },
     });
-    const ranked = recommendFor(planet, [planet, cable, crisis], 5);
+    const ranked = recommendFor(planet, [planet, cable, crisis], 5, {
+      exploreRate: 0,
+    });
     assert.equal(ranked[0]?.id, 'climate-crisis');
+  });
+
+  it('explore rate > 0 changes related order but stays in-neighborhood', () => {
+    const peers = Array.from({ length: 12 }, (_, index) =>
+      entry({
+        id: `es-peer-${index}`,
+        title: `Semillas ${index}`,
+        originalLanguage: 'es',
+        tags: ['seeds', 'agroecology'],
+        genres: ['society-culture'],
+        region: 'andes',
+        signals: { popularity: 20 + index, diversity: 50 },
+      }),
+    );
+    const usChart = entry({
+      id: 'en-chart',
+      title: 'Huge US Chart Show',
+      originalLanguage: 'en',
+      tags: ['comedy'],
+      genres: ['comedy'],
+      signals: { popularity: 99, diversity: 10 },
+    });
+    const catalog = [semilla, usChart, ...peers];
+    const orders = new Set<string>();
+    for (const seed of ['a', 'b', 'c', 'd', 'e', 'f']) {
+      const ranked = recommendFor(semilla, catalog, 6, {
+        exploreRate: 0.8,
+        seed,
+      });
+      assert.ok(!ranked.some((item) => item.id === 'en-chart'));
+      orders.add(ranked.map((item) => item.id).join(','));
+    }
+    assert.ok(orders.size >= 2);
   });
 
   it('lists the six owner favorite ids as recommend seeds', () => {

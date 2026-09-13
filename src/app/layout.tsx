@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: '%s — World Audio Repository',
   },
   description:
-    'A global catalogue of podcasts, audiobooks, and long-form YouTube — built for linguistic and regional range, not a single chart.',
+    'A curated shelf for RED — For You and related finds from likes and YouTube signals, not a public podcast directory.',
   applicationName: 'World Audio Repository',
   openGraph: {
     title: 'World Audio Repository',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     description:
-      'Search and browse the spoken record across languages, regions, and formats.',
+      'Personalized mix from owner favorites, likes, and YouTube signals.',
   },
 };
 

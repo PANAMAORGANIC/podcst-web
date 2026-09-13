@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { loadForYouSnapshot } from '@/catalog/for-you';
+import { exploreRate } from '@/catalog/random';
 import { loadUserSignals, topWeightedTopics } from '@/catalog/signals';
 import { catalogStats } from '@/catalog/store';
 
@@ -16,5 +17,7 @@ export async function GET() {
     forYouGeneratedAt: snapshot?.generatedAt ?? null,
     LEARNED_TOPICS: topWeightedTopics(signals, 20),
     homepageScrape: false,
+    exploreRate: exploreRate(),
+    curatedHome: true,
   });
 }

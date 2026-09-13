@@ -1,4 +1,12 @@
 import type { CatalogRail } from './rails';
+import {
+  type ExploreOptions,
+  epsilonGreedySample,
+  exploreRate,
+  makeRng,
+  neighborhoodSize,
+  requestExploreSeed,
+} from './random';
 import type { CatalogEntry } from './types';
 
 const NOISE_TAGS = new Set([
@@ -164,14 +172,16 @@ export function recommendFor(
   seed: CatalogEntry,
   catalog: CatalogEntry[],
   limit = 8,
+  options: ExploreOptions = {},
 ): CatalogEntry[] {
-  return recommendHits(seed, catalog, limit).map((hit) => hit.item);
+  return recommendHits(seed, catalog, limit, options).map((hit) => hit.item);
 }
 
 export function recommendHits(
   seed: CatalogEntry,
   catalog: CatalogEntry[],
   limit = 8,
+  options: ExploreOptions = {},
 ): RecommendHit[] {
   const seedTags = new Set(meaningfulTags(seed.tags));
   const seedGenres = new Set(seed.genres);
@@ -210,23 +220,30 @@ export function recommendHits(
     else sameLanguageOnly.push(hit);
   }
 
-  return [...affinity, ...sameLanguageOnly]
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return b.item.signals.diversity - a.item.signals.diversity;
-    })
-    .slice(0, limit);
+  const ranked = [...affinity, ...sameLanguageOnly].sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.item.signals.diversity - a.item.signals.diversity;
+  });
+  const pool = ranked.slice(0, neighborhoodSize(limit, options.neighborhood));
+  const rate = options.exploreRate ?? exploreRate();
+  const seedKey = options.seed ?? `${requestExploreSeed()}:${seed.id}`;
+  return epsilonGreedySample(pool, limit, rate, makeRng(seedKey));
 }
 
 export function recommendRails(
   seeds: CatalogEntry[],
   catalog: CatalogEntry[],
   limit = 8,
+  options: ExploreOptions = {},
 ): CatalogRail[] {
   const used = new Set(seeds.map((seed) => seed.id));
   const rails: CatalogRail[] = [];
+  const now = Date.now();
   for (const seed of seeds) {
-    const items = recommendFor(seed, catalog, limit + 4)
+    const items = recommendFor(seed, catalog, limit + 8, {
+      ...options,
+      seed: options.seed ?? `${now}:${seed.id}`,
+    })
       .filter((item) => !used.has(item.id))
       .slice(0, limit);
     for (const item of items) used.add(item.id);

@@ -64,11 +64,37 @@ describe('For You mix', () => {
       [],
       8,
       new Date('2026-09-13T12:00:00Z'),
+      [],
+      { exploreRate: 0 },
     );
     const ids = ranked.map((item) => item.id);
     assert.ok(ids.includes('pod-climate'));
     assert.ok(ids.includes('yt-lecture'));
     assert.ok(!ids.includes('lv-book'));
     assert.ok(ids.indexOf('pod-climate') < ids.indexOf('pod-jokes'));
+  });
+
+  it('explore rate > 0 changes For You ordering across seeds', () => {
+    const signals = defaultSignals();
+    signals.weights = { climate: 5, ecology: 4 };
+    const catalog = Array.from({ length: 16 }, (_, index) =>
+      entry({
+        id: `climate-${index}`,
+        title: `Climate desk ${index}`,
+        tags: ['climate', 'ecology'],
+        genres: ['news'],
+        signals: { popularity: 10 + index, diversity: 30 },
+      }),
+    );
+    const now = new Date('2026-09-13T12:00:00Z');
+    const orders = new Set<string>();
+    for (const seed of ['u1', 'u2', 'u3', 'u4', 'u5', 'u6']) {
+      const ranked = rankForYouFrom(catalog, signals, [], 8, now, [], {
+        exploreRate: 0.8,
+        seed,
+      });
+      orders.add(ranked.map((item) => item.id).join(','));
+    }
+    assert.ok(orders.size >= 2);
   });
 });

@@ -23,7 +23,10 @@ export function TypeBrowse({
       <header className="page-header">
         <p className="eyebrow">Collection</p>
         <h1>{title}</h1>
-        <p className="lede">{lede}</p>
+        <p className="lede">
+          {lede} This page is the ingest pool for one format — your home shelf
+          is For You, not a type directory.
+        </p>
       </header>
       <FilterBar
         query={{ type, sort: 'diversity' }}
