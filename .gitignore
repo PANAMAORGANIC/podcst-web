@@ -29,10 +29,12 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
+.env
+!.env.example
 
 .vercel
+data/ingest
 
 # Typescript
 *.tsbuildinfo
-.env*.local
-.env*

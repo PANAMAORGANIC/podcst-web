@@ -1,86 +1,40 @@
 {
-  "name": "podcst-web",
-  "version": "3.0.0",
+  "name": "world-audio-repository",
+  "version": "1.0.0",
   "private": true,
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/{*.ts,*.tsx}": [
-      "biome check --write --no-errors-on-unmatched"
-    ]
-  },
+  "description": "A global catalogue of podcasts, audiobooks, and long-form YouTube.",
   "scripts": {
-    "build": "next build",
-    "db:migrate": "bun scripts/migrate.ts",
     "dev": "next dev",
-    "format": "biome format --write src",
-    "lint": "biome check src",
-    "short-url": "bun scripts/generate-short-url.ts",
+    "build": "next build",
     "start": "next start",
-    "sync:podcast-index": "bun scripts/sync-podcast-index.ts",
-    "test": "bun test"
+    "lint": "biome check src scripts",
+    "format": "biome format --write src scripts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/catalog/query.test.ts src/translation/local.test.ts",
+    "ingest:podcasts": "tsx scripts/ingest-podcast-index.ts",
+    "ingest:audiobooks": "tsx scripts/ingest-audiobooks.ts",
+    "ingest:youtube": "tsx scripts/ingest-youtube.ts"
   },
   "dependencies": {
-    "@formatjs/intl-localematcher": "0.8.10",
-    "@simplewebauthn/browser": "^13.3.0",
-    "@simplewebauthn/server": "^13.3.2",
-    "@tanstack/react-query": "^5.101.1",
-    "@tanstack/react-virtual": "^3.14.3",
-    "downshift": "9.3.6",
-    "howler": "2.2.4",
-    "idb-keyval": "6.2.5",
-    "ioredis": "5.11.1",
     "match-sorter": "8.3.0",
-    "negotiator": "1.0.0",
     "next": "16.2.9",
-    "postgres": "^3.4.9",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "resend": "^6.14.0",
-    "typescript": "6.0.3",
-    "xml2js": "0.6.2",
     "zustand": "5.0.14"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.1",
-    "@flydotio/dockerfile": "^0.7.10",
     "@tailwindcss/postcss": "^4.3.1",
-    "@types/bun": "^1.3.14",
-    "@types/chromecast-caf-sender": "1.0.11",
-    "@types/howler": "2.2.13",
-    "@types/negotiator": "0.6.4",
     "@types/node": "26.0.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "@types/wicg-mediasession": "1.1.8",
-    "@types/xml2js": "0.4.14",
     "autoprefixer": "^10.5.2",
-    "husky": "9.1.7",
-    "lint-staged": "17.0.8",
     "postcss": "^8.5.15",
-    "tailwindcss": "^4.3.1"
+    "tailwindcss": "^4.3.1",
+    "tsx": "^4.20.5",
+    "typescript": "6.0.3"
   },
-  "resolutions": {
-    "@babel/runtime": "^7.29.7",
-    "@peculiar/asn1-android": "^2.8.0",
-    "@peculiar/asn1-cms": "^2.8.0",
-    "@peculiar/asn1-csr": "^2.8.0",
-    "@peculiar/asn1-ecc": "^2.8.0",
-    "@peculiar/asn1-pfx": "^2.8.0",
-    "@peculiar/asn1-pkcs8": "^2.8.0",
-    "@peculiar/asn1-pkcs9": "^2.8.0",
-    "@peculiar/asn1-rsa": "^2.8.0",
-    "@peculiar/asn1-schema": "^2.8.0",
-    "@peculiar/asn1-x509": "^2.8.0",
-    "@peculiar/asn1-x509-attr": "^2.8.0",
-    "minimatch": "^10.2.5",
-    "nanoid": "^5.1.16",
-    "picomatch": "^4.0.4",
-    "postcss": "^8.5.15",
-    "shell-quote": "^1.8.4"
-  },
-  "packageManager": "yarn@1.22.22"
+  "engines": {
+    "node": ">=20"
+  }
 }

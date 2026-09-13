@@ -1,185 +1,88 @@
-# [podcst-web](https://podcst.app)
+# World Audio Repository
 
-[![code style: biome](https://img.shields.io/badge/code_style-biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
+A production-quality catalogue of **podcasts**, **audiobooks**, and
+**long-form YouTube** — built for linguistic and regional range, not a
+single popularity chart.
 
-Podcst Web is a modern PWA to listen to podcasts.
+The interface is English. Titles and descriptions can be translated in
+place. We store metadata and deep links. We do not host audio files.
 
-The aim of this project is to provide an excellent podcast listening experience on all types of devices (desktop, tablets, mobile).
+This repository was forked from
+[shantanuraj/podcst-web](https://github.com/shantanuraj/podcst-web) and
+reshaped from a player into a repository. See [PRODUCT.md](PRODUCT.md)
+for the longer plan.
 
-Another major focus is on accessibility, with full keyboard navigation support.
+## Requirements
 
-> **Note:** This project only aims to support ever-green browsers.
+- Node.js 20+
+- npm
 
-## Features
+No PostgreSQL, Redis, or API key is required to run the demo.
 
-- User accounts with passkey authentication
-- Cross-device subscription and playback sync
-- Podcast search and discovery
-- Top podcasts by region
-- Chromecast and AirPlay support
-- Private feed support
-- Media session integration
-- Offline PWA capabilities
-
-## Architecture
-
-- **Frontend**: Next.js with App Router, React 19, TypeScript
-- **State Management**: Zustand for client state
-- **Data Fetching**: TanStack Query
-- **Database**: PostgreSQL (content + user data)
-- **Caching**: Redis + IndexedDB + LocalStorage
-- **Audio**: Howler.js
-- **Styling**: Tailwind CSS 4 + CSS Modules
-- **Code Quality**: Biome for formatting and linting
-
-### Data Flow
-
-```
-Background Jobs (cron):
-├── poll-top-charts.ts  → iTunes API → top_podcasts table
-├── poll-feeds.ts       → RSS feeds → episodes table
-└── sync-podcast-index  → Podcast Index dump → podcasts table
-
-API Routes (database-first):
-├── /api/top           → PostgreSQL → top podcasts
-├── /api/feed          → PostgreSQL → podcast + episodes
-└── /api/search        → PostgreSQL + iTunes fallback
-```
-
-### Branching Model
-
-Simple branch-and-merge workflow:
-
-- `main` is the production branch
-- Branch off `main` for new features or fixes
-- Open a PR and merge back to `main` when ready
-
-## Prerequisites
-
-- [Bun](https://bun.sh/) - JavaScript runtime (for scripts)
-- [Node](https://nodejs.org/) - LTS version
-- [yarn](https://yarnpkg.com/) - package manager
-- [PostgreSQL](https://www.postgresql.org/) - database
-- [Redis](https://redis.io/) - caching layer
-
-## Getting Started
-
-Clone this repository and install dependencies:
+## Setup
 
 ```bash
-git clone https://github.com/shantanuraj/podcst-web
-cd podcst-web
-yarn
+npm install
+npm run dev
 ```
 
-Set up environment variables (create `.env.local`):
+Open [http://localhost:3000](http://localhost:3000).
 
 ```bash
-# Vercel-style connection URLs are supported.
-DATABASE_URL=postgresql://...
-REDIS_URL=redis://...
-
-# Non-Vercel hosts can use host-based settings instead.
-PG_HOST=/var/run/postgresql
-PG_USER=podcst_app
-PG_DATABASE=podcst
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-REDIS_PASSWORD=...
-
-WEBAUTHN_RP_ID=localhost
-WEBAUTHN_RP_ORIGIN=http://localhost:3000
-RESEND_API_KEY=...  # optional, for email verification
+npm run typecheck
+npm run lint
+npm test
+npm run build
 ```
 
-Run database migrations:
+## What you can do
+
+- Search titles, creators, tags, languages, and types
+- Browse **Podcasts**, **Audiobooks**, and **YouTube**
+- Filter by language, region, and genre
+- Sort by diversity (default) or popularity
+- Open a title page and follow RSS / YouTube / LibriVox / store links
+- Translate non-English titles and descriptions (local seed, or a live
+  translator if you configure one)
+
+## Translation
+
+The default translator reads curated English fields on the seed catalogue
+and needs no key.
+
+To use a [LibreTranslate](https://libretranslate.com/)-compatible service,
+copy `.env.example` to `.env.local` and set:
 
 ```bash
-yarn db:migrate
+LIBRETRANSLATE_URL=https://your-instance.example
+LIBRETRANSLATE_API_KEY=   # optional; only if the instance requires one
 ```
 
-Start the development server:
+Do not commit real keys. The app never invents credentials.
+
+## Ingest (metadata only)
 
 ```bash
-yarn dev
+npm run ingest:podcasts     # Podcast Index path (stub / dry-run without DB)
+npm run ingest:audiobooks   # LibriVox-class + publisher cards
+npm run ingest:youtube      # YouTube metadata; optional YOUTUBE_API_KEY later
 ```
 
-## Development
+These scripts write receipts under `data/ingest/` and refuse to download
+media. Podcast Index sync can grow into a real upsert when `DATABASE_URL`
+and a dump are available — see `scripts/ingest-podcast-index.ts`.
 
-### Available Scripts
+## Stack
 
-```bash
-yarn dev                 # Start development server
-yarn build               # Build for production
-yarn start               # Start production server
-yarn format              # Format code with Biome
-yarn lint                # Lint code with Biome
-yarn db:migrate          # Run database migrations
-```
+- Next.js (App Router) · React 19 · TypeScript
+- Tailwind CSS 4
+- File-based seed catalogue + `match-sorter` search
+- Biome for lint/format
 
-### Background Jobs
-
-These scripts run as background jobs to keep content fresh:
-
-```bash
-bun scripts/poll-top-charts.ts     # Sync iTunes top charts + poll missing episodes
-bun scripts/poll-feeds.ts          # Poll RSS feeds (single batch)
-bun scripts/poll-feeds.ts --daemon # Poll RSS feeds continuously
-bun scripts/sync-podcast-index.ts  # Sync from Podcast Index database dump
-```
-
-### Building for Production
-
-```bash
-yarn build
-```
-
-This creates an optimized production build in the `.next` folder.
-
-## Deployment
-
-The app is deployed on both Vercel and Fly.io, with plans to consolidate on Fly.io.
-
-### Vercel
-
-Automatic deployment on every push to `main`.
-
-### Fly.io
-
-Deploy using the Fly CLI.
-
-```bash
-./scripts/deploy-fly.sh
-```
-
-## Built With
-
-- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
-- [Next.js](https://nextjs.org/) - React framework
-- [React](https://react.dev/) - UI library
-- [TanStack Query](https://tanstack.com/query) - Data fetching and caching
-- [Zustand](https://zustand-demo.pmnd.rs/) - State management
-- [Howler](https://howlerjs.com/) - Audio playback
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
-- [PostgreSQL](https://www.postgresql.org/) - Database
-- [Redis](https://redis.io/) - Caching
-- [Biome](https://biomejs.dev/) - Linting and formatting
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for process details on collaborating on this project.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For available versions of this software, see the [releases on this repository](https://github.com/shantanuraj/podcst-web/releases).
-
-## Authors
-
-See the list of [contributors][Contributor List] who participated in this project.
-
-[Contributor List]: https://github.com/shantanuraj/podcst-web/contributors
+Player, accounts, Chromecast, Redis, and the old episode store were
+removed from the running app so the product can be catalog-first.
 
 ## License
 
-This project is licensed under the MIT License - see the
-[LICENSE](LICENSE.md) file for details.
+MIT — see [LICENSE.md](LICENSE.md). Catalogue descriptions are editorial
+metadata; linked works remain with their rights holders.
