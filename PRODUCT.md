@@ -39,8 +39,9 @@ surfaces.
   at 100k boosts English/Spanish while keeping a diversity floor)
   **and** an optional Apple storefront harvest. Owner favorites ingest
   real show RSS (Anchor / SoundCloud / Transistor / Substack) plus
-  search-and-pin — never Castbox. LibriVox API; curated YouTube.
-  Re-run `npm run ingest:*` to grow it.
+  search-and-pin — never Castbox. Recommend ingest pulls related
+  titles from Podcast Index and Apple for liked seeds. LibriVox API;
+  curated YouTube. Re-run `npm run ingest:*` to grow it.
 - Runs with `npm install` and `npm run dev`. No API key, Postgres, or Redis.
 
 ## Catalogue fields

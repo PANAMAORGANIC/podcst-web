@@ -19,7 +19,14 @@
       "region": "andes",
       "country": "Ecuador",
       "countryCode": "EC",
-      "website": "https://redsemillas.org/"
+      "website": "https://redsemillas.org/",
+      "relatedTerms": [
+        "Radio Semilla",
+        "semillas criollas",
+        "agroecología Andes",
+        "Red de Guardianes de Semillas"
+      ],
+      "relatedGenreIds": [1324, 1315]
     },
     {
       "title": "EcoJustice Radio",
@@ -40,7 +47,14 @@
       "region": "north-america",
       "country": "United States",
       "countryCode": "US",
-      "website": "https://ecojusticeradio.org/"
+      "website": "https://ecojusticeradio.org/",
+      "relatedTerms": [
+        "EcoJustice Radio",
+        "KPFK",
+        "climate justice",
+        "Pacifica Radio"
+      ],
+      "relatedGenreIds": [1311, 1489, 1324]
     },
     {
       "title": "632nm",
@@ -54,7 +68,9 @@
       "genres": ["science"],
       "region": "north-america",
       "country": "United States",
-      "countryCode": "US"
+      "countryCode": "US",
+      "relatedTerms": ["632nm", "science interviews"],
+      "relatedGenreIds": [1315]
     },
     {
       "title": "Tangentially Speaking with Christopher Ryan",
@@ -74,7 +90,9 @@
       "region": "north-america",
       "country": "United States",
       "countryCode": "US",
-      "website": "https://chrisryan.substack.com/"
+      "website": "https://chrisryan.substack.com/",
+      "relatedTerms": ["Christopher Ryan", "Tangentially Speaking"],
+      "relatedGenreIds": [1324]
     },
     {
       "title": "Planet: Critical",
@@ -89,7 +107,9 @@
       "region": "uk-ireland",
       "country": "United Kingdom",
       "countryCode": "GB",
-      "website": "https://planetcritical.com/"
+      "website": "https://planetcritical.com/",
+      "relatedTerms": ["Planet Critical", "Rachel Donald", "climate crisis"],
+      "relatedGenreIds": [1311, 1489]
     },
     {
       "title": "The Great Simplification with Nate Hagens",
@@ -104,7 +124,9 @@
       "region": "north-america",
       "country": "United States",
       "countryCode": "US",
-      "website": "https://www.thegreatsimplification.com/"
+      "website": "https://www.thegreatsimplification.com/",
+      "relatedTerms": ["Nate Hagens", "Great Simplification", "energy economics"],
+      "relatedGenreIds": [1315, 1324]
     }
   ],
   "pins": [],

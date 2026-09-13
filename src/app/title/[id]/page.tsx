@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { listFavoriteSeedIds } from '@/catalog/likes';
 import { relatedEntries } from '@/catalog/query';
-import { getEntry } from '@/catalog/store';
+import { recommendFor } from '@/catalog/recommend';
+import { getCatalog, getEntry } from '@/catalog/store';
 import { CatalogGrid } from '@/components/CatalogGrid';
 import { TitleDetail } from '@/components/TitleDetail';
 
@@ -29,6 +31,8 @@ export default async function TitlePage({ params }: PageProps) {
   const entry = getEntry(id);
   if (!entry) notFound();
   const related = relatedEntries(entry);
+  const because = recommendFor(entry, getCatalog(), 8);
+  const seedIds = listFavoriteSeedIds();
 
   return (
     <div className="page-title">
@@ -41,8 +45,14 @@ export default async function TitlePage({ params }: PageProps) {
         <span aria-hidden="true"> / </span>
         <span>{entry.id}</span>
       </p>
-      <TitleDetail entry={entry} />
-      {related.length > 0 ? (
+      <TitleDetail entry={entry} seedIds={seedIds} />
+      {because.length > 0 ? (
+        <section className="related">
+          <h2>Because you like {entry.title}</h2>
+          <CatalogGrid items={because} />
+        </section>
+      ) : null}
+      {related.length > 0 && because.length === 0 ? (
         <section className="related">
           <h2>Related in language, region, or genre</h2>
           <CatalogGrid items={related} />

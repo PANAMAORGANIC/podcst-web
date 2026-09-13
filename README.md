@@ -97,6 +97,7 @@ npm run ingest:podcasts     # Podcasts (diversity-first)
 npm run ingest:audiobooks   # LibriVox API + publisher cards
 npm run ingest:youtube      # Curated channels; optional YOUTUBE_API_KEY
 npm run ingest:favorites    # Owner RSS hubs + search-and-pin
+npm run ingest:recommend    # Related shows for liked / favorite seeds
 ```
 
 Re-runs are idempotent (same ids update, they do not duplicate). Receipts
@@ -184,6 +185,33 @@ Add a lasting card by appending to `shows` in
 hub). One-off pins can also go in `data/sources/favorite-pins.json`.
 Re-runs are idempotent. After the first fetch, RSS XML is cached in
 `.tmp/favorites-rss/` so a later pass can run offline-ish.
+
+### Likes and recommendations
+
+Owner favorites are the default liked seeds. On a title page, **Like this
+show** stores the id in `localStorage` (`war-liked-ids`) and POSTs to
+`/api/likes`, which writes `data/sources/liked.json` (gitignored) so
+ingest can read extra likes on this machine.
+
+Home and `/recommendations` show **Because you like {show}** rails.
+`GET /api/recommend?seed=id` (or `?seeds=id,id`) ranks the live catalog:
+same language and shared tags/genres first, then hub/network peers
+(Pacifica near EcoJustice), then popularity, with a diversity tilt so a
+Spanish seed does not collapse to a US-only chart.
+
+```bash
+# Pull related shows from Podcast Index + Apple for every favorite seed
+npm run ingest:recommend
+
+# Optional: related/similar by feed URL or iTunes id
+PODCASTINDEX_API_KEY=...
+PODCASTINDEX_API_SECRET=...
+npm run ingest:recommend
+```
+
+Without API keys the script still uses the local Podcast Index dump
+(language + category neighbors) and Apple Search (`relatedTerms` /
+`relatedGenreIds` on each favorite). Metadata and feed links only.
 
 ### Audiobooks
 

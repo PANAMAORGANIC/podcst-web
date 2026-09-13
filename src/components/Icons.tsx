@@ -96,6 +96,17 @@ export function TranslateIcon(props: IconProps) {
   );
 }
 
+export function HeartIcon({
+  filled = false,
+  ...props
+}: IconProps & { filled?: boolean }) {
+  return (
+    <Svg {...props} fill={filled ? 'currentColor' : 'none'}>
+      <path d="M12 20s-7-4.4-9.3-8.2C.7 8.6 2.2 5 6 5c2 0 3.3 1.2 4 2.2C10.7 6.2 12 5 14 5c3.8 0 5.3 3.6 3.3 6.8C19 15.6 12 20 12 20z" />
+    </Svg>
+  );
+}
+
 export function FeedIcon(props: IconProps) {
   return (
     <Svg {...props}>

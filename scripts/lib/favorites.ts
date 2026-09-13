@@ -26,6 +26,8 @@ export interface FavoriteShow {
   country?: string;
   countryCode?: string;
   website?: string;
+  relatedTerms?: string[];
+  relatedGenreIds?: number[];
 }
 
 export interface FavoritePin {

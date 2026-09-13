@@ -8,10 +8,17 @@ import { CoverArt } from './CoverArt';
 import { ExternalLinks } from './ExternalLinks';
 import { FeedAgents } from './FeedAgents';
 import { FeedIcon } from './Icons';
+import { LikeButton } from './LikeButton';
 import { TranslateToggle } from './TranslateToggle';
 import { TypeBadge } from './TypeBadge';
 
-export function TitleDetail({ entry }: { entry: CatalogEntry }) {
+export function TitleDetail({
+  entry,
+  seedIds = [],
+}: {
+  entry: CatalogEntry;
+  seedIds?: string[];
+}) {
   const [translated, setTranslated] = useState(false);
   const language = getLanguage(entry.originalLanguage);
   const region = getRegion(entry.region);
@@ -38,6 +45,7 @@ export function TitleDetail({ entry }: { entry: CatalogEntry }) {
               available={Boolean(english) && entry.originalLanguage !== 'en'}
               onToggle={() => setTranslated((value) => !value)}
             />
+            <LikeButton id={entry.id} title={entry.title} seeds={seedIds} />
             <a className="btn btn-primary" href="#feed-agents">
               <FeedIcon />
               Feed agents

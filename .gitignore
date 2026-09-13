@@ -38,6 +38,8 @@ data/ingest/*.json
 # Uncompressed catalog is a local cache; git tracks data/catalog.json.gz
 # when the snapshot is large. The app reads gz first, then json.
 data/catalog.json
+# Browser/API likes for recommend ingest. Seeds stay in favorites.json.
+data/sources/liked.json
 
 # Typescript
 *.tsbuildinfo

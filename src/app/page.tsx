@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { listFavoriteSeedIds, listSeedEntries } from '@/catalog/likes';
 import { homeRails } from '@/catalog/rails';
-import { catalogStats } from '@/catalog/store';
+import { recommendRails } from '@/catalog/recommend';
+import { catalogStats, getCatalog } from '@/catalog/store';
+import { BecauseYouLikeRails } from '@/components/BecauseYouLike';
 import { CatalogRail } from '@/components/CatalogRail';
 import { SearchBox } from '@/components/SearchBox';
 
@@ -9,6 +12,8 @@ export const dynamic = 'force-dynamic';
 export default function HomePage() {
   const stats = catalogStats();
   const rails = homeRails();
+  const seedIds = listFavoriteSeedIds();
+  const likedRails = recommendRails(listSeedEntries(), getCatalog(), 8);
 
   return (
     <div className="page-home">
@@ -56,6 +61,14 @@ export default function HomePage() {
           count={stats.types.youtube}
         />
       </section>
+      <BecauseYouLikeRails
+        seedIds={seedIds}
+        initialRails={likedRails}
+        heading="Because you like these shows"
+      />
+      <p className="recommend-more">
+        <Link href="/recommendations">All recommendations</Link>
+      </p>
       {rails.map((rail) => (
         <CatalogRail key={rail.id} rail={rail} />
       ))}

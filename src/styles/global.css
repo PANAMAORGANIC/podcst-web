@@ -386,6 +386,32 @@ main {
   margin: 3rem 0;
 }
 
+.like-btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.because-you-like {
+  margin-top: 1.5rem;
+}
+
+.because-header {
+  margin-bottom: 0;
+}
+
+.because-header h2 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  max-width: 22ch;
+}
+
+.recommend-more {
+  margin: 0 0 2rem;
+}
+
+.recommend-more a {
+  color: var(--ink-2);
+}
+
 .rail-header h2 {
   font-size: 2.2rem;
   margin-bottom: 0.4rem;

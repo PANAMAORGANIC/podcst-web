@@ -55,14 +55,16 @@ export default function AboutPage() {
         sample, default 25k) and an optional Apple storefront harvest.
         Audiobooks paginate LibriVox; YouTube uses a curated list. Owner
         favorites come from the show RSS (not Castbox) via{' '}
-        <code>npm run ingest:favorites</code>.
+        <code>npm run ingest:favorites</code>. Related shows for likes come from
+        Podcast Index and Apple via <code>npm run ingest:recommend</code>.
       </p>
       <pre>
         <code>
           {`npm run ingest:podcasts
 npm run ingest:audiobooks
 npm run ingest:youtube
-npm run ingest:favorites`}
+npm run ingest:favorites
+npm run ingest:recommend`}
         </code>
       </pre>
       <h2>Feed agents</h2>
