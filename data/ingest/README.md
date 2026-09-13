@@ -8,6 +8,7 @@ npm run ingest:audiobooks
 npm run ingest:youtube
 npm run ingest:favorites
 npm run ingest:recommend
+npm run ingest:for-you
 ```
 
 Receipts (`*.receipt.json`) are local logs — they are gitignored. The live

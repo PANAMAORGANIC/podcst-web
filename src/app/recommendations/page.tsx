@@ -32,6 +32,11 @@ export default function RecommendationsPage() {
           chart.
         </p>
         <p className="lede">
+          The learned daily mix lives on <Link href="/for-you">For you</Link>
+          {' — '}
+          likes and optional YouTube API signals, not a homepage scrape.
+        </p>
+        <p className="lede">
           <Link href="/about#ingest">How ingest works</Link>
           {' · '}
           <code>npm run ingest:recommend</code>

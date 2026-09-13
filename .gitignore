@@ -40,6 +40,8 @@ data/ingest/*.json
 data/catalog.json
 # Browser/API likes for recommend ingest. Seeds stay in favorites.json.
 data/sources/liked.json
+# Dated For You snapshots; latest.json is the committed mix.
+data/for-you/20*.json
 
 # Typescript
 *.tsbuildinfo

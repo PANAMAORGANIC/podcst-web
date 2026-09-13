@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { forYouRail } from '@/catalog/for-you';
 import { listFavoriteSeedIds, listSeedEntries } from '@/catalog/likes';
 import { homeRails } from '@/catalog/rails';
 import { recommendRails } from '@/catalog/recommend';
@@ -61,14 +62,17 @@ export default function HomePage() {
           count={stats.types.youtube}
         />
       </section>
+      <CatalogRail rail={forYouRail(8)} />
+      <p className="recommend-more">
+        <Link href="/for-you">Open For you</Link>
+        {' · '}
+        <Link href="/recommendations">Because you like</Link>
+      </p>
       <BecauseYouLikeRails
         seedIds={seedIds}
         initialRails={likedRails}
         heading="Because you like these shows"
       />
-      <p className="recommend-more">
-        <Link href="/recommendations">All recommendations</Link>
-      </p>
       {rails.map((rail) => (
         <CatalogRail key={rail.id} rail={rail} />
       ))}

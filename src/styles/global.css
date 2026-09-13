@@ -412,6 +412,80 @@ main {
   color: var(--ink-2);
 }
 
+.learned-meta {
+  color: var(--ink-2);
+  margin: 0 0 1rem;
+}
+
+.learned-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.4rem;
+}
+
+.learned-topics li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  padding: 0.25rem 0.55rem;
+  font-size: 0.85rem;
+}
+
+.learned-topics span {
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.signal-form {
+  margin: 1.2rem 0 1.6rem;
+  max-width: 42rem;
+}
+
+.signal-form-label {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.45rem;
+}
+
+.signal-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.signal-form-row input {
+  flex: 1 1 16rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  padding: 0.55rem 0.7rem;
+}
+
+.signal-form-row button {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 0.55rem 0.9rem;
+}
+
+.signal-form-row button:disabled {
+  opacity: 0.55;
+}
+
+.signal-form-hint,
+.signal-form-status {
+  color: var(--ink-2);
+  margin: 0.55rem 0 0;
+  max-width: 40rem;
+}
+
 .rail-header h2 {
   font-size: 2.2rem;
   margin-bottom: 0.4rem;

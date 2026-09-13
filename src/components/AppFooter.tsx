@@ -26,7 +26,7 @@ export function AppFooter() {
         </ul>
         <nav aria-label="Footer">
           <Link href="/browse">Browse</Link>
-          <Link href="/recommendations">For you</Link>
+          <Link href="/for-you">For you</Link>
           <Link href="/about">About</Link>
           <Link href="/about#ingest">Ingest</Link>
         </nav>

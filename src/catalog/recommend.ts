@@ -12,6 +12,7 @@ const NOISE_TAGS = new Set([
   'podcasts',
   'recommend',
   'hub-expand',
+  'youtube',
   'en',
   'es',
   'fr',
@@ -151,6 +152,7 @@ export function scoreRecommendation(
   }
 
   if (item.type === seed.type) score += 6;
+  else if (isTalkPeer(seed.type, item.type)) score += 4;
 
   score += item.signals.popularity * 0.12;
   score += item.signals.diversity * 0.22;
@@ -181,12 +183,22 @@ export function recommendHits(
   for (const item of catalog) {
     if (item.id === seed.id) continue;
     if (foldTitle(item.title) === seedTitle) continue;
-    if (item.type !== seed.type) continue;
+    const talkPeer = isTalkPeer(seed.type, item.type);
+    if (item.type !== seed.type && !talkPeer) continue;
     const sameLanguage = item.originalLanguage === seed.originalLanguage;
     const genreHit = item.genres.some((genre) => seedGenres.has(genre));
     const tagHit = meaningfulTags(item.tags).some((tag) => seedTags.has(tag));
     const sameRegion = item.region === seed.region;
     const hubHit = sharedHubNetworks(seed, item).length > 0;
+    if (
+      talkPeer &&
+      item.type !== seed.type &&
+      !genreHit &&
+      !tagHit &&
+      !hubHit
+    ) {
+      continue;
+    }
     if (!sameLanguage && !genreHit && !tagHit && !sameRegion && !hubHit) {
       continue;
     }
@@ -227,6 +239,12 @@ export function recommendRails(
     });
   }
   return rails;
+}
+
+function isTalkPeer(a: CatalogEntry['type'], b: CatalogEntry['type']): boolean {
+  return (
+    (a === 'podcast' && b === 'youtube') || (a === 'youtube' && b === 'podcast')
+  );
 }
 
 function foldTitle(value: string): string {

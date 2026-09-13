@@ -41,7 +41,10 @@ surfaces.
   real show RSS (Anchor / SoundCloud / Transistor / Substack) plus
   search-and-pin — never Castbox. Recommend ingest pulls related
   titles from Podcast Index and Apple for liked seeds. LibriVox API;
-  curated YouTube. Re-run `npm run ingest:*` to grow it.
+  curated YouTube (400+ podcast/lecture channels). For You learns
+  topic weights from likes and optional YouTube Data API signals
+  (`ingest:for-you`) — homepage recommendation scraping is out of
+  scope. Re-run `npm run ingest:*` to grow it.
 - Runs with `npm install` and `npm run dev`. No API key, Postgres, or Redis.
 
 ## Catalogue fields
@@ -56,7 +59,9 @@ LibriVox / site), generated cover art, and diversity / popularity signals.
 2. Never scrape or store copyrighted audio or video files.
 3. Public-domain works may deep-link to LibriVox / Gutenberg.
 4. In-copyright audiobooks are cards + store/publisher links.
-5. YouTube is a channel/series index, not a mirror.
+5. YouTube is a channel/series index, not a mirror. Do not scrape
+   youtube.com homepage or recommendation HTML; use the Data API
+   (key for public search, OAuth later for subscriptions/likes).
 6. Diversity weighting is editorial, not a raw download rank.
 7. Agent packets are metadata, quotes, and links — never media files.
 

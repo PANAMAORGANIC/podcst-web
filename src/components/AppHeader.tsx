@@ -12,7 +12,7 @@ const NAV = [
   { href: '/podcasts', label: 'Podcasts' },
   { href: '/audiobooks', label: 'Audiobooks' },
   { href: '/youtube', label: 'YouTube' },
-  { href: '/recommendations', label: 'For you' },
+  { href: '/for-you', label: 'For you' },
   { href: '/about', label: 'About' },
 ];
 

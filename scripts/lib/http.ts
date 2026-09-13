@@ -9,6 +9,8 @@ export async function fetchJson<T>(
     headers?: Record<string, string>;
     timeoutMs?: number;
     retries?: number;
+    method?: string;
+    body?: string;
   } = {},
 ): Promise<{ ok: true; data: T } | { ok: false; status: number }> {
   const timeoutMs = options.timeoutMs ?? 25_000;
@@ -21,6 +23,8 @@ export async function fetchJson<T>(
     try {
       const response = await fetch(url, {
         signal: controller.signal,
+        method: options.method ?? 'GET',
+        body: options.body,
         headers: { 'User-Agent': UA, ...options.headers },
       });
       lastStatus = response.status;

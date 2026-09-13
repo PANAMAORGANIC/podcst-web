@@ -36,6 +36,8 @@ export default function AboutPage() {
         </li>
         <li>
           YouTube is indexed as channels and series, not downloaded media.
+          Homepage recommendation HTML is never scraped; For You uses likes plus
+          the YouTube Data API when you configure a key or OAuth token.
         </li>
       </ul>
       <h2>This demo slice</h2>
@@ -56,7 +58,10 @@ export default function AboutPage() {
         Audiobooks paginate LibriVox; YouTube uses a curated list. Owner
         favorites come from the show RSS (not Castbox) via{' '}
         <code>npm run ingest:favorites</code>. Related shows for likes come from
-        Podcast Index and Apple via <code>npm run ingest:recommend</code>.
+        Podcast Index and Apple via <code>npm run ingest:recommend</code>. For
+        You learns topic weights from likes and optional YouTube Data API
+        signals via <code>npm run ingest:for-you</code> — it does not scrape the
+        YouTube homepage.
       </p>
       <pre>
         <code>
@@ -64,7 +69,8 @@ export default function AboutPage() {
 npm run ingest:audiobooks
 npm run ingest:youtube
 npm run ingest:favorites
-npm run ingest:recommend`}
+npm run ingest:recommend
+npm run ingest:for-you`}
         </code>
       </pre>
       <h2>Feed agents</h2>

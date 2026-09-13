@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "user": "RED",
+  "learnedAt": null,
+  "note": "Learned from WAR likes, favorites, and optional YouTube Data API signals. Not a youtube.com homepage scrape.",
+  "sources": ["favorites"],
+  "youtubeChannelUrls": [],
+  "youtubeVideoUrls": [],
+  "importedYoutubeChannelIds": [],
+  "importedYoutubeVideoIds": [],
+  "weights": {
+    "climate": 1.35,
+    "ecology": 1.4,
+    "energy": 1.2,
+    "ecojustice": 1.15,
+    "pacifica": 0.9,
+    "science": 1.25,
+    "interviews": 1.2,
+    "research": 1.05,
+    "seeds": 1.2,
+    "agroecology": 1.25,
+    "andes": 0.95,
+    "semillas": 1.1,
+    "conversation": 0.85,
+    "longform": 1.1,
+    "lecture": 1.05,
+    "regeneration": 1.15,
+    "systems": 1.05,
+    "collapse": 0.9,
+    "politics": 0.7
+  }
+}

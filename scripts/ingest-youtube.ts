@@ -1,63 +1,56 @@
 #!/usr/bin/env npx tsx
 
 /**
- * YouTube ingest — curated channel metadata, optionally enriched
- * with the YouTube Data API. Never downloads video or audio.
+ * YouTube ingest — curated long-form / podcast channels.
+ * Metadata and channel URLs only. Never downloads video or audio.
+ *
+ * Without YOUTUBE_API_KEY: upsert every row in youtube-channels.json.
+ * With a key: enrich snippet, country, and topicDetails from the Data API.
  */
 
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
-import { diversityScore, normalizeLanguage } from '../src/catalog/taxonomy';
 import type { CatalogEntry } from '../src/catalog/types';
-import { fetchJson } from './lib/http';
+import { fetchJson, sleep } from './lib/http';
 import { ingestLimit, upsertCatalog, writeReceipt } from './lib/store';
+import {
+  type ChannelSource,
+  loadYoutubeSources,
+  mapYoutubeChannel,
+  topicTags,
+  type YoutubeSnippet,
+} from './lib/youtube';
 
-interface ChannelSource {
-  id: string;
-  handle?: string;
-  channelId?: string;
-  title: string;
-  language: string;
-  creators: string[];
-  description: string;
-  tags: string[];
-  genres: string[];
-  region: string;
-  country: string;
-  countryCode: string;
-  youtube: string;
-  website?: string;
-  english?: { title: string; description: string };
-}
-
-interface YoutubeSnippet {
-  title?: string;
-  description?: string;
-  country?: string;
-  defaultLanguage?: string;
-  thumbnails?: { high?: { url?: string } };
+interface YoutubeTopicDetails {
+  topicCategories?: string[];
 }
 
 async function main() {
-  const limit = ingestLimit(200);
-  const sources = loadSources().slice(0, limit);
+  const sources = loadYoutubeSources();
+  const limit = ingestLimit(Math.max(800, sources.length));
+  const selected = sources.slice(0, limit);
   const key = process.env.YOUTUBE_API_KEY?.trim();
   console.log('World Audio Repository — YouTube ingest');
+  console.log('Channel metadata + YouTube links only. No video files.');
   console.log(
     key
-      ? 'Enriching curated channels via YouTube Data API.'
-      : 'No YOUTUBE_API_KEY. Ingesting curated metadata from data/sources/youtube-channels.json.',
+      ? `Enriching ${selected.length} curated channels via YouTube Data API.`
+      : `No YOUTUBE_API_KEY. Upserting ${selected.length} curated rows from data/sources/youtube-channels.json.`,
   );
 
   const entries: CatalogEntry[] = [];
   let enriched = 0;
-  for (const source of sources) {
+  for (const source of selected) {
     let snippet: YoutubeSnippet | null = null;
+    let topics: string[] = [];
     if (key) {
-      snippet = await fetchSnippet(source, key);
-      if (snippet) enriched += 1;
+      const api = await fetchChannel(source, key);
+      if (api?.snippet) {
+        snippet = api.snippet;
+        topics = topicTags(api.topicDetails?.topicCategories);
+        enriched += 1;
+      }
+      await sleep(80);
     }
-    entries.push(mapChannel(source, snippet));
+    entries.push(mapYoutubeChannel(source, snippet, topics));
   }
 
   const result = upsertCatalog(entries);
@@ -67,7 +60,10 @@ async function main() {
     mapped: entries.length,
     enriched,
     languages: [...new Set(entries.map((item) => item.originalLanguage))],
+    en: entries.filter((item) => item.originalLanguage === 'en').length,
+    es: entries.filter((item) => item.originalLanguage === 'es').length,
     ...result,
+    note: 'Idempotent. Deep links only. Set YOUTUBE_API_KEY to enrich snippets and topics.',
   });
   console.log(
     `Upserted ${entries.length} YouTube titles (${result.added} added, ${result.updated} updated, ${enriched} API-enriched).`,
@@ -75,66 +71,30 @@ async function main() {
   console.log(`Receipt: ${receipt}`);
 }
 
-function loadSources(): ChannelSource[] {
-  const file = path.join(
-    process.cwd(),
-    'data',
-    'sources',
-    'youtube-channels.json',
-  );
-  return JSON.parse(readFileSync(file, 'utf8')) as ChannelSource[];
-}
-
-function mapChannel(
-  source: ChannelSource,
-  snippet: YoutubeSnippet | null,
-): CatalogEntry {
-  const language = normalizeLanguage(
-    snippet?.defaultLanguage ?? source.language,
-  );
-  return {
-    id: source.id,
-    type: 'youtube',
-    title: snippet?.title || source.title,
-    originalLanguage: language,
-    creators: source.creators,
-    description: snippet?.description || source.description,
-    tags: [...source.tags, 'ingested', 'youtube', language],
-    genres: source.genres,
-    region: source.region,
-    country: source.country,
-    countryCode: source.countryCode,
-    externalUrls: {
-      youtube: source.youtube,
-      website: source.website,
-    },
-    coverArt: snippet?.thumbnails?.high?.url,
-    signals: {
-      popularity: 50,
-      diversity: diversityScore(language),
-    },
-    translations: source.english ? { en: source.english } : undefined,
-  };
-}
-
-async function fetchSnippet(
+async function fetchChannel(
   source: ChannelSource,
   key: string,
-): Promise<YoutubeSnippet | null> {
+): Promise<{
+  snippet?: YoutubeSnippet;
+  topicDetails?: YoutubeTopicDetails;
+} | null> {
   const url = new URL('https://www.googleapis.com/youtube/v3/channels');
-  url.searchParams.set('part', 'snippet');
+  url.searchParams.set('part', 'snippet,topicDetails');
   url.searchParams.set('key', key);
   if (source.channelId) url.searchParams.set('id', source.channelId);
   else if (source.handle) url.searchParams.set('forHandle', source.handle);
   else return null;
-  const result = await fetchJson<{ items?: { snippet?: YoutubeSnippet }[] }>(
-    url,
-  );
+  const result = await fetchJson<{
+    items?: {
+      snippet?: YoutubeSnippet;
+      topicDetails?: YoutubeTopicDetails;
+    }[];
+  }>(url);
   if (!result.ok) {
     console.warn(`YouTube API ${result.status} for ${source.id}`);
     return null;
   }
-  return result.data.items?.[0]?.snippet ?? null;
+  return result.data.items?.[0] ?? null;
 }
 
 main().catch((error) => {

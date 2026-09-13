@@ -13,7 +13,7 @@ export default function YouTubePage() {
     <TypeBrowse
       type="youtube"
       title="YouTube"
-      lede="Channels and series that behave like spoken archives: lectures, correspondents, blackboards. Open on YouTube."
+      lede="Channels and series that behave like spoken archives: lectures, correspondents, podcasts on YouTube. Curated pack plus For You topic search — not a homepage scrape. Open on YouTube."
     />
   );
 }

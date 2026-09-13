@@ -46,6 +46,8 @@ npm run build
   translator if you configure one)
 - **Feed agents** from a title page: copy or download a structured packet
   (JSON + Markdown brief), or POST it to a webhook if configured
+- **For you** — a learned mix from likes and optional YouTube Data API
+  signals (not a youtube.com homepage scrape)
 
 ## Translation
 
@@ -98,6 +100,7 @@ npm run ingest:audiobooks   # LibriVox API + publisher cards
 npm run ingest:youtube      # Curated channels; optional YOUTUBE_API_KEY
 npm run ingest:favorites    # Owner RSS hubs + search-and-pin
 npm run ingest:recommend    # Related shows for liked / favorite seeds
+npm run ingest:for-you      # Learn topic weights + daily For You snapshot
 ```
 
 Re-runs are idempotent (same ids update, they do not duplicate). Receipts
@@ -193,7 +196,8 @@ show** stores the id in `localStorage` (`war-liked-ids`) and POSTs to
 `/api/likes`, which writes `data/sources/liked.json` (gitignored) so
 ingest can read extra likes on this machine.
 
-Home and `/recommendations` show **Because you like {show}** rails.
+`/for-you` is the learned daily mix. Home and `/recommendations` still
+show **Because you like {show}** rails.
 `GET /api/recommend?seed=id` (or `?seeds=id,id`) ranks the live catalog:
 same language and shared tags/genres first, then hub/network peers
 (Pacifica near EcoJustice), then popularity, with a diversity tilt so a
@@ -213,6 +217,37 @@ Without API keys the script still uses the local Podcast Index dump
 (language + category neighbors) and Apple Search (`relatedTerms` /
 `relatedGenreIds` on each favorite). Metadata and feed links only.
 
+### For you (continuous learning)
+
+`/for-you` ranks podcasts and long-form YouTube from **topic weights that
+update over time**. Each `npm run ingest:for-you` (or a daily cron):
+
+1. Re-reads owner favorites and runtime likes (`liked.json`).
+2. If `YOUTUBE_API_KEY` is set, searches public channels for the top
+   weighted topics (English and Spanish heavy, still open).
+3. If OAuth refresh-token env vars are set later, pulls
+   `subscriptions.list` and liked videos (`videos.list?myRating=like`)
+   and maps channel topics into those weights.
+4. Expands the YouTube + podcast catalog with related/search hits.
+5. Writes `data/for-you/latest.json` (and a dated copy) that the page
+   reads.
+
+The UI explains this is **learned from your likes & YouTube signals
+(not homepage scrape)** and shows last learned-at. You can paste a
+YouTube channel or video URL as a strong positive signal.
+
+`GET /api/for-you` and `GET /api/health` dump `LEARNED_TOPICS` for
+debugging. Signal state lives in `data/sources/user-signals.json`.
+
+**Out of scope:** scraping `youtube.com` homepage or recommendation
+HTML. That feed has no supported API. The path is Google Cloud → YouTube
+Data API (key now; OAuth later). Setup notes: [docs/youtube-signals.md](docs/youtube-signals.md).
+
+```bash
+# Daily refresh from databases + learned weights
+npm run ingest:for-you
+```
+
 ### Audiobooks
 
 Paginates the public LibriVox JSON API, then merges
@@ -220,9 +255,13 @@ Paginates the public LibriVox JSON API, then merges
 
 ### YouTube
 
-Reads `data/sources/youtube-channels.json`. If `YOUTUBE_API_KEY` is set,
-enriches title/description/thumbnail via the Data API. Without a key the
-curated file still writes real catalog rows.
+Reads `data/sources/youtube-channels.json` — a curated pack of **400+**
+podcast, lecture, and interview channels (English and Spanish heavy,
+plus other languages). If `YOUTUBE_API_KEY` is set, enriches
+title/description/thumbnail and topic tags via the Data API. Without a
+key the curated file still writes real catalog rows. This is an index
+of channel URLs, not a media host, and not a scrape of YouTube’s
+logged-in homepage.
 
 ## Stack
 
