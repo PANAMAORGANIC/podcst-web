@@ -48,11 +48,12 @@ export default function AboutPage() {
       </p>
       <h2 id="ingest">Ingest path</h2>
       <p>
-        Scripts under <code>scripts/</code> write <code>data/catalog.json</code>
-        , which the UI merges with the editorial seed. Podcasts can pull from
-        the <a href="https://podcastindex.org/">Podcast Index</a> dump when you
-        have a database. Audiobook and YouTube scripts are stubs for
-        LibriVox-class metadata and a future YouTube Data API pass.
+        Scripts under <code>scripts/</code> write{' '}
+        <code>data/catalog.json.gz</code>, which the UI merges with the
+        editorial seed. Podcasts pull from the{' '}
+        <a href="https://podcastindex.org/">Podcast Index</a> dump (diversity
+        sample, default 25k) and an optional Apple storefront harvest.
+        Audiobooks paginate LibriVox; YouTube uses a curated list.
       </p>
       <pre>
         <code>

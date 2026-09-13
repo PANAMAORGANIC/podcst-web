@@ -1,29 +1,29 @@
-import { existsSync, readFileSync, statSync } from 'node:fs';
-import path from 'node:path';
+import { existsSync, statSync } from 'node:fs';
 import { SEED_CATALOG } from './seed';
+import { CATALOG_GZ_PATH, CATALOG_JSON_PATH, loadSnapshot } from './snapshot';
 import type { CatalogEntry } from './types';
 
-export const CATALOG_SNAPSHOT_PATH = path.join(
-  process.cwd(),
-  'data',
-  'catalog.json',
-);
-
-interface SnapshotFile {
-  generatedAt?: string;
-  items?: CatalogEntry[];
-}
+export const CATALOG_SNAPSHOT_PATH = CATALOG_JSON_PATH;
 
 let cache: { mtime: number; items: CatalogEntry[] } | null = null;
 
+function snapshotMtime(): number {
+  let mtime = 0;
+  if (existsSync(CATALOG_GZ_PATH)) {
+    mtime = Math.max(mtime, statSync(CATALOG_GZ_PATH).mtimeMs);
+  }
+  if (existsSync(CATALOG_JSON_PATH)) {
+    mtime = Math.max(mtime, statSync(CATALOG_JSON_PATH).mtimeMs);
+  }
+  return mtime;
+}
+
 export function readIngested(): CatalogEntry[] {
   if (typeof window !== 'undefined') return [];
-  if (!existsSync(CATALOG_SNAPSHOT_PATH)) return [];
-  const mtime = statSync(CATALOG_SNAPSHOT_PATH).mtimeMs;
+  const mtime = snapshotMtime();
+  if (!mtime) return [];
   if (cache && cache.mtime === mtime) return cache.items;
-  const raw = readFileSync(CATALOG_SNAPSHOT_PATH, 'utf8');
-  const parsed = JSON.parse(raw) as SnapshotFile | CatalogEntry[];
-  const items = Array.isArray(parsed) ? parsed : (parsed.items ?? []);
+  const items = loadSnapshot();
   cache = { mtime, items };
   return items;
 }

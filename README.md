@@ -85,9 +85,10 @@ is hidden and copy/download still work.
 
 ## Ingest (metadata only)
 
-The live catalog is the editorial seed plus `data/catalog.json`. A first-pass
-snapshot is checked in, so `npm run dev` already shows ingested titles.
-Running the three scripts **upserts** more rows into that snapshot. Refresh
+The live catalog is the editorial seed plus the ingest snapshot
+(`data/catalog.json.gz`, with a compact `data/catalog.json` when it fits
+under 40MB). A snapshot is checked in, so `npm run dev` already shows
+ingested titles. Running the three scripts **upserts** more rows. Refresh
 the running app (pages are dynamic) to see new titles in search, browse,
 and rails.
 
@@ -103,7 +104,7 @@ land in `data/ingest/`. Nothing downloads audio or video files.
 ### Podcasts
 
 `npm run ingest:podcasts` runs **two strategies** and upserts both into
-`data/catalog.json` (idempotent `pi-*` / `it-*` ids):
+the live snapshot (idempotent `pi-*` / `it-*` ids):
 
 1. **Podcast Index dump** when a SQLite file is present or you opt in to
    download. Diversity-first sample (not English-only charts).
@@ -117,14 +118,14 @@ land in `data/ingest/`. Nothing downloads audio or video files.
 # Apple harvest only (default if no dump is configured)
 npm run ingest:podcasts
 
-# Dump + Apple harvest (download once, ~1.8GB, then cached in .tmp/)
-PODCASTINDEX_DOWNLOAD=1 npm run ingest:podcasts
+# Scaled dump-only pass (download ~1.8GB if missing, then cached in .tmp/)
+PODCASTINDEX_DOWNLOAD=1 INGEST_LIMIT=50000 ITUNES_HARVEST=0 npm run ingest:podcasts
+
+# Default dump limit is 25000; 50k–100k is supported without OOM
+ITUNES_HARVEST=0 npm run ingest:podcasts
 
 # Already-extracted dump
-PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db npm run ingest:podcasts
-
-# Skip Apple harvest
-ITUNES_HARVEST=0 PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db npm run ingest:podcasts
+PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db ITUNES_HARVEST=0 npm run ingest:podcasts
 ```
 
 iTunes Search is unauthenticated. The script spaces requests (~180ms),
@@ -140,7 +141,9 @@ PODCASTINDEX_API_KEY=...
 PODCASTINDEX_API_SECRET=...
 ```
 
-`INGEST_LIMIT` defaults to **5000 per strategy** for this pass.
+`INGEST_LIMIT` defaults to **25000 per strategy** (overridable). The
+dump sampler is a single SQL pass with language-weighted take, truncated
+descriptions, and a gzip snapshot so 25k–100k titles stay workable.
 
 ### Audiobooks
 

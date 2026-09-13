@@ -75,7 +75,8 @@ interface PiSearchHit {
 }
 
 async function main() {
-  const limit = ingestLimit(5000);
+  const started = Date.now();
+  const limit = ingestLimit(25_000);
   const itunesOn = process.env.ITUNES_HARVEST !== '0';
   console.log('World Audio Repository — podcast ingest');
   console.log('Metadata + RSS links only. No audio files.');
@@ -133,11 +134,12 @@ async function main() {
     itunesStorefronts: itunesStorefronts(queries),
     itunesQueries: queries.length,
     warnings,
-    ...result,
+    snapshotBytes: result.snapshot,
+    elapsedMs: Date.now() - started,
     languages: [...new Set(entries.map((item) => item.originalLanguage))],
     rateLimit:
       'iTunes Search is unauthenticated. We space requests (~180ms) and back off on HTTP 429. Official max is 200 results per query; we request 50.',
-    note: 'Re-run is idempotent. Dump and Apple harvest both upsert into data/catalog.json. ITUNES_HARVEST=0 skips Apple.',
+    note: 'Re-run is idempotent. Dump and Apple harvest upsert into data/catalog.json.gz (and compact JSON if under 40MB). ITUNES_HARVEST=0 skips Apple.',
   });
 
   console.log(
@@ -146,6 +148,13 @@ async function main() {
   console.log(
     `Upserted ${entries.length} podcast rows (${result.added} added, ${result.updated} updated). Snapshot ${result.total} ingested titles.`,
   );
+  console.log(
+    `Snapshot gz ${(result.snapshot.gzBytes / 1024 / 1024).toFixed(1)} MB` +
+      (result.snapshot.wroteJson
+        ? ` · json ${(result.snapshot.jsonBytes / 1024 / 1024).toFixed(1)} MB`
+        : ' · json omitted (>40MB)'),
+  );
+  console.log(`Elapsed ${((Date.now() - started) / 1000).toFixed(1)}s`);
   console.log(`Receipt: ${receipt}`);
 }
 
@@ -240,6 +249,7 @@ function fromDump(dbPath: string, limit: number): CatalogEntry[] {
     );
   }
 
+  const descCol = pickColumn(columns, ['description', 'itunesSummary']);
   const selectCols = [
     'id',
     urlCol,
@@ -250,17 +260,21 @@ function fromDump(dbPath: string, limit: number): CatalogEntry[] {
     langCol,
     pickColumn(columns, ['episodeCount', 'episode_count']),
     pickColumn(columns, ['popularityScore', 'popularity']),
-    pickColumn(columns, ['description', 'itunesSummary']),
+    descCol ? `substr(${descCol}, 1, 700) AS description` : undefined,
     pickColumn(columns, ['category1']),
     pickColumn(columns, ['category2']),
   ].filter(Boolean) as string[];
 
-  const window = Math.max(limit * 25, 80_000);
+  const window = Math.min(500_000, Math.max(200_000, limit * 16));
+  const perLangCap = Math.max(400, Math.ceil((limit * 2) / 50));
   const langFilter = langCol
     ? `AND IFNULL(${langCol}, '') != '' AND lower(${langCol}) NOT IN ('mul', 'xx', '??')`
     : '';
   // One pass, spread across the dump with id modulo so we do not
   // full-scan once per language on 4.7M unindexed rows.
+  console.log(
+    `Dump sample window ${window} · per-language cap ${perLangCap} (limit ${limit}).`,
+  );
   const rows = db
     .prepare(
       `SELECT ${selectCols.join(', ')}
@@ -269,7 +283,7 @@ function fromDump(dbPath: string, limit: number): CatalogEntry[] {
          AND ${titleCol} IS NOT NULL
          AND ${urlCol} IS NOT NULL
          ${langFilter}
-         AND id % 17 IN (1, 5, 11)
+         AND id % 7 IN (0, 2, 4)
        LIMIT ?`,
     )
     .all(window) as Record<string, unknown>[];
@@ -284,7 +298,7 @@ function fromDump(dbPath: string, limit: number): CatalogEntry[] {
     const entry = mapDumpRow(row, language, urlCol, titleCol);
     if (!entry) continue;
     const list = buckets.get(language) ?? [];
-    if (list.length > 200) continue;
+    if (list.length >= perLangCap) continue;
     list.push(entry);
     buckets.set(language, list);
   }
@@ -352,7 +366,7 @@ function mapDumpRow(
     title,
     originalLanguage: language,
     creators: author ? [String(author)] : ['Unknown'],
-    description: stripHtml(String(row.description ?? title)),
+    description: stripHtml(String(row.description ?? title)).slice(0, 700),
     tags: ['podcast-index', 'ingested', language],
     genres: dumpGenres(row),
     region: inferRegion(language),

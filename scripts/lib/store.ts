@@ -1,37 +1,28 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import {
+  CATALOG_JSON_PATH,
+  loadSnapshot,
+  type SnapshotWriteResult,
+  writeSnapshot,
+} from '../../src/catalog/snapshot';
 import type { CatalogEntry } from '../../src/catalog/types';
 
+export { writeSnapshot };
+
 export const DATA_DIR = path.join(process.cwd(), 'data');
-export const CATALOG_PATH = path.join(DATA_DIR, 'catalog.json');
+export const CATALOG_PATH = CATALOG_JSON_PATH;
 export const INGEST_DIR = path.join(DATA_DIR, 'ingest');
 
-export interface CatalogSnapshot {
-  generatedAt: string;
-  items: CatalogEntry[];
-}
-
 export function loadIngested(): CatalogEntry[] {
-  if (!existsSync(CATALOG_PATH)) return [];
-  const parsed = JSON.parse(readFileSync(CATALOG_PATH, 'utf8')) as
-    | CatalogSnapshot
-    | CatalogEntry[];
-  return Array.isArray(parsed) ? parsed : (parsed.items ?? []);
-}
-
-export function writeSnapshot(items: CatalogEntry[]): void {
-  mkdirSync(DATA_DIR, { recursive: true });
-  const snapshot: CatalogSnapshot = {
-    generatedAt: new Date().toISOString(),
-    items,
-  };
-  writeFileSync(CATALOG_PATH, `${JSON.stringify(snapshot, null, 2)}\n`);
+  return loadSnapshot();
 }
 
 export function upsertCatalog(entries: CatalogEntry[]): {
   added: number;
   updated: number;
   total: number;
+  snapshot: SnapshotWriteResult;
 } {
   const byId = new Map(loadIngested().map((item) => [item.id, item]));
   let added = 0;
@@ -42,8 +33,8 @@ export function upsertCatalog(entries: CatalogEntry[]): {
     byId.set(entry.id, entry);
   }
   const items = [...byId.values()];
-  writeSnapshot(items);
-  return { added, updated, total: items.length };
+  const snapshot = writeSnapshot(items);
+  return { added, updated, total: items.length, snapshot };
 }
 
 export function writeReceipt(name: string, body: unknown) {

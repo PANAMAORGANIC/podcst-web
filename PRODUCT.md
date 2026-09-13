@@ -33,11 +33,11 @@ surfaces.
 - Built-in translation with a clean `Translator` interface:
   local curated fallback, optional LibreTranslate.
 - A seed catalogue that already spans dozens of languages and regions.
-- Ingest pipelines that write `data/catalog.json` (merged with seed at
-  read time). Podcast ingest runs Podcast Index dump (when configured)
-  **and** an Apple storefront harvest (`itunes-storefronts.json` +
-  language queries). LibriVox API; curated YouTube (+ optional Data API).
-  A snapshot is checked in; re-run `npm run ingest:*` to grow it.
+- Ingest pipelines that write `data/catalog.json.gz` (and compact JSON
+  when it is under 40MB), merged with seed at read time. Podcast ingest
+  runs a scaled Podcast Index dump (default 25k, 50k–100k supported)
+  **and** an optional Apple storefront harvest. LibriVox API; curated
+  YouTube. Re-run `npm run ingest:*` to grow it.
 - Runs with `npm install` and `npm run dev`. No API key, Postgres, or Redis.
 
 ## Catalogue fields
