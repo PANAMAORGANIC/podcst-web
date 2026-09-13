@@ -3,6 +3,7 @@ import {
   mkdirSync,
   readFileSync,
   statSync,
+  unlinkSync,
   writeFileSync,
 } from 'node:fs';
 import path from 'node:path';
@@ -36,19 +37,19 @@ export interface SnapshotWriteResult {
 const GIT_WARN_BYTES = 40 * 1024 * 1024;
 
 export function loadSnapshot(): CatalogEntry[] {
-  const parsed = readSnapshotFile();
-  if (!parsed) return [];
-  return Array.isArray(parsed) ? parsed : (parsed.items ?? []);
+  return snapshotItems(readSnapshotFile()) ?? [];
 }
 
 function readSnapshotFile(): CatalogSnapshot | CatalogEntry[] | null {
   const gz = existsSync(CATALOG_GZ_PATH);
   const json = existsSync(CATALOG_JSON_PATH);
   if (gz && json) {
+    const jsonParsed = parseBuffer(readFileSync(CATALOG_JSON_PATH));
+    const jsonItems = snapshotItems(jsonParsed);
     const gzNewer =
       statSync(CATALOG_GZ_PATH).mtimeMs >= statSync(CATALOG_JSON_PATH).mtimeMs;
-    if (gzNewer) return parseBuffer(gunzipSync(readFileSync(CATALOG_GZ_PATH)));
-    return parseBuffer(readFileSync(CATALOG_JSON_PATH));
+    if (jsonItems && !gzNewer) return jsonParsed;
+    return parseBuffer(gunzipSync(readFileSync(CATALOG_GZ_PATH)));
   }
   if (gz) return parseBuffer(gunzipSync(readFileSync(CATALOG_GZ_PATH)));
   if (json) return parseBuffer(readFileSync(CATALOG_JSON_PATH));
@@ -57,6 +58,15 @@ function readSnapshotFile(): CatalogSnapshot | CatalogEntry[] | null {
 
 function parseBuffer(buf: Buffer): CatalogSnapshot | CatalogEntry[] {
   return JSON.parse(buf.toString('utf8')) as CatalogSnapshot | CatalogEntry[];
+}
+
+function snapshotItems(
+  parsed: CatalogSnapshot | CatalogEntry[] | null,
+): CatalogEntry[] | null {
+  if (!parsed) return null;
+  if (Array.isArray(parsed)) return parsed;
+  if (Array.isArray(parsed.items)) return parsed.items;
+  return null;
 }
 
 export function writeSnapshot(items: CatalogEntry[]): SnapshotWriteResult {
@@ -74,14 +84,7 @@ export function writeSnapshot(items: CatalogEntry[]): SnapshotWriteResult {
     writeFileSync(CATALOG_JSON_PATH, compact);
     wroteJson = true;
   } else if (existsSync(CATALOG_JSON_PATH)) {
-    writeFileSync(
-      CATALOG_JSON_PATH,
-      `${JSON.stringify({
-        generatedAt: snapshot.generatedAt,
-        items: items.length,
-        note: 'Snapshot is larger than 40MB uncompressed. The app reads data/catalog.json.gz.',
-      })}\n`,
-    );
+    unlinkSync(CATALOG_JSON_PATH);
   }
 
   return {

@@ -35,7 +35,8 @@ surfaces.
 - A seed catalogue that already spans dozens of languages and regions.
 - Ingest pipelines that write `data/catalog.json.gz` (and compact JSON
   when it is under 40MB), merged with seed at read time. Podcast ingest
-  runs a scaled Podcast Index dump (default 25k, 50k–100k supported)
+  runs a scaled Podcast Index dump (default 25k; `INGEST_FOCUS=en,es`
+  at 100k boosts English/Spanish while keeping a diversity floor)
   **and** an optional Apple storefront harvest. LibriVox API; curated
   YouTube. Re-run `npm run ingest:*` to grow it.
 - Runs with `npm install` and `npm run dev`. No API key, Postgres, or Redis.

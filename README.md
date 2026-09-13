@@ -118,15 +118,24 @@ the live snapshot (idempotent `pi-*` / `it-*` ids):
 # Apple harvest only (default if no dump is configured)
 npm run ingest:podcasts
 
+# Big English + Spanish pass (dump + Apple favorites)
+PODCASTINDEX_DOWNLOAD=1 INGEST_LIMIT=100000 INGEST_FOCUS=en,es npm run ingest:podcasts
+
 # Scaled dump-only pass (download ~1.8GB if missing, then cached in .tmp/)
 PODCASTINDEX_DOWNLOAD=1 INGEST_LIMIT=50000 ITUNES_HARVEST=0 npm run ingest:podcasts
 
-# Default dump limit is 25000; 50k–100k is supported without OOM
+# Default dump limit is 25000; 50k–150k is supported without OOM
 ITUNES_HARVEST=0 npm run ingest:podcasts
 
 # Already-extracted dump
 PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db ITUNES_HARVEST=0 npm run ingest:podcasts
 ```
+
+`INGEST_FOCUS=en,es` reserves about a quarter of the batch for other
+languages (diversity floor), then fills the rest from English and
+Spanish ranked by popularity so mainstream and mid-tail shows appear.
+Apple harvest then adds extra us/gb/au/ca and mx/es/ar/co/cl/pe/uy
+storefront packs from `data/sources/itunes-focus-en-es.json`.
 
 iTunes Search is unauthenticated. The script spaces requests (~180ms),
 retries HTTP 429 with backoff, and requests 50 results per query (API
@@ -141,9 +150,10 @@ PODCASTINDEX_API_KEY=...
 PODCASTINDEX_API_SECRET=...
 ```
 
-`INGEST_LIMIT` defaults to **25000 per strategy** (overridable). The
-dump sampler is a single SQL pass with language-weighted take, truncated
-descriptions, and a gzip snapshot so 25k–100k titles stay workable.
+`INGEST_LIMIT` defaults to **25000 per strategy** (overridable). A 100k
+en/es pass is the documented big command above. The dump sampler uses a
+single SQL pass plus optional focus extras, truncated descriptions, and
+a gzip snapshot.
 
 ### Audiobooks
 

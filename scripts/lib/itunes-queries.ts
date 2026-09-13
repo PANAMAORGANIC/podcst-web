@@ -22,7 +22,10 @@ export interface StorefrontFile {
   storefronts?: StorefrontPack[];
 }
 
-export function loadItunesQueries(root = process.cwd()): QuerySpec[] {
+export function loadItunesQueries(
+  root = process.cwd(),
+  focus: string[] = [],
+): QuerySpec[] {
   const sources = path.join(root, 'data', 'sources');
   const languageFirst = JSON.parse(
     readFileSync(path.join(sources, 'podcast-queries.json'), 'utf8'),
@@ -30,7 +33,12 @@ export function loadItunesQueries(root = process.cwd()): QuerySpec[] {
   const packs = JSON.parse(
     readFileSync(path.join(sources, 'itunes-storefronts.json'), 'utf8'),
   ) as StorefrontFile;
-  return expandItunesQueries(languageFirst, packs);
+  const queries = expandItunesQueries(languageFirst, packs);
+  if (!focus.includes('en') && !focus.includes('es')) return queries;
+  const extra = JSON.parse(
+    readFileSync(path.join(sources, 'itunes-focus-en-es.json'), 'utf8'),
+  ) as StorefrontFile;
+  return expandItunesQueries(queries, extra);
 }
 
 export function expandItunesQueries(

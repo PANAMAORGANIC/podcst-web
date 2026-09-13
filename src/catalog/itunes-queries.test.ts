@@ -71,4 +71,20 @@ describe('itunes storefront harvest', () => {
     );
     assert.ok(queries.some((query) => query.genreId));
   });
+
+  it('adds en/es favorite storefronts when focus is set', () => {
+    const focused = loadItunesQueries(process.cwd(), ['en', 'es']);
+    const base = loadItunesQueries();
+    assert.ok(focused.length > base.length);
+    assert.ok(
+      focused.some(
+        (query) => query.country === 'uy' && query.language === 'es',
+      ),
+    );
+    assert.ok(
+      focused.some(
+        (query) => query.country === 'gb' && query.term === 'interview',
+      ),
+    );
+  });
 });

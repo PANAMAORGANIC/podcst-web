@@ -25,7 +25,12 @@ import {
   normalizeLanguage,
 } from '../src/catalog/taxonomy';
 import type { CatalogEntry } from '../src/catalog/types';
-import { countItems, takeDiverse } from './lib/diversity';
+import {
+  countItems,
+  parseFocus,
+  takeDiverse,
+  takeFocused,
+} from './lib/diversity';
 import { fetchJson, sleep } from './lib/http';
 import {
   itunesStorefronts,
@@ -77,11 +82,13 @@ interface PiSearchHit {
 async function main() {
   const started = Date.now();
   const limit = ingestLimit(25_000);
+  const focus = parseFocus();
   const itunesOn = process.env.ITUNES_HARVEST !== '0';
   console.log('World Audio Repository — podcast ingest');
   console.log('Metadata + RSS links only. No audio files.');
   console.log(
-    `INGEST_LIMIT=${limit} per strategy. iTunes harvest ${itunesOn ? 'on' : 'off'}.`,
+    `INGEST_LIMIT=${limit} per strategy. iTunes harvest ${itunesOn ? 'on' : 'off'}.` +
+      (focus.length ? ` Focus: ${focus.join(', ')}.` : ''),
   );
 
   const sources: string[] = [];
@@ -95,7 +102,7 @@ async function main() {
     try {
       const resolved = dumpPath ?? (await downloadDump());
       console.log(`Reading Podcast Index dump: ${resolved}`);
-      dumpEntries.push(...fromDump(resolved, limit));
+      dumpEntries.push(...fromDump(resolved, limit, focus));
       sources.push(`podcast-index-dump:${resolved}`);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -116,13 +123,13 @@ async function main() {
 
   if (itunesOn) {
     console.log('Apple / iTunes storefront harvest (public search, no key).');
-    itunesEntries = await fromItunesQueries(limit);
+    itunesEntries = await fromItunesQueries(limit, focus);
     sources.push('itunes-storefront-harvest');
   }
 
   const entries = [...dumpEntries, ...apiEntries, ...itunesEntries];
   const result = upsertCatalog(entries);
-  const queries = itunesOn ? loadItunesQueries() : [];
+  const queries = itunesOn ? loadItunesQueries(process.cwd(), focus) : [];
   const receipt = writeReceipt('podcasts.receipt.json', {
     ok: true,
     sources,
@@ -136,6 +143,13 @@ async function main() {
     warnings,
     snapshotBytes: result.snapshot,
     elapsedMs: Date.now() - started,
+    focus,
+    focusCounts: Object.fromEntries(
+      focus.map((language) => [
+        language,
+        entries.filter((item) => item.originalLanguage === language).length,
+      ]),
+    ),
     languages: [...new Set(entries.map((item) => item.originalLanguage))],
     rateLimit:
       'iTunes Search is unauthenticated. We space requests (~180ms) and back off on HTTP 429. Official max is 200 results per query; we request 50.',
@@ -224,7 +238,11 @@ async function downloadDump(): Promise<string> {
   return found;
 }
 
-function fromDump(dbPath: string, limit: number): CatalogEntry[] {
+function fromDump(
+  dbPath: string,
+  limit: number,
+  focus: string[] = [],
+): CatalogEntry[] {
   const { DatabaseSync } = require('node:sqlite') as {
     DatabaseSync: new (
       path: string,
@@ -265,28 +283,42 @@ function fromDump(dbPath: string, limit: number): CatalogEntry[] {
     pickColumn(columns, ['category2']),
   ].filter(Boolean) as string[];
 
-  const window = Math.min(500_000, Math.max(200_000, limit * 16));
+  const window = Math.min(500_000, Math.max(200_000, limit * 5));
   const perLangCap = Math.max(400, Math.ceil((limit * 2) / 50));
+  const focusCap = Math.max(perLangCap, Math.ceil(limit * 0.7));
   const langFilter = langCol
     ? `AND IFNULL(${langCol}, '') != '' AND lower(${langCol}) NOT IN ('mul', 'xx', '??')`
     : '';
-  // One pass, spread across the dump with id modulo so we do not
-  // full-scan once per language on 4.7M unindexed rows.
-  console.log(
-    `Dump sample window ${window} · per-language cap ${perLangCap} (limit ${limit}).`,
-  );
-  const rows = db
-    .prepare(
-      `SELECT ${selectCols.join(', ')}
+  const selectSql = `SELECT ${selectCols.join(', ')}
        FROM ${table}
        WHERE IFNULL(dead, 0) = 0
          AND ${titleCol} IS NOT NULL
          AND ${urlCol} IS NOT NULL
-         ${langFilter}
-         AND id % 7 IN (0, 2, 4)
-       LIMIT ?`,
-    )
+         ${langFilter}`;
+  console.log(
+    `Dump sample window ${window} · per-language cap ${perLangCap}` +
+      (focus.length ? ` · focus cap ${focusCap} (${focus.join(',')})` : '') +
+      ` (limit ${limit}).`,
+  );
+  const rows = db
+    .prepare(`${selectSql} AND id % 7 IN (0, 2, 4) LIMIT ?`)
     .all(window) as Record<string, unknown>[];
+
+  if (focus.length && langCol) {
+    for (const language of focus) {
+      const extraLimit = Math.min(
+        90_000,
+        Math.max(20_000, Math.ceil(limit * 0.8)),
+      );
+      const extra = db
+        .prepare(
+          `${selectSql} AND lower(${langCol}) LIKE ? AND id % 3 IN (0, 1) LIMIT ?`,
+        )
+        .all(`${language}%`, extraLimit) as Record<string, unknown>[];
+      console.log(`Dump focus extra ${language}: ${extra.length} rows.`);
+      rows.push(...extra);
+    }
+  }
   db.close();
 
   const buckets = new Map<string, CatalogEntry[]>();
@@ -298,16 +330,20 @@ function fromDump(dbPath: string, limit: number): CatalogEntry[] {
     const entry = mapDumpRow(row, language, urlCol, titleCol);
     if (!entry) continue;
     const list = buckets.get(language) ?? [];
-    if (list.length >= perLangCap) continue;
+    const cap = focus.includes(language) ? focusCap : perLangCap;
+    if (list.length >= cap) continue;
     list.push(entry);
     buckets.set(language, list);
   }
   console.log(
     `Dump pass ${rows.length} rows → ${countItems(buckets)} candidates across ${buckets.size} languages.`,
   );
-  const sampled = takeDiverse(buckets, limit);
+  const sampled = takeFocused(buckets, limit, focus);
+  const focusNote = focus.length
+    ? ` focus ${focus.map((language) => `${language}=${sampled.filter((item) => item.originalLanguage === language).length}`).join(' ')}`
+    : ' diversity-first';
   console.log(
-    `Dump sampled ${sampled.length} feeds across ${new Set(sampled.map((item) => item.originalLanguage)).size} languages (diversity-first).`,
+    `Dump sampled ${sampled.length} feeds across ${new Set(sampled.map((item) => item.originalLanguage)).size} languages (${focusNote}).`,
   );
   return sampled;
 }
@@ -449,11 +485,19 @@ async function podcastIndexSearch(term: string): Promise<PiSearchHit[]> {
   return result.data.feeds ?? [];
 }
 
-async function fromItunesQueries(limit: number): Promise<CatalogEntry[]> {
-  const queries = loadItunesQueries();
+async function fromItunesQueries(
+  limit: number,
+  focus: string[] = [],
+): Promise<CatalogEntry[]> {
+  const queries = loadItunesQueries(process.cwd(), focus).sort((a, b) => {
+    const aFocus = focus.includes(a.language) ? 0 : 1;
+    const bFocus = focus.includes(b.language) ? 0 : 1;
+    return aFocus - bFocus;
+  });
   console.log(
     `iTunes queries: ${queries.length} across storefronts ${itunesStorefronts(queries).join(', ')}`,
   );
+  const perQuery = focus.length ? '200' : '50';
   const buckets = new Map<string, CatalogEntry[]>();
   for (const query of queries) {
     const url = new URL('https://itunes.apple.com/search');
@@ -461,7 +505,7 @@ async function fromItunesQueries(limit: number): Promise<CatalogEntry[]> {
     url.searchParams.set('entity', 'podcast');
     url.searchParams.set('country', query.country);
     url.searchParams.set('term', query.term);
-    url.searchParams.set('limit', '50');
+    url.searchParams.set('limit', perQuery);
     if (query.genreId) url.searchParams.set('genreId', String(query.genreId));
     const result = await fetchJson<{ results?: ItunesPodcast[] }>(url);
     if (!result.ok) {
@@ -487,7 +531,7 @@ async function fromItunesQueries(limit: number): Promise<CatalogEntry[]> {
     await sleep(180);
     if (countItems(buckets) >= limit * 3) break;
   }
-  return takeDiverse(buckets, limit);
+  return takeFocused(buckets, limit, focus);
 }
 
 function mapItunes(item: ItunesPodcast, query: QuerySpec): CatalogEntry | null {
@@ -511,7 +555,9 @@ function mapItunes(item: ItunesPodcast, query: QuerySpec): CatalogEntry | null {
     },
     coverArt: item.artworkUrl600 || item.artworkUrl100,
     signals: {
-      popularity: 35,
+      popularity: clampSignal(
+        30 + Math.min(40, Number(item.trackCount ?? 0) / 20),
+      ),
       diversity: diversityScore(language),
     },
     episodeCount: item.trackCount,
