@@ -102,26 +102,45 @@ land in `data/ingest/`. Nothing downloads audio or video files.
 
 ### Podcasts
 
-Default path (no key): iTunes Search across curated
-`data/sources/podcast-queries.json` countries and languages.
+`npm run ingest:podcasts` runs **two strategies** and upserts both into
+`data/catalog.json` (idempotent `pi-*` / `it-*` ids):
 
-To use the official [Podcast Index](https://podcastindex.org/) dump instead:
+1. **Podcast Index dump** when a SQLite file is present or you opt in to
+   download. Diversity-first sample (not English-only charts).
+2. **Apple / iTunes storefront harvest** (default on). Public Search API,
+   no key. Language-first queries in `data/sources/podcast-queries.json`
+   plus storefront × term/genre packs in
+   `data/sources/itunes-storefronts.json` (us, mx, br, ng, in, jp, de,
+   fr, es, ar, eg, za, kr, cn, pl, tr, id, ph, and more).
 
 ```bash
-# Place an extracted SQLite file, or download once (~1.8GB):
-PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db npm run ingest:podcasts
-# or
+# Apple harvest only (default if no dump is configured)
+npm run ingest:podcasts
+
+# Dump + Apple harvest (download once, ~1.8GB, then cached in .tmp/)
 PODCASTINDEX_DOWNLOAD=1 npm run ingest:podcasts
+
+# Already-extracted dump
+PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db npm run ingest:podcasts
+
+# Skip Apple harvest
+ITUNES_HARVEST=0 PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db npm run ingest:podcasts
 ```
 
-Optional API batch (free keys from https://api.podcastindex.org/):
+iTunes Search is unauthenticated. The script spaces requests (~180ms),
+retries HTTP 429 with backoff, and requests 50 results per query (API
+max 200). Some storefronts return 400 (no store); those queries are
+skipped.
+
+Optional Podcast Index API batch (free keys from
+https://api.podcastindex.org/ — do not invent or commit them):
 
 ```bash
 PODCASTINDEX_API_KEY=...
 PODCASTINDEX_API_SECRET=...
 ```
 
-`INGEST_LIMIT` defaults to 800 (sane first pass; raise as needed).
+`INGEST_LIMIT` defaults to **5000 per strategy** for this pass.
 
 ### Audiobooks
 

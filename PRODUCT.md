@@ -34,9 +34,10 @@ surfaces.
   local curated fallback, optional LibreTranslate.
 - A seed catalogue that already spans dozens of languages and regions.
 - Ingest pipelines that write `data/catalog.json` (merged with seed at
-  read time): Podcast Index dump/API or iTunes diversity harvest;
-  LibriVox API; curated YouTube (+ optional Data API). A first-pass
-  snapshot is checked in; re-run `npm run ingest:*` to grow it.
+  read time). Podcast ingest runs Podcast Index dump (when configured)
+  **and** an Apple storefront harvest (`itunes-storefronts.json` +
+  language queries). LibriVox API; curated YouTube (+ optional Data API).
+  A snapshot is checked in; re-run `npm run ingest:*` to grow it.
 - Runs with `npm install` and `npm run dev`. No API key, Postgres, or Redis.
 
 ## Catalogue fields
@@ -66,7 +67,7 @@ documented in `.env.example`; no key is invented for the demo.
 
 ### Next (still catalogue)
 
-- Larger dump passes and editorial rails on top of Podcast Index at scale.
+- Editorial rails on top of the Podcast Index dump + Apple harvest.
 - Stable public read API (`/api/catalog` is the sketch).
 - Cover art: optional remote artwork when a licence is clear; keep generated
   marks as the default so the grid never shows broken images.

@@ -3,19 +3,20 @@
 /**
  * Podcast ingest — metadata and RSS deep links only.
  *
- * Order:
- *  1. Local Podcast Index SQLite dump (PODCASTINDEX_DUMP_PATH or cache)
- *  2. Optional download of the public dump if PODCASTINDEX_DOWNLOAD=1
- *  3. Podcast Index API if PODCASTINDEX_API_KEY + SECRET are set
- *  4. iTunes Search across curated country/language queries (no key)
+ * Always (unless ITUNES_HARVEST=0): Apple / iTunes storefront harvest.
+ * When configured: Podcast Index public feeds dump
+ *   (PODCASTINDEX_DUMP_PATH, cached .tmp dump, or PODCASTINDEX_DOWNLOAD=1).
+ * Optional extra: Podcast Index API if both key and secret are set.
  *
  * Never downloads episode audio.
  */
 
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { createWriteStream, existsSync, mkdirSync, statSync } from 'node:fs';
 import path from 'node:path';
+import { Readable, Transform } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import {
   clampSignal,
   diversityScore,
@@ -24,7 +25,13 @@ import {
   normalizeLanguage,
 } from '../src/catalog/taxonomy';
 import type { CatalogEntry } from '../src/catalog/types';
+import { countItems, takeDiverse } from './lib/diversity';
 import { fetchJson, sleep } from './lib/http';
+import {
+  itunesStorefronts,
+  loadItunesQueries,
+  type QuerySpec,
+} from './lib/itunes-queries';
 import {
   ingestLimit,
   slugId,
@@ -38,6 +45,8 @@ const DUMP_URL =
   'https://public.podcastindex.org/podcastindex_feeds.db.tgz';
 const TMP = path.join(process.cwd(), '.tmp');
 const DEFAULT_DUMP = path.join(TMP, 'podcastindex_feeds.db');
+const UA =
+  'WorldAudioRepository/1.0 (+https://github.com/PANAMAORGANIC/podcst-web)';
 
 interface ItunesPodcast {
   collectionId?: number;
@@ -53,60 +62,89 @@ interface ItunesPodcast {
   primaryGenreName?: string;
 }
 
-interface QuerySpec {
-  country: string;
-  term: string;
-  language: string;
-  region: string;
+interface PiSearchHit {
+  id: number;
+  title: string;
+  url: string;
+  originalUrl?: string;
+  link?: string;
+  description?: string;
+  author?: string;
+  image?: string;
+  language?: string;
 }
 
 async function main() {
-  const limit = ingestLimit(800);
+  const limit = ingestLimit(5000);
+  const itunesOn = process.env.ITUNES_HARVEST !== '0';
   console.log('World Audio Repository — podcast ingest');
   console.log('Metadata + RSS links only. No audio files.');
+  console.log(
+    `INGEST_LIMIT=${limit} per strategy. iTunes harvest ${itunesOn ? 'on' : 'off'}.`,
+  );
 
-  let entries: CatalogEntry[] = [];
-  let source = 'none';
+  const sources: string[] = [];
+  const dumpEntries: CatalogEntry[] = [];
+  const apiEntries: CatalogEntry[] = [];
+  let itunesEntries: CatalogEntry[] = [];
+  const warnings: string[] = [];
 
   const dumpPath = findDump();
-  if (dumpPath) {
-    console.log(`Reading Podcast Index dump: ${dumpPath}`);
-    entries = fromDump(dumpPath, limit);
-    source = `podcast-index-dump:${dumpPath}`;
-  } else if (process.env.PODCASTINDEX_DOWNLOAD === '1') {
-    console.log(`Downloading dump (${DUMP_URL}) — this is large.`);
-    const downloaded = await downloadDump();
-    entries = fromDump(downloaded, limit);
-    source = 'podcast-index-dump:download';
-  } else if (
-    process.env.PODCASTINDEX_API_KEY &&
-    process.env.PODCASTINDEX_API_SECRET
-  ) {
-    console.log('Using Podcast Index API (bounded diversity search).');
-    entries = await fromPodcastIndexApi(limit);
-    source = 'podcast-index-api';
+  if (dumpPath || process.env.PODCASTINDEX_DOWNLOAD === '1') {
+    try {
+      const resolved = dumpPath ?? (await downloadDump());
+      console.log(`Reading Podcast Index dump: ${resolved}`);
+      dumpEntries.push(...fromDump(resolved, limit));
+      sources.push(`podcast-index-dump:${resolved}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn(`Podcast Index dump skipped: ${message}`);
+      warnings.push(`dump:${message}`);
+    }
   } else {
     console.log(
-      'No dump or API keys. Harvesting iTunes Search across language/country queries.',
+      'No dump configured. Set PODCASTINDEX_DUMP_PATH or PODCASTINDEX_DOWNLOAD=1.',
     );
-    entries = await fromItunesQueries(limit);
-    source = 'itunes-search-diversity';
   }
 
+  if (process.env.PODCASTINDEX_API_KEY && process.env.PODCASTINDEX_API_SECRET) {
+    console.log('Podcast Index API (bounded diversity search).');
+    apiEntries.push(...(await fromPodcastIndexApi(limit)));
+    sources.push('podcast-index-api');
+  }
+
+  if (itunesOn) {
+    console.log('Apple / iTunes storefront harvest (public search, no key).');
+    itunesEntries = await fromItunesQueries(limit);
+    sources.push('itunes-storefront-harvest');
+  }
+
+  const entries = [...dumpEntries, ...apiEntries, ...itunesEntries];
   const result = upsertCatalog(entries);
+  const queries = itunesOn ? loadItunesQueries() : [];
   const receipt = writeReceipt('podcasts.receipt.json', {
     ok: true,
-    source,
+    sources,
     dumpUrl: DUMP_URL,
     limit,
-    mapped: entries.length,
+    dumpMapped: dumpEntries.length,
+    apiMapped: apiEntries.length,
+    itunesMapped: itunesEntries.length,
+    itunesStorefronts: itunesStorefronts(queries),
+    itunesQueries: queries.length,
+    warnings,
     ...result,
     languages: [...new Set(entries.map((item) => item.originalLanguage))],
-    note: 'Re-run is idempotent. Set PODCASTINDEX_DUMP_PATH or PODCASTINDEX_DOWNLOAD=1 to use the official dump.',
+    rateLimit:
+      'iTunes Search is unauthenticated. We space requests (~180ms) and back off on HTTP 429. Official max is 200 results per query; we request 50.',
+    note: 'Re-run is idempotent. Dump and Apple harvest both upsert into data/catalog.json. ITUNES_HARVEST=0 skips Apple.',
   });
 
   console.log(
-    `Upserted ${entries.length} podcasts (${result.added} added, ${result.updated} updated). Snapshot ${result.total} ingested titles.`,
+    `Dump ${dumpEntries.length} · API ${apiEntries.length} · iTunes ${itunesEntries.length}.`,
+  );
+  console.log(
+    `Upserted ${entries.length} podcast rows (${result.added} added, ${result.updated} updated). Snapshot ${result.total} ingested titles.`,
   );
   console.log(`Receipt: ${receipt}`);
 }
@@ -117,22 +155,58 @@ function findDump(): string | null {
     DEFAULT_DUMP,
     path.join(TMP, 'podcastindex_feeds.db.sqlite'),
   ].filter(Boolean) as string[];
-  return candidates.find((file) => existsSync(file)) ?? null;
+  return (
+    candidates.find((file) => existsSync(file) && statSync(file).size > 0) ??
+    null
+  );
 }
 
 async function downloadDump(): Promise<string> {
   mkdirSync(TMP, { recursive: true });
   const tgz = path.join(TMP, 'podcastindex_feeds.db.tgz');
-  const response = await fetch(DUMP_URL, {
-    headers: {
-      'User-Agent':
-        'WorldAudioRepository/1.0 (+https://github.com/PANAMAORGANIC/podcst-web)',
-    },
-  });
-  if (!response.ok) {
+  const existing = existsSync(tgz) ? statSync(tgz).size : 0;
+  console.log(
+    existing
+      ? `Resuming dump download from ${existing} bytes (${DUMP_URL})`
+      : `Downloading dump (${DUMP_URL}) — about 1.8GB.`,
+  );
+
+  const headers: Record<string, string> = { 'User-Agent': UA };
+  if (existing > 0) headers.Range = `bytes=${existing}-`;
+
+  const response = await fetch(DUMP_URL, { headers });
+  if (response.status === 416 && existsSync(tgz)) {
+    console.log('Dump archive already complete.');
+  } else if (!response.ok && response.status !== 206) {
     throw new Error(`Dump download failed (${response.status})`);
+  } else if (response.body) {
+    const flags = existing > 0 && response.status === 206 ? 'a' : 'w';
+    const file = createWriteStream(tgz, { flags });
+    let received = flags === 'a' ? existing : 0;
+    let lastLog = 0;
+    const progress = new Transform({
+      transform(chunk, _enc, cb) {
+        received += (chunk as Buffer).length;
+        if (received - lastLog >= 80 * 1024 * 1024) {
+          lastLog = received;
+          console.log(`Dump download ${Math.round(received / 1024 / 1024)} MB`);
+        }
+        cb(null, chunk);
+      },
+    });
+    await pipeline(
+      Readable.fromWeb(
+        response.body as import('node:stream/web').ReadableStream,
+      ),
+      progress,
+      file,
+    );
+    console.log(
+      `Dump archive ${Math.round(statSync(tgz).size / 1024 / 1024)} MB`,
+    );
   }
-  writeFileSync(tgz, Buffer.from(await response.arrayBuffer()));
+
+  console.log('Extracting Podcast Index SQLite dump…');
   execFileSync('tar', ['-xzf', tgz, '-C', TMP]);
   const found = findDump();
   if (!found) {
@@ -147,40 +221,85 @@ function fromDump(dbPath: string, limit: number): CatalogEntry[] {
       path: string,
       options?: { readOnly?: boolean },
     ) => {
-      prepare: (sql: string) => { all: () => unknown[] };
+      prepare: (sql: string) => {
+        all: (...args: unknown[]) => unknown[];
+      };
       close: () => void;
     };
   };
   const db = new DatabaseSync(dbPath, { readOnly: true });
   const table = dumpTable(db);
+  const columns = dumpColumns(db, table);
+  const langCol = pickColumn(columns, ['language', 'lang', 'itunesLanguage']);
+  const titleCol = pickColumn(columns, ['title', 'podcastTitle']);
+  const urlCol = pickColumn(columns, ['url', 'originalUrl', 'feedUrl']);
+  if (!titleCol || !urlCol) {
+    db.close();
+    throw new Error(
+      `Dump missing title/url columns. Have: ${columns.join(', ')}`,
+    );
+  }
+
+  const selectCols = [
+    'id',
+    urlCol,
+    titleCol,
+    pickColumn(columns, ['link', 'podcastLink', 'website']),
+    pickColumn(columns, ['itunesAuthor', 'author', 'ownerName']),
+    pickColumn(columns, ['imageUrl', 'artwork', 'image']),
+    langCol,
+    pickColumn(columns, ['episodeCount', 'episode_count']),
+    pickColumn(columns, ['popularityScore', 'popularity']),
+    pickColumn(columns, ['description', 'itunesSummary']),
+    pickColumn(columns, ['category1']),
+    pickColumn(columns, ['category2']),
+  ].filter(Boolean) as string[];
+
+  const window = Math.max(limit * 25, 80_000);
+  const langFilter = langCol
+    ? `AND IFNULL(${langCol}, '') != '' AND lower(${langCol}) NOT IN ('mul', 'xx', '??')`
+    : '';
+  // One pass, spread across the dump with id modulo so we do not
+  // full-scan once per language on 4.7M unindexed rows.
   const rows = db
     .prepare(
-      `SELECT id, url, title, link, itunesAuthor, imageUrl, language,
-              episodeCount, popularityScore, description, dead
+      `SELECT ${selectCols.join(', ')}
        FROM ${table}
        WHERE IFNULL(dead, 0) = 0
-         AND title IS NOT NULL
-         AND url IS NOT NULL
-         AND IFNULL(language, '') != ''
-       LIMIT 20000`,
+         AND ${titleCol} IS NOT NULL
+         AND ${urlCol} IS NOT NULL
+         ${langFilter}
+         AND id % 17 IN (1, 5, 11)
+       LIMIT ?`,
     )
-    .all() as Record<string, unknown>[];
+    .all(window) as Record<string, unknown>[];
   db.close();
 
   const buckets = new Map<string, CatalogEntry[]>();
   for (const row of rows) {
-    const language = normalizeLanguage(String(row.language ?? 'en'));
-    const entry = mapDumpRow(row, language);
+    const language = normalizeLanguage(
+      String((langCol ? row[langCol] : row.language) ?? 'en'),
+    );
+    if (language === 'mul') continue;
+    const entry = mapDumpRow(row, language, urlCol, titleCol);
     if (!entry) continue;
     const list = buckets.get(language) ?? [];
+    if (list.length > 200) continue;
     list.push(entry);
     buckets.set(language, list);
   }
-  return takeDiverse(buckets, limit);
+  console.log(
+    `Dump pass ${rows.length} rows → ${countItems(buckets)} candidates across ${buckets.size} languages.`,
+  );
+  const sampled = takeDiverse(buckets, limit);
+  console.log(
+    `Dump sampled ${sampled.length} feeds across ${new Set(sampled.map((item) => item.originalLanguage)).size} languages (diversity-first).`,
+  );
+  return sampled;
 }
 
 function dumpTable(db: {
-  prepare: (sql: string) => { all: () => unknown[] };
+  prepare: (sql: string) => { all: (...args: unknown[]) => unknown[] };
 }): string {
   const tables = db
     .prepare(`SELECT name FROM sqlite_master WHERE type = 'table'`)
@@ -191,33 +310,60 @@ function dumpTable(db: {
   throw new Error(`Unknown dump schema. Tables: ${names.join(', ')}`);
 }
 
+function dumpColumns(
+  db: {
+    prepare: (sql: string) => { all: (...args: unknown[]) => unknown[] };
+  },
+  table: string,
+): string[] {
+  const rows = db.prepare(`PRAGMA table_info(${table})`).all() as {
+    name: string;
+  }[];
+  return rows.map((row) => row.name);
+}
+
+function pickColumn(columns: string[], names: string[]): string | undefined {
+  const lower = new Map(columns.map((col) => [col.toLowerCase(), col]));
+  for (const name of names) {
+    const hit = lower.get(name.toLowerCase());
+    if (hit) return hit;
+  }
+  return undefined;
+}
+
 function mapDumpRow(
   row: Record<string, unknown>,
   language: string,
+  urlCol: string,
+  titleCol: string,
 ): CatalogEntry | null {
-  const title = String(row.title ?? '').trim();
-  const feed = String(row.url ?? '').trim();
-  if (!title || !feed) return null;
+  const title = String(row[titleCol] ?? row.title ?? '').trim();
+  const feed = String(row[urlCol] ?? row.url ?? '').trim();
+  if (!title || !feed || language === 'mul') return null;
   const id = row.id != null ? `pi-${row.id}` : slugId('pi', feed);
+  const author =
+    row.itunesAuthor ?? row.author ?? row.ownerName ?? row.itunesOwnerName;
+  const image = row.imageUrl ?? row.artwork ?? row.image;
+  const link = row.link ?? row.podcastLink ?? row.website;
   const popularity = clampSignal(Number(row.popularityScore ?? 20) / 10);
   return {
     id,
     type: 'podcast',
     title,
     originalLanguage: language,
-    creators: row.itunesAuthor ? [String(row.itunesAuthor)] : ['Unknown'],
+    creators: author ? [String(author)] : ['Unknown'],
     description: stripHtml(String(row.description ?? title)),
     tags: ['podcast-index', 'ingested', language],
-    genres: ['podcast'],
+    genres: dumpGenres(row),
     region: inferRegion(language),
-    country: 'Unknown',
+    country: inferCountryName(),
     countryCode: '',
     externalUrls: {
       rss: feed,
-      website: row.link ? String(row.link) : undefined,
+      website: link ? String(link) : undefined,
       podcastIndex: `https://podcastindex.org/podcast/${row.id}`,
     },
-    coverArt: row.imageUrl ? String(row.imageUrl) : undefined,
+    coverArt: image ? String(image) : undefined,
     signals: {
       popularity,
       diversity: diversityScore(language),
@@ -227,9 +373,9 @@ function mapDumpRow(
 }
 
 async function fromPodcastIndexApi(limit: number): Promise<CatalogEntry[]> {
-  const queries = loadQueries();
+  const queries = loadItunesQueries().filter((query) => !query.genreId);
   const buckets = new Map<string, CatalogEntry[]>();
-  for (const query of queries) {
+  for (const query of queries.slice(0, 80)) {
     const items = await podcastIndexSearch(query.term);
     for (const item of items) {
       const language = normalizeLanguage(item.language ?? query.language);
@@ -260,20 +406,9 @@ async function fromPodcastIndexApi(limit: number): Promise<CatalogEntry[]> {
       list.push(entry);
       buckets.set(language, list);
     }
+    await sleep(120);
   }
   return takeDiverse(buckets, limit);
-}
-
-interface PiSearchHit {
-  id: number;
-  title: string;
-  url: string;
-  originalUrl?: string;
-  link?: string;
-  description?: string;
-  author?: string;
-  image?: string;
-  language?: string;
 }
 
 async function podcastIndexSearch(term: string): Promise<PiSearchHit[]> {
@@ -301,7 +436,10 @@ async function podcastIndexSearch(term: string): Promise<PiSearchHit[]> {
 }
 
 async function fromItunesQueries(limit: number): Promise<CatalogEntry[]> {
-  const queries = loadQueries();
+  const queries = loadItunesQueries();
+  console.log(
+    `iTunes queries: ${queries.length} across storefronts ${itunesStorefronts(queries).join(', ')}`,
+  );
   const buckets = new Map<string, CatalogEntry[]>();
   for (const query of queries) {
     const url = new URL('https://itunes.apple.com/search');
@@ -309,19 +447,17 @@ async function fromItunesQueries(limit: number): Promise<CatalogEntry[]> {
     url.searchParams.set('entity', 'podcast');
     url.searchParams.set('country', query.country);
     url.searchParams.set('term', query.term);
-    url.searchParams.set('limit', '25');
+    url.searchParams.set('limit', '50');
+    if (query.genreId) url.searchParams.set('genreId', String(query.genreId));
     const result = await fetchJson<{ results?: ItunesPodcast[] }>(url);
     if (!result.ok) {
       console.warn(
-        `iTunes ${result.status} for ${query.country}/${query.term}`,
+        `iTunes ${result.status} for ${query.country}/${query.term}${query.genreId ? `/${query.genreId}` : ''}`,
       );
-      await sleep(400);
+      await sleep(result.status === 429 ? 2000 : 400);
       continue;
     }
     const hits = result.data.results ?? [];
-    console.log(
-      `iTunes ${query.country}/${query.term}: ${hits.length} hits (${countItems(buckets)} mapped)`,
-    );
     for (const item of hits) {
       const entry = mapItunes(item, query);
       if (!entry) continue;
@@ -329,14 +465,15 @@ async function fromItunesQueries(limit: number): Promise<CatalogEntry[]> {
       list.push(entry);
       buckets.set(query.language, list);
     }
-    await sleep(160);
+    if (hits.length) {
+      console.log(
+        `iTunes ${query.country}/${query.term}${query.genreId ? `/${query.genreId}` : ''}: ${hits.length} (${countItems(buckets)} mapped)`,
+      );
+    }
+    await sleep(180);
     if (countItems(buckets) >= limit * 3) break;
   }
   return takeDiverse(buckets, limit);
-}
-
-function countItems(buckets: Map<string, CatalogEntry[]>): number {
-  return [...buckets.values()].reduce((sum, list) => sum + list.length, 0);
 }
 
 function mapItunes(item: ItunesPodcast, query: QuerySpec): CatalogEntry | null {
@@ -367,48 +504,19 @@ function mapItunes(item: ItunesPodcast, query: QuerySpec): CatalogEntry | null {
   };
 }
 
+function dumpGenres(row: Record<string, unknown>): string[] {
+  const genres = [row.category1, row.category2]
+    .filter(Boolean)
+    .map((value) => genreSlug(String(value)))
+    .slice(0, 3);
+  return genres.length ? genres : ['podcast'];
+}
+
 function genreSlug(value: string): string {
   return value
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
-}
-
-function takeDiverse(
-  buckets: Map<string, CatalogEntry[]>,
-  limit: number,
-): CatalogEntry[] {
-  const languages = [...buckets.keys()].sort(
-    (a, b) => diversityScore(b) - diversityScore(a),
-  );
-  const seen = new Set<string>();
-  const out: CatalogEntry[] = [];
-  let index = 0;
-  while (out.length < limit) {
-    let added = false;
-    for (const language of languages) {
-      const bucket = buckets.get(language) ?? [];
-      const item = bucket[index];
-      if (!item || seen.has(item.id)) continue;
-      seen.add(item.id);
-      out.push(item);
-      added = true;
-      if (out.length >= limit) break;
-    }
-    if (!added) break;
-    index += 1;
-  }
-  return out;
-}
-
-function loadQueries(): QuerySpec[] {
-  const file = path.join(
-    process.cwd(),
-    'data',
-    'sources',
-    'podcast-queries.json',
-  );
-  return JSON.parse(readFileSync(file, 'utf8')) as QuerySpec[];
 }
 
 main().catch((error) => {

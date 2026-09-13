@@ -27,6 +27,7 @@ describe('catalog store', () => {
     assert.ok(stats.types.audiobook >= 20);
     assert.ok(stats.types.youtube >= 15);
     assert.ok(ingested.some((item) => item.id.startsWith('it-')));
+    assert.ok(ingested.some((item) => item.id.startsWith('pi-')));
     assert.ok(ingested.some((item) => item.id.startsWith('lv-')));
     assert.ok(ingested.some((item) => item.id.startsWith('yt-')));
   });

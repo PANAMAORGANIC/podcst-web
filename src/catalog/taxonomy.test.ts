@@ -10,6 +10,8 @@ describe('taxonomy', () => {
     assert.equal(normalizeLanguage('cmn'), 'cmn');
     assert.equal(normalizeLanguage('Latin'), 'la');
     assert.equal(normalizeLanguage('Old English'), 'en');
+    assert.equal(normalizeLanguage('Telugu'), 'te');
+    assert.equal(normalizeLanguage('Igbo'), 'ig');
   });
 
   it('infers region from country before language', () => {
