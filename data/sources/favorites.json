@@ -1,0 +1,201 @@
+{
+  "shows": [
+    {
+      "title": "Radio Semilla",
+      "feedUrl": "https://anchor.fm/s/3ca01568/podcast/rss",
+      "appleId": 1547894245,
+      "language": "es",
+      "hub": "anchor",
+      "creators": ["Red de Guardianes de Semillas"],
+      "description": "Podcast de la Red de Guardianes de Semillas: agroecología, semillas criollas y la vida campesina en los Andes. Metadatos y enlace RSS; el audio queda en el feed.",
+      "tags": [
+        "seeds",
+        "agroecology",
+        "andes",
+        "spanish",
+        "red-de-guardianes"
+      ],
+      "genres": ["society-culture", "science"],
+      "region": "andes",
+      "country": "Ecuador",
+      "countryCode": "EC",
+      "website": "https://redsemillas.org/"
+    },
+    {
+      "title": "EcoJustice Radio",
+      "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:304761525/sounds.rss",
+      "appleId": 1447211636,
+      "language": "en",
+      "hub": "soundcloud",
+      "creators": ["Jack Eidt", "SoCal 350", "KPFK"],
+      "description": "Environmental justice interviews from the Pacifica / KPFK orbit and SoCal 350 Climate Action. Metadata and the SoundCloud RSS only.",
+      "tags": [
+        "climate",
+        "ecojustice",
+        "pacifica",
+        "kpfk",
+        "public-radio"
+      ],
+      "genres": ["news", "society-culture"],
+      "region": "north-america",
+      "country": "United States",
+      "countryCode": "US",
+      "website": "https://ecojusticeradio.org/"
+    },
+    {
+      "title": "632nm",
+      "feedUrl": "https://feeds.transistor.fm/632nm",
+      "appleId": 1751170269,
+      "language": "en",
+      "hub": "transistor",
+      "creators": ["632nm"],
+      "description": "Science interviews: researchers talking through the work, not the press release. Transistor RSS is the source of truth.",
+      "tags": ["science", "interviews", "research"],
+      "genres": ["science"],
+      "region": "north-america",
+      "country": "United States",
+      "countryCode": "US"
+    },
+    {
+      "title": "Tangentially Speaking with Christopher Ryan",
+      "feedUrl": "https://api.substack.com/feed/podcast/814293.rss",
+      "appleId": 566908883,
+      "language": "en",
+      "hub": "substack",
+      "creators": ["Christopher Ryan"],
+      "description": "Christopher Ryan's long conversations — the Substack podcast feed, not an unrelated show that shares the name. Apple id 566908883.",
+      "tags": [
+        "conversation",
+        "christopher-ryan",
+        "longform",
+        "substack"
+      ],
+      "genres": ["society-culture"],
+      "region": "north-america",
+      "country": "United States",
+      "countryCode": "US",
+      "website": "https://chrisryan.substack.com/"
+    },
+    {
+      "title": "Planet: Critical",
+      "feedUrl": "https://feed.podbean.com/planetcritical/feed.xml",
+      "appleId": 1545009586,
+      "language": "en",
+      "hub": "podbean",
+      "creators": ["Rachel Donald"],
+      "description": "Rachel Donald on the intersecting climate, ecological, and political crises. Podbean RSS is the source of truth; metadata only.",
+      "tags": ["climate", "politics", "ecology", "rachel-donald"],
+      "genres": ["news", "society-culture"],
+      "region": "uk-ireland",
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "website": "https://planetcritical.com/"
+    },
+    {
+      "title": "The Great Simplification with Nate Hagens",
+      "feedUrl": "https://rss.libsyn.com/shows/393380/destinations/3235040.xml",
+      "appleId": 1604218333,
+      "language": "en",
+      "hub": "libsyn",
+      "creators": ["Nate Hagens"],
+      "description": "Nate Hagens on energy, ecology, and the economic transition ahead. Libsyn RSS is the source of truth; metadata only.",
+      "tags": ["energy", "ecology", "economy", "nate-hagens"],
+      "genres": ["science", "society-culture"],
+      "region": "north-america",
+      "country": "United States",
+      "countryCode": "US",
+      "website": "https://www.thegreatsimplification.com/"
+    }
+  ],
+  "pins": [],
+  "hubs": {
+    "pacifica": {
+      "itunesQueries": [
+        {
+          "term": "EcoJustice Radio",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "Pacifica Radio",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "Pacifica Network",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "KPFK",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "KPFA",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "WBAI",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "WPFW",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "KPFT",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "Democracy Now",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "Letters and Politics",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "Against the Grain KPFA",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "Sojourner Truth KPFK",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "Background Briefing Ian Masters",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        },
+        {
+          "term": "Free Speech Radio News",
+          "country": "us",
+          "language": "en",
+          "region": "north-america"
+        }
+      ]
+    }
+  }
+}

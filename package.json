@@ -10,10 +10,11 @@
     "lint": "biome check src scripts",
     "format": "biome format --write src scripts",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/catalog/query.test.ts src/catalog/store.test.ts src/catalog/snapshot.test.ts src/catalog/taxonomy.test.ts src/catalog/diversity.test.ts src/catalog/itunes-queries.test.ts src/translation/local.test.ts src/agent-feed/packet.test.ts",
+    "test": "tsx --test src/catalog/query.test.ts src/catalog/store.test.ts src/catalog/snapshot.test.ts src/catalog/taxonomy.test.ts src/catalog/diversity.test.ts src/catalog/itunes-queries.test.ts src/catalog/favorites.test.ts src/translation/local.test.ts src/agent-feed/packet.test.ts",
     "ingest:podcasts": "tsx scripts/ingest-podcast-index.ts",
     "ingest:audiobooks": "tsx scripts/ingest-audiobooks.ts",
-    "ingest:youtube": "tsx scripts/ingest-youtube.ts"
+    "ingest:youtube": "tsx scripts/ingest-youtube.ts",
+    "ingest:favorites": "tsx scripts/ingest-favorites.ts"
   },
   "dependencies": {
     "match-sorter": "8.3.0",

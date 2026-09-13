@@ -53,13 +53,16 @@ export default function AboutPage() {
         editorial seed. Podcasts pull from the{' '}
         <a href="https://podcastindex.org/">Podcast Index</a> dump (diversity
         sample, default 25k) and an optional Apple storefront harvest.
-        Audiobooks paginate LibriVox; YouTube uses a curated list.
+        Audiobooks paginate LibriVox; YouTube uses a curated list. Owner
+        favorites come from the show RSS (not Castbox) via{' '}
+        <code>npm run ingest:favorites</code>.
       </p>
       <pre>
         <code>
           {`npm run ingest:podcasts
 npm run ingest:audiobooks
-npm run ingest:youtube`}
+npm run ingest:youtube
+npm run ingest:favorites`}
         </code>
       </pre>
       <h2>Feed agents</h2>

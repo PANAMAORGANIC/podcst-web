@@ -37,8 +37,10 @@ surfaces.
   when it is under 40MB), merged with seed at read time. Podcast ingest
   runs a scaled Podcast Index dump (default 25k; `INGEST_FOCUS=en,es`
   at 100k boosts English/Spanish while keeping a diversity floor)
-  **and** an optional Apple storefront harvest. LibriVox API; curated
-  YouTube. Re-run `npm run ingest:*` to grow it.
+  **and** an optional Apple storefront harvest. Owner favorites ingest
+  real show RSS (Anchor / SoundCloud / Transistor / Substack) plus
+  search-and-pin — never Castbox. LibriVox API; curated YouTube.
+  Re-run `npm run ingest:*` to grow it.
 - Runs with `npm install` and `npm run dev`. No API key, Postgres, or Redis.
 
 ## Catalogue fields

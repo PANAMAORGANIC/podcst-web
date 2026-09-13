@@ -96,6 +96,7 @@ and rails.
 npm run ingest:podcasts     # Podcasts (diversity-first)
 npm run ingest:audiobooks   # LibriVox API + publisher cards
 npm run ingest:youtube      # Curated channels; optional YOUTUBE_API_KEY
+npm run ingest:favorites    # Owner RSS hubs + search-and-pin
 ```
 
 Re-runs are idempotent (same ids update, they do not duplicate). Receipts
@@ -154,6 +155,35 @@ PODCASTINDEX_API_SECRET=...
 en/es pass is the documented big command above. The dump sampler uses a
 single SQL pass plus optional focus extras, truncated descriptions, and
 a gzip snapshot.
+
+### Favorites (RSS hubs + search-and-pin)
+
+Owner shows that dump sampling missed go in `data/sources/favorites.json`
+with the **real show RSS** (Anchor, SoundCloud, Transistor, Substack,
+Podbean, Libsyn, Pacifica — not Castbox HTML). `npm run ingest:favorites`
+fetches each channel for title, description, language, link, and artwork.
+It does
+**not** download enclosures. Apple ids become stable `it-{appleId}`
+rows; otherwise Podcast Index (API or local dump, by feed URL) yields
+`pi-*`, else `rss-*`.
+
+```bash
+# Curated feeds + Pacifica / public-radio Apple cards
+npm run ingest:favorites
+
+# Skip hub expansion (just the JSON feeds + pins)
+FAVORITES_EXPAND=0 npm run ingest:favorites
+
+# Paste more titles (resolved via iTunes Search, then Podcast Index)
+FAVORITE_PINS='Another Show|One More Show' npm run ingest:favorites
+npm run ingest:favorites -- --pin "Radio Semilla"
+```
+
+Add a lasting card by appending to `shows` in
+`data/sources/favorites.json` (title, feedUrl, appleId, language, tags,
+hub). One-off pins can also go in `data/sources/favorite-pins.json`.
+Re-runs are idempotent. After the first fetch, RSS XML is cached in
+`.tmp/favorites-rss/` so a later pass can run offline-ish.
 
 ### Audiobooks
 

@@ -209,6 +209,7 @@ const COUNTRY_REGION: Record<string, string> = {
   IE: 'uk-ireland',
   UY: 'latin-america',
   DE: 'central-europe',
+  EC: 'andes',
   EG: 'arabia',
   ES: 'iberia',
   ET: 'horn-of-africa',
