@@ -73,10 +73,6 @@ export function SearchBox({
           action="/search"
           onSubmit={(event) => {
             event.preventDefault();
-            if (open && results[active]) {
-              router.push(`/title/${results[active].id}`);
-              return;
-            }
             submit();
           }}
         >
@@ -110,6 +106,10 @@ export function SearchBox({
                 setActive(
                   (index) => (index - 1 + results.length) % results.length,
                 );
+              }
+              if (event.key === 'Enter' && open && results[active]) {
+                event.preventDefault();
+                router.push(`/title/${results[active].id}`);
               }
             }}
           />
