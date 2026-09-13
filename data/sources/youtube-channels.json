@@ -1,0 +1,518 @@
+[
+  {
+    "id": "yt-lex-fridman",
+    "handle": "lexfridman",
+    "title": "Lex Fridman Podcast",
+    "language": "en",
+    "creators": ["Lex Fridman"],
+    "description": "Long interviews on AI, physics, and history. Conversation first.",
+    "tags": ["interview", "ai", "longform"],
+    "genres": ["ideas", "science"],
+    "region": "north-america",
+    "country": "United States",
+    "countryCode": "US",
+    "youtube": "https://www.youtube.com/@lexfridman"
+  },
+  {
+    "id": "yt-nota-bene",
+    "handle": "notabenemovies",
+    "title": "Nota Bene",
+    "language": "fr",
+    "creators": ["Benjamin Brillaud"],
+    "description": "Histoire sur YouTube en français: Antiquité et Moyen Âge sourcés.",
+    "tags": ["history", "france", "education"],
+    "genres": ["history", "education"],
+    "region": "western-europe",
+    "country": "France",
+    "countryCode": "FR",
+    "youtube": "https://www.youtube.com/@notabenemovies",
+    "english": {
+      "title": "Nota Bene",
+      "description": "History on YouTube in French: sourced antiquity and the Middle Ages."
+    }
+  },
+  {
+    "id": "yt-mrwissen2go",
+    "handle": "MrWissen2go",
+    "title": "MrWissen2go",
+    "language": "de",
+    "creators": ["Mirko Drotschmann"],
+    "description": "Politik und Geschichte auf Deutsch ohne Studio-Panik.",
+    "tags": ["germany", "politics", "history"],
+    "genres": ["education", "current-affairs"],
+    "region": "central-europe",
+    "country": "Germany",
+    "countryCode": "DE",
+    "youtube": "https://www.youtube.com/@MrWissen2go",
+    "english": {
+      "title": "MrWissen2go",
+      "description": "Politics and history in German, without studio panic."
+    }
+  },
+  {
+    "id": "yt-nakata-university",
+    "handle": "nakatauniversity",
+    "title": "中田敦彦のYouTube大学",
+    "language": "ja",
+    "creators": ["中田敦彦"],
+    "description": "黒板と長尺。ビジネス書と歴史の講義。",
+    "tags": ["japan", "lecture", "books"],
+    "genres": ["education", "ideas"],
+    "region": "east-asia",
+    "country": "Japan",
+    "countryCode": "JP",
+    "youtube": "https://www.youtube.com/@nakatauniversity",
+    "english": {
+      "title": "Atsuhiko Nakata YouTube University",
+      "description": "Blackboard lectures on business books and history."
+    }
+  },
+  {
+    "id": "yt-suka-world",
+    "handle": "syukaworld",
+    "title": "슈카월드",
+    "language": "ko",
+    "creators": ["슈카"],
+    "description": "경제와 금융을 한국말로, 칠판 앞에서.",
+    "tags": ["korea", "economics", "finance"],
+    "genres": ["education", "business"],
+    "region": "east-asia",
+    "country": "South Korea",
+    "countryCode": "KR",
+    "youtube": "https://www.youtube.com/@syukaworld",
+    "english": {
+      "title": "Suka World",
+      "description": "Economics and finance in Korean, at a blackboard."
+    }
+  },
+  {
+    "id": "yt-manual-do-mundo",
+    "handle": "manualdomundo",
+    "title": "Manual do Mundo",
+    "language": "pt",
+    "creators": ["Iberê Thenório", "Mari Fulfaro"],
+    "description": "Ciência caseira em português do Brasil.",
+    "tags": ["brazil", "science", "diy"],
+    "genres": ["education", "science"],
+    "region": "latin-america",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "youtube": "https://www.youtube.com/@manualdomundo",
+    "english": {
+      "title": "World Manual",
+      "description": "Kitchen-table science in Brazilian Portuguese."
+    }
+  },
+  {
+    "id": "yt-ajplus-ar",
+    "handle": "ajplusarabi",
+    "title": "AJ+ عربي",
+    "language": "ar",
+    "creators": ["AJ+"],
+    "description": "فيديو عربي عن السياسات والحياة.",
+    "tags": ["arabic", "news", "documentary"],
+    "genres": ["news", "documentary"],
+    "region": "arabia",
+    "country": "Qatar",
+    "countryCode": "QA",
+    "youtube": "https://www.youtube.com/@ajplusarabi",
+    "english": {
+      "title": "AJ+ Arabic",
+      "description": "Arabic video on politics and ordinary life."
+    }
+  },
+  {
+    "id": "yt-deshbhakt",
+    "handle": "TheDeshbhakt",
+    "title": "The Deshbhakt",
+    "language": "hi",
+    "creators": ["Akash Banerjee"],
+    "description": "हिंदी में व्यंग्य और राजनीति: लंबा मोनोलॉग.",
+    "tags": ["hindi", "politics", "satire"],
+    "genres": ["current-affairs", "culture"],
+    "region": "india",
+    "country": "India",
+    "countryCode": "IN",
+    "youtube": "https://www.youtube.com/@TheDeshbhakt",
+    "english": {
+      "title": "The Deshbhakt",
+      "description": "Satire and politics in Hindi as a long monologue."
+    }
+  },
+  {
+    "id": "yt-the-standard-th",
+    "handle": "TheStandardNews",
+    "title": "The Standard",
+    "language": "th",
+    "creators": ["The Standard"],
+    "description": "ข่าวและสารคดีภาษาไทยแบบยาว.",
+    "tags": ["thai", "news", "documentary"],
+    "genres": ["news", "culture"],
+    "region": "southeast-asia",
+    "country": "Thailand",
+    "countryCode": "TH",
+    "youtube": "https://www.youtube.com/@TheStandardNews",
+    "english": {
+      "title": "The Standard",
+      "description": "Long-form Thai news and documentary."
+    }
+  },
+  {
+    "id": "yt-cna-insider",
+    "handle": "CNAInsider",
+    "title": "CNA Insider",
+    "language": "en",
+    "creators": ["CNA"],
+    "description": "Singaporean long-form on work, cities, and Southeast Asia.",
+    "tags": ["singapore", "documentary", "southeast-asia"],
+    "genres": ["documentary", "society"],
+    "region": "southeast-asia",
+    "country": "Singapore",
+    "countryCode": "SG",
+    "youtube": "https://www.youtube.com/@CNAInsider"
+  },
+  {
+    "id": "yt-bbc-hausa",
+    "handle": "bbchausa",
+    "title": "BBC Hausa",
+    "language": "ha",
+    "creators": ["BBC Hausa"],
+    "description": "Labarai da shirye-shirye cikin Hausa. Long-form desks, not shorts.",
+    "tags": ["hausa", "news", "sahel"],
+    "genres": ["news", "current-affairs"],
+    "region": "sahel",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "youtube": "https://www.youtube.com/@bbchausa",
+    "english": {
+      "title": "BBC Hausa",
+      "description": "News and programmes in Hausa. Long-form desks, not shorts."
+    }
+  },
+  {
+    "id": "yt-bbc-swahili",
+    "handle": "bbcswahili",
+    "title": "BBC Swahili",
+    "language": "sw",
+    "creators": ["BBC Swahili"],
+    "description": "Habari na ripoti kwa Kiswahili kutoka Afrika Mashariki.",
+    "tags": ["swahili", "news", "east-africa"],
+    "genres": ["news", "current-affairs"],
+    "region": "east-africa",
+    "country": "Kenya",
+    "countryCode": "KE",
+    "youtube": "https://www.youtube.com/@bbcswahili",
+    "english": {
+      "title": "BBC Swahili",
+      "description": "News and reports in Swahili from East Africa."
+    }
+  },
+  {
+    "id": "yt-bbc-yoruba",
+    "handle": "bbcyoruba",
+    "title": "BBC Yorùbá",
+    "language": "yo",
+    "creators": ["BBC Yoruba"],
+    "description": "Ìròyìn àti ètò ní èdè Yorùbá.",
+    "tags": ["yoruba", "news", "nigeria"],
+    "genres": ["news", "culture"],
+    "region": "west-africa",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "youtube": "https://www.youtube.com/@bbcyoruba",
+    "english": {
+      "title": "BBC Yoruba",
+      "description": "News and programmes in Yoruba."
+    }
+  },
+  {
+    "id": "yt-tvperu-quechua",
+    "handle": "tvperuoficial",
+    "title": "Ñuqanchik",
+    "language": "qu",
+    "creators": ["TV Perú"],
+    "description": "Noticiero en runasimi. La lengua en video, no en un museo.",
+    "tags": ["quechua", "news", "andes"],
+    "genres": ["news", "culture"],
+    "region": "andes",
+    "country": "Peru",
+    "countryCode": "PE",
+    "youtube": "https://www.youtube.com/@tvperuoficial",
+    "english": {
+      "title": "Ñuqanchik",
+      "description": "A Quechua newscast. The language on video, not in a museum."
+    }
+  },
+  {
+    "id": "yt-eitb",
+    "handle": "eitb",
+    "title": "EiTB",
+    "language": "eu",
+    "creators": ["EITB"],
+    "description": "Euskal media publikoa bideoan: albisteak eta kultura.",
+    "tags": ["basque", "public-media", "euskara"],
+    "genres": ["news", "culture"],
+    "region": "iberia",
+    "country": "Spain",
+    "countryCode": "ES",
+    "youtube": "https://www.youtube.com/@eitb",
+    "english": {
+      "title": "EiTB",
+      "description": "Basque public media on video: news and culture."
+    }
+  },
+  {
+    "id": "yt-ccma",
+    "handle": "ccma",
+    "title": "CCMA",
+    "language": "ca",
+    "creators": ["CCMA"],
+    "description": "Mitjà públic en català: informatius i documentals.",
+    "tags": ["catalan", "public-media", "barcelona"],
+    "genres": ["news", "culture"],
+    "region": "iberia",
+    "country": "Spain",
+    "countryCode": "ES",
+    "youtube": "https://www.youtube.com/@ccma",
+    "english": {
+      "title": "CCMA",
+      "description": "Catalan public media: news and documentaries."
+    }
+  },
+  {
+    "id": "yt-suspilne",
+    "handle": "suspilne",
+    "title": "Суспільне",
+    "language": "uk",
+    "creators": ["Суспільне"],
+    "description": "Українське суспільне мовлення на відео.",
+    "tags": ["ukraine", "public-media", "war"],
+    "genres": ["news", "culture"],
+    "region": "eastern-europe",
+    "country": "Ukraine",
+    "countryCode": "UA",
+    "youtube": "https://www.youtube.com/@suspilne",
+    "english": {
+      "title": "Suspilne",
+      "description": "Ukrainian public broadcasting on video."
+    }
+  },
+  {
+    "id": "yt-partizan",
+    "handle": "PartizanMedia",
+    "title": "Partizán",
+    "language": "hu",
+    "creators": ["Partizán"],
+    "description": "Független magyar hosszú beszélgetések.",
+    "tags": ["hungary", "independent", "politics"],
+    "genres": ["current-affairs", "culture"],
+    "region": "central-europe",
+    "country": "Hungary",
+    "countryCode": "HU",
+    "youtube": "https://www.youtube.com/@PartizanMedia",
+    "english": {
+      "title": "Partizán",
+      "description": "Independent Hungarian long conversations."
+    }
+  },
+  {
+    "id": "yt-recorder-ro",
+    "handle": "recorderro",
+    "title": "Recorder",
+    "language": "ro",
+    "creators": ["Recorder"],
+    "description": "Jurnalism de investigație în română, adesea documentar.",
+    "tags": ["romania", "investigative", "documentary"],
+    "genres": ["journalism", "documentary"],
+    "region": "eastern-europe",
+    "country": "Romania",
+    "countryCode": "RO",
+    "youtube": "https://www.youtube.com/@recorderro",
+    "english": {
+      "title": "Recorder",
+      "description": "Investigative journalism in Romanian, often documentary."
+    }
+  },
+  {
+    "id": "yt-endgame-id",
+    "handle": "endgame_id",
+    "title": "Endgame",
+    "language": "id",
+    "creators": ["Gita Wirjawan"],
+    "description": "Percakapan panjang berbahasa Indonesia tentang geopolitik.",
+    "tags": ["indonesia", "geopolitics", "longform"],
+    "genres": ["ideas", "current-affairs"],
+    "region": "southeast-asia",
+    "country": "Indonesia",
+    "countryCode": "ID",
+    "youtube": "https://www.youtube.com/@endgame_id",
+    "english": {
+      "title": "Endgame",
+      "description": "Long Indonesian conversations on geopolitics."
+    }
+  },
+  {
+    "id": "yt-vietcetera",
+    "handle": "vietcetera",
+    "title": "Vietcetera",
+    "language": "vi",
+    "creators": ["Vietcetera"],
+    "description": "Phỏng vấn và phim tài liệu tiếng Việt về thành phố và khởi nghiệp.",
+    "tags": ["vietnam", "interview", "cities"],
+    "genres": ["culture", "business"],
+    "region": "southeast-asia",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "youtube": "https://www.youtube.com/@vietcetera",
+    "english": {
+      "title": "Vietcetera",
+      "description": "Vietnamese interviews and films on cities and startups."
+    }
+  },
+  {
+    "id": "yt-laogao",
+    "handle": "mrnmt",
+    "title": "老高與小茉 Mr & Mrs Gao",
+    "language": "zh",
+    "creators": ["老高", "小茉"],
+    "description": "華語長視頻：故事腔與冷知識.",
+    "tags": ["chinese", "storytelling", "longform"],
+    "genres": ["entertainment", "storytelling"],
+    "region": "east-asia",
+    "country": "Taiwan",
+    "countryCode": "TW",
+    "youtube": "https://www.youtube.com/@mrnmt",
+    "english": {
+      "title": "Mr & Mrs Gao",
+      "description": "Mandarin long video: storytelling cadence and cold facts."
+    }
+  },
+  {
+    "id": "yt-kurzgesagt",
+    "handle": "kurzgesagt",
+    "title": "Kurzgesagt – In a Nutshell",
+    "language": "en",
+    "creators": ["Kurzgesagt"],
+    "description": "Munich-made explainers on space, biology, and risk.",
+    "tags": ["animation", "science", "explainer"],
+    "genres": ["education", "science"],
+    "region": "central-europe",
+    "country": "Germany",
+    "countryCode": "DE",
+    "youtube": "https://www.youtube.com/@kurzgesagt"
+  },
+  {
+    "id": "yt-aljazeera-en",
+    "handle": "aljazeeraenglish",
+    "title": "Al Jazeera English",
+    "language": "en",
+    "creators": ["Al Jazeera"],
+    "description": "Long reports from a Doha newsroom that does not treat the South as a sidebar.",
+    "tags": ["documentary", "news", "global-south"],
+    "genres": ["news", "documentary"],
+    "region": "arabia",
+    "country": "Qatar",
+    "countryCode": "QA",
+    "youtube": "https://www.youtube.com/@aljazeeraenglish"
+  },
+  {
+    "id": "yt-the-wire",
+    "handle": "TheWireNews",
+    "title": "The Wire",
+    "language": "en",
+    "creators": ["The Wire"],
+    "description": "Independent Indian video journalism.",
+    "tags": ["india", "journalism", "independent"],
+    "genres": ["news", "current-affairs"],
+    "region": "india",
+    "country": "India",
+    "countryCode": "IN",
+    "youtube": "https://www.youtube.com/@TheWireNews"
+  },
+  {
+    "id": "yt-rnz",
+    "handle": "radionz",
+    "title": "RNZ",
+    "language": "en",
+    "creators": ["RNZ"],
+    "description": "Aotearoa public media, including Te Reo desks on video.",
+    "tags": ["aotearoa", "public-media", "oceania"],
+    "genres": ["news", "culture"],
+    "region": "oceania",
+    "country": "New Zealand",
+    "countryCode": "NZ",
+    "youtube": "https://www.youtube.com/@radionz"
+  },
+  {
+    "id": "yt-yle",
+    "handle": "yleareena",
+    "title": "Yle Areena",
+    "language": "fi",
+    "creators": ["Yle"],
+    "description": "Suomen julkisen palvelun videoita ja dokumentteja.",
+    "tags": ["finland", "public-media", "finnish"],
+    "genres": ["culture", "news"],
+    "region": "nordic",
+    "country": "Finland",
+    "countryCode": "FI",
+    "youtube": "https://www.youtube.com/@yleareena",
+    "english": {
+      "title": "Yle Areena",
+      "description": "Finnish public-service video and documentaries."
+    }
+  },
+  {
+    "id": "yt-nrk",
+    "handle": "nrk",
+    "title": "NRK",
+    "language": "no",
+    "creators": ["NRK"],
+    "description": "Norsk public service på video.",
+    "tags": ["norway", "public-media"],
+    "genres": ["culture", "news"],
+    "region": "nordic",
+    "country": "Norway",
+    "countryCode": "NO",
+    "youtube": "https://www.youtube.com/@nrk",
+    "english": {
+      "title": "NRK",
+      "description": "Norwegian public service on video."
+    }
+  },
+  {
+    "id": "yt-kan",
+    "handle": "KAN",
+    "title": "כאן 11",
+    "language": "he",
+    "creators": ["Kan"],
+    "description": "שידור ציבורי ישראלי: תחקירים ותרבות.",
+    "tags": ["israel", "hebrew", "public-media"],
+    "genres": ["news", "culture"],
+    "region": "levant",
+    "country": "Israel",
+    "countryCode": "IL",
+    "youtube": "https://www.youtube.com/@KAN",
+    "english": {
+      "title": "Kan 11",
+      "description": "Israeli public broadcasting: investigations and culture."
+    }
+  },
+  {
+    "id": "yt-dw-arabic",
+    "handle": "dwarabic",
+    "title": "DW عربية",
+    "language": "ar",
+    "creators": ["Deutsche Welle"],
+    "description": "تقارير طويلة بالعربية من دويتشه فيله.",
+    "tags": ["arabic", "documentary", "dw"],
+    "genres": ["news", "documentary"],
+    "region": "arabia",
+    "country": "Germany",
+    "countryCode": "DE",
+    "youtube": "https://www.youtube.com/@dwarabic",
+    "english": {
+      "title": "DW Arabic",
+      "description": "Long Arabic reports from Deutsche Welle."
+    }
+  }
+]

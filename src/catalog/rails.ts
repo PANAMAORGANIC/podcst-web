@@ -1,5 +1,5 @@
 import { queryCatalog } from './query';
-import { CATALOG } from './seed';
+import { getCatalog } from './store';
 import type { CatalogEntry } from './types';
 
 export interface CatalogRail {
@@ -26,40 +26,44 @@ const UNDERREPRESENTED = new Set([
 ]);
 
 export function homeRails(): CatalogRail[] {
-  const beyondCharts = [...CATALOG]
+  const catalog = getCatalog();
+  const beyondCharts = [...catalog]
     .sort((a, b) => b.signals.diversity - a.signals.diversity)
     .slice(0, 10);
 
-  const publicDomain = CATALOG.filter(
-    (item) =>
-      item.tags.includes('public-domain') ||
-      item.tags.includes('librivox') ||
-      Boolean(item.externalUrls.librivox),
-  ).slice(0, 10);
+  const publicDomain = catalog
+    .filter(
+      (item) =>
+        item.tags.includes('public-domain') ||
+        item.tags.includes('librivox') ||
+        Boolean(item.externalUrls.librivox),
+    )
+    .slice(0, 10);
 
-  const fromTheSouth = CATALOG.filter((item) =>
-    [
-      'andes',
-      'arabia',
-      'east-africa',
-      'horn-of-africa',
-      'india',
-      'latin-america',
-      'lusophone-africa',
-      'maghreb',
-      'mesoamerica',
-      'sahel',
-      'southeast-asia',
-      'southern-africa',
-      'west-africa',
-    ].includes(item.region),
-  )
+  const fromTheSouth = catalog
+    .filter((item) =>
+      [
+        'andes',
+        'arabia',
+        'east-africa',
+        'horn-of-africa',
+        'india',
+        'latin-america',
+        'lusophone-africa',
+        'maghreb',
+        'mesoamerica',
+        'sahel',
+        'southeast-asia',
+        'southern-africa',
+        'west-africa',
+      ].includes(item.region),
+    )
     .sort((a, b) => b.signals.diversity - a.signals.diversity)
     .slice(0, 10);
 
-  const minorityLanguages = CATALOG.filter((item) =>
-    UNDERREPRESENTED.has(item.originalLanguage),
-  ).slice(0, 10);
+  const minorityLanguages = catalog
+    .filter((item) => UNDERREPRESENTED.has(item.originalLanguage))
+    .slice(0, 10);
 
   const longVideo = queryCatalog({
     type: 'youtube',

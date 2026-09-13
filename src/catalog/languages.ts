@@ -34,6 +34,7 @@ export const LANGUAGES: LanguageInfo[] = [
   { code: 'ja', name: 'Japanese', nativeName: '日本語', script: 'Japanese' },
   { code: 'km', name: 'Khmer', nativeName: 'ខ្មែរ', script: 'Khmer' },
   { code: 'ko', name: 'Korean', nativeName: '한국어', script: 'Hangul' },
+  { code: 'la', name: 'Latin', nativeName: 'Latina', script: 'Latin' },
   { code: 'mi', name: 'Māori', nativeName: 'Te Reo Māori', script: 'Latin' },
   { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu', script: 'Latin' },
   { code: 'ne', name: 'Nepali', nativeName: 'नेपाली', script: 'Devanagari' },

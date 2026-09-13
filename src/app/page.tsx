@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { homeRails } from '@/catalog/rails';
-import { catalogStats } from '@/catalog/seed';
+import { catalogStats } from '@/catalog/store';
 import { CatalogRail } from '@/components/CatalogRail';
 import { SearchBox } from '@/components/SearchBox';
+
+export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   const stats = catalogStats();

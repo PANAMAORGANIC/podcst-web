@@ -2,9 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { relatedEntries } from '@/catalog/query';
-import { getEntry } from '@/catalog/seed';
+import { getEntry } from '@/catalog/store';
 import { CatalogGrid } from '@/components/CatalogGrid';
 import { TitleDetail } from '@/components/TitleDetail';
+
+export const dynamic = 'force-dynamic';
 
 type PageProps = {
   params: Promise<{ id: string }>;

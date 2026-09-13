@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { queryCatalog } from '@/catalog/query';
 import { TranslatedGrid } from '@/components/TranslatedEntry';
 
+export const dynamic = 'force-dynamic';
+
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };

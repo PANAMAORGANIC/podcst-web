@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { renderCoverSvg } from '@/catalog/cover';
-import { getEntry } from '@/catalog/seed';
+import { getEntry } from '@/catalog/store';
 
 export async function GET(
   _request: Request,

@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { catalogStats } from '@/catalog/seed';
+import { catalogStats } from '@/catalog/store';
 
 export const metadata: Metadata = {
   title: 'About',
 };
+
+export const dynamic = 'force-dynamic';
 
 export default function AboutPage() {
   const stats = catalogStats();
@@ -46,11 +48,11 @@ export default function AboutPage() {
       </p>
       <h2 id="ingest">Ingest path</h2>
       <p>
-        Scripts under <code>scripts/</code> document the next mile of ingest.
-        Podcasts can pull from the{' '}
-        <a href="https://podcastindex.org/">Podcast Index</a> dump when you have
-        a database. Audiobook and YouTube scripts are stubs for LibriVox-class
-        metadata and a future YouTube Data API pass.
+        Scripts under <code>scripts/</code> write <code>data/catalog.json</code>
+        , which the UI merges with the editorial seed. Podcasts can pull from
+        the <a href="https://podcastindex.org/">Podcast Index</a> dump when you
+        have a database. Audiobook and YouTube scripts are stubs for
+        LibriVox-class metadata and a future YouTube Data API pass.
       </p>
       <pre>
         <code>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { catalogStats } from '@/catalog/seed';
+import { catalogStats } from '@/catalog/store';
 
 export function AppFooter() {
   const stats = catalogStats();

@@ -33,6 +33,7 @@ export function coverPalette(id: string): { bg: string; fg: string } {
 }
 
 export function coverUrl(entry: CatalogEntry): string {
+  if (entry.coverArt) return entry.coverArt;
   return `/api/cover/${encodeURIComponent(entry.id)}`;
 }
 

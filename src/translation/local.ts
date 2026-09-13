@@ -1,4 +1,4 @@
-import { CATALOG, getEntry } from '@/catalog/seed';
+import { getCatalog, getEntry } from '@/catalog/store';
 import type { CatalogEntry } from '@/catalog/types';
 import type {
   TranslationRequest,
@@ -15,7 +15,7 @@ function findSeededEnglish(request: TranslationRequest): string | undefined {
     return undefined;
   }
 
-  for (const entry of CATALOG) {
+  for (const entry of getCatalog()) {
     const english = matchEntry(entry, request);
     if (english) return english;
   }

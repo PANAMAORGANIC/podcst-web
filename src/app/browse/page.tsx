@@ -9,6 +9,8 @@ import { CATALOG_TYPE_LABELS, type CatalogType } from '@/catalog/types';
 import { FilterBar, parseBrowseQuery } from '@/components/FilterBar';
 import { TranslatedGrid } from '@/components/TranslatedEntry';
 
+export const dynamic = 'force-dynamic';
+
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };

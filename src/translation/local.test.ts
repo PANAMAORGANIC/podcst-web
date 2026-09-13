@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { getEntry } from '../catalog/seed';
+import { getEntry } from '../catalog/store';
 import { LocalCatalogTranslator } from './local';
 
 describe('LocalCatalogTranslator', () => {

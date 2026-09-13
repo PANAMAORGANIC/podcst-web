@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { TypeBrowse } from '@/components/TypeBrowse';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Audiobooks',
   description: 'Public-domain recitations and copyrighted titles as metadata.',

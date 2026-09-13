@@ -42,6 +42,7 @@ export interface CatalogEntry {
   country: string;
   countryCode: string;
   externalUrls: ExternalUrls;
+  coverArt?: string;
   signals: CatalogSignals;
   year?: number;
   episodeCount?: number;

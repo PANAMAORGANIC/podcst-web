@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { TypeBrowse } from '@/components/TypeBrowse';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Podcasts',
   description: 'Browse podcasts across languages and regions.',

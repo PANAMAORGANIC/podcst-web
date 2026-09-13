@@ -4,4 +4,6 @@ export * from './query';
 export * from './rails';
 export * from './regions';
 export * from './seed';
+export * from './store';
+export * from './taxonomy';
 export * from './types';

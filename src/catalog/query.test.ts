@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { queryCatalog, relatedEntries } from './query';
-import { CATALOG, catalogStats } from './seed';
+import { SEED_CATALOG } from './seed';
+import { catalogStats, getCatalog } from './store';
 
 describe('catalog seed', () => {
   it('covers all three types and many languages', () => {
@@ -17,8 +18,10 @@ describe('catalog seed', () => {
   });
 
   it('uses unique ids', () => {
-    const ids = CATALOG.map((item) => item.id);
+    const ids = getCatalog().map((item) => item.id);
     assert.equal(new Set(ids).size, ids.length);
+    const seedIds = SEED_CATALOG.map((item) => item.id);
+    assert.equal(new Set(seedIds).size, seedIds.length);
   });
 });
 
@@ -29,7 +32,12 @@ describe('queryCatalog', () => {
     assert.ok(queryCatalog({ q: 'librivox' }).items.length >= 3);
     assert.ok(queryCatalog({ q: 'Yoruba' }).items.length >= 1);
     assert.ok(
-      queryCatalog({ q: 'audiobook' }).items.every(
+      queryCatalog({ q: 'audiobook' }).items.some(
+        (item) => item.type === 'audiobook',
+      ),
+    );
+    assert.ok(
+      queryCatalog({ type: 'audiobook' }).items.every(
         (item) => item.type === 'audiobook',
       ),
     );
@@ -56,7 +64,7 @@ describe('queryCatalog', () => {
 
 describe('relatedEntries', () => {
   it('returns neighbours that share language or region', () => {
-    const seed = CATALOG.find((item) => item.id === 'radio-ambulante');
+    const seed = SEED_CATALOG.find((item) => item.id === 'radio-ambulante');
     assert.ok(seed);
     const related = relatedEntries(seed, 4);
     assert.ok(related.length > 0);

@@ -1,0 +1,292 @@
+import { LANGUAGES } from './languages';
+import { REGIONS } from './regions';
+
+const LANGUAGE_ALIASES: Record<string, string> = {
+  eng: 'en',
+  english: 'en',
+  spa: 'es',
+  spanish: 'es',
+  castellano: 'es',
+  fra: 'fr',
+  fre: 'fr',
+  french: 'fr',
+  deu: 'de',
+  ger: 'de',
+  german: 'de',
+  por: 'pt',
+  portuguese: 'pt',
+  ita: 'it',
+  italian: 'it',
+  rus: 'ru',
+  russian: 'ru',
+  zho: 'zh',
+  chi: 'zh',
+  chinese: 'zh',
+  mandarin: 'zh',
+  jpn: 'ja',
+  japanese: 'ja',
+  kor: 'ko',
+  korean: 'ko',
+  ara: 'ar',
+  arabic: 'ar',
+  hin: 'hi',
+  hindi: 'hi',
+  ben: 'bn',
+  bengali: 'bn',
+  urd: 'ur',
+  urdu: 'ur',
+  tam: 'ta',
+  tamil: 'ta',
+  tur: 'tr',
+  turkish: 'tr',
+  pol: 'pl',
+  polish: 'pl',
+  nld: 'nl',
+  dut: 'nl',
+  dutch: 'nl',
+  swe: 'sv',
+  swedish: 'sv',
+  nor: 'no',
+  norwegian: 'no',
+  fin: 'fi',
+  finnish: 'fi',
+  hun: 'hu',
+  hungarian: 'hu',
+  ron: 'ro',
+  rum: 'ro',
+  romanian: 'ro',
+  ukr: 'uk',
+  ukrainian: 'uk',
+  vie: 'vi',
+  vietnamese: 'vi',
+  ind: 'id',
+  indonesian: 'id',
+  may: 'ms',
+  malay: 'ms',
+  tha: 'th',
+  thai: 'th',
+  tgl: 'tl',
+  fil: 'tl',
+  filipino: 'tl',
+  tagalog: 'tl',
+  heb: 'he',
+  hebrew: 'he',
+  fas: 'fa',
+  per: 'fa',
+  persian: 'fa',
+  farsi: 'fa',
+  amh: 'am',
+  amharic: 'am',
+  swa: 'sw',
+  swahili: 'sw',
+  hau: 'ha',
+  hausa: 'ha',
+  yor: 'yo',
+  yoruba: 'yo',
+  som: 'so',
+  somali: 'so',
+  zul: 'zu',
+  zulu: 'zu',
+  nep: 'ne',
+  nepali: 'ne',
+  khm: 'km',
+  khmer: 'km',
+  san: 'sa',
+  sanskrit: 'sa',
+  que: 'qu',
+  quechua: 'qu',
+  eus: 'eu',
+  basque: 'eu',
+  cat: 'ca',
+  catalan: 'ca',
+  cym: 'cy',
+  welsh: 'cy',
+  mri: 'mi',
+  maori: 'mi',
+  māori: 'mi',
+  ell: 'el',
+  gre: 'el',
+  greek: 'el',
+  ice: 'is',
+  isl: 'is',
+  icelandic: 'is',
+  lat: 'la',
+  latin: 'la',
+  'old english': 'en',
+  anglo: 'en',
+  'anglo-saxon': 'en',
+  multilingual: 'mul',
+  'multiple languages': 'mul',
+};
+
+const LANGUAGE_REGION: Record<string, string> = {
+  am: 'horn-of-africa',
+  ar: 'arabia',
+  bn: 'india',
+  ca: 'iberia',
+  cy: 'uk-ireland',
+  de: 'central-europe',
+  el: 'southern-europe',
+  en: 'north-america',
+  es: 'latin-america',
+  eu: 'iberia',
+  fa: 'persianate',
+  fi: 'nordic',
+  fr: 'western-europe',
+  ha: 'sahel',
+  he: 'levant',
+  hi: 'india',
+  hu: 'central-europe',
+  id: 'southeast-asia',
+  is: 'nordic',
+  it: 'southern-europe',
+  ja: 'east-asia',
+  km: 'southeast-asia',
+  ko: 'east-asia',
+  la: 'southern-europe',
+  mi: 'oceania',
+  ms: 'southeast-asia',
+  ne: 'india',
+  nl: 'western-europe',
+  no: 'nordic',
+  pl: 'central-europe',
+  pt: 'latin-america',
+  qu: 'andes',
+  ro: 'eastern-europe',
+  ru: 'eastern-europe',
+  sa: 'india',
+  so: 'horn-of-africa',
+  sv: 'nordic',
+  sw: 'east-africa',
+  ta: 'india',
+  th: 'southeast-asia',
+  tl: 'southeast-asia',
+  tr: 'western-europe',
+  uk: 'eastern-europe',
+  ur: 'india',
+  vi: 'southeast-asia',
+  yo: 'west-africa',
+  zh: 'east-asia',
+  zu: 'southern-africa',
+};
+
+const COUNTRY_REGION: Record<string, string> = {
+  AR: 'latin-america',
+  AU: 'oceania',
+  BD: 'india',
+  BR: 'latin-america',
+  CA: 'north-america',
+  CL: 'latin-america',
+  CN: 'east-asia',
+  CO: 'latin-america',
+  DE: 'central-europe',
+  EG: 'arabia',
+  ES: 'iberia',
+  ET: 'horn-of-africa',
+  FI: 'nordic',
+  FR: 'western-europe',
+  GB: 'uk-ireland',
+  GH: 'west-africa',
+  GR: 'southern-europe',
+  GT: 'mesoamerica',
+  HU: 'central-europe',
+  ID: 'southeast-asia',
+  IL: 'levant',
+  IN: 'india',
+  IR: 'persianate',
+  IS: 'nordic',
+  IT: 'southern-europe',
+  JP: 'east-asia',
+  KE: 'east-africa',
+  KH: 'southeast-asia',
+  KR: 'east-asia',
+  MX: 'latin-america',
+  MY: 'southeast-asia',
+  NG: 'west-africa',
+  NL: 'western-europe',
+  NO: 'nordic',
+  NP: 'india',
+  NZ: 'oceania',
+  PE: 'andes',
+  PH: 'southeast-asia',
+  PK: 'india',
+  PL: 'central-europe',
+  PT: 'iberia',
+  QA: 'arabia',
+  RO: 'eastern-europe',
+  RU: 'eastern-europe',
+  SE: 'nordic',
+  SG: 'southeast-asia',
+  SN: 'west-africa',
+  SO: 'horn-of-africa',
+  TH: 'southeast-asia',
+  TR: 'western-europe',
+  TW: 'east-asia',
+  UA: 'eastern-europe',
+  US: 'north-america',
+  VN: 'southeast-asia',
+  ZA: 'southern-africa',
+};
+
+const KNOWN = new Set(LANGUAGES.map((lang) => lang.code));
+const KNOWN_REGIONS = new Set(REGIONS.map((region) => region.id));
+
+export function normalizeLanguage(raw: string | undefined): string {
+  if (!raw) return 'en';
+  const value = raw.trim().toLowerCase().replace('_', '-');
+  const primary = value.split('-')[0] ?? value;
+  if (KNOWN.has(primary)) return primary;
+  return LANGUAGE_ALIASES[value] ?? LANGUAGE_ALIASES[primary] ?? primary;
+}
+
+export function inferRegion(language: string, countryCode?: string): string {
+  const country = countryCode?.toUpperCase();
+  if (country && COUNTRY_REGION[country]) return COUNTRY_REGION[country];
+  return LANGUAGE_REGION[language] ?? 'north-america';
+}
+
+export function inferCountryName(countryCode?: string): string {
+  if (!countryCode) return 'Unknown';
+  try {
+    return (
+      new Intl.DisplayNames(['en'], { type: 'region' }).of(
+        countryCode.toUpperCase(),
+      ) ?? countryCode
+    );
+  } catch {
+    return countryCode;
+  }
+}
+
+export function diversityScore(language: string): number {
+  if (language === 'en') return 28;
+  if (['es', 'fr', 'de', 'pt', 'zh', 'ja'].includes(language)) return 58;
+  if (
+    [
+      'am',
+      'cy',
+      'eu',
+      'ha',
+      'km',
+      'mi',
+      'ne',
+      'qu',
+      'sa',
+      'so',
+      'ta',
+      'yo',
+      'zu',
+    ].includes(language)
+  ) {
+    return 94;
+  }
+  return 76;
+}
+
+export function clampSignal(value: number): number {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+export function isKnownRegion(id: string): boolean {
+  return KNOWN_REGIONS.has(id);
+}

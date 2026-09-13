@@ -85,15 +85,54 @@ is hidden and copy/download still work.
 
 ## Ingest (metadata only)
 
+The live catalog is the editorial seed plus `data/catalog.json`. A first-pass
+snapshot is checked in, so `npm run dev` already shows ingested titles.
+Running the three scripts **upserts** more rows into that snapshot. Refresh
+the running app (pages are dynamic) to see new titles in search, browse,
+and rails.
+
 ```bash
-npm run ingest:podcasts     # Podcast Index path (stub / dry-run without DB)
-npm run ingest:audiobooks   # LibriVox-class + publisher cards
-npm run ingest:youtube      # YouTube metadata; optional YOUTUBE_API_KEY later
+npm run ingest:podcasts     # Podcasts (diversity-first)
+npm run ingest:audiobooks   # LibriVox API + publisher cards
+npm run ingest:youtube      # Curated channels; optional YOUTUBE_API_KEY
 ```
 
-These scripts write receipts under `data/ingest/` and refuse to download
-media. Podcast Index sync can grow into a real upsert when `DATABASE_URL`
-and a dump are available — see `scripts/ingest-podcast-index.ts`.
+Re-runs are idempotent (same ids update, they do not duplicate). Receipts
+land in `data/ingest/`. Nothing downloads audio or video files.
+
+### Podcasts
+
+Default path (no key): iTunes Search across curated
+`data/sources/podcast-queries.json` countries and languages.
+
+To use the official [Podcast Index](https://podcastindex.org/) dump instead:
+
+```bash
+# Place an extracted SQLite file, or download once (~1.8GB):
+PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db npm run ingest:podcasts
+# or
+PODCASTINDEX_DOWNLOAD=1 npm run ingest:podcasts
+```
+
+Optional API batch (free keys from https://api.podcastindex.org/):
+
+```bash
+PODCASTINDEX_API_KEY=...
+PODCASTINDEX_API_SECRET=...
+```
+
+`INGEST_LIMIT` defaults to 800 (sane first pass; raise as needed).
+
+### Audiobooks
+
+Paginates the public LibriVox JSON API, then merges
+`data/sources/publisher-audiobooks.json` (in-copyright cards + store links).
+
+### YouTube
+
+Reads `data/sources/youtube-channels.json`. If `YOUTUBE_API_KEY` is set,
+enriches title/description/thumbnail via the Data API. Without a key the
+curated file still writes real catalog rows.
 
 ## Stack
 
