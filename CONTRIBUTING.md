@@ -1,11 +1,14 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-slack, email, or any other method with the owners/active-contributors of this repository before making a change.
+World Audio Repository is a **catalogue**, not a player. Please discuss
+large changes before opening a pull request.
 
-## Pull Request Process
+## Pull request process
 
-1. Update the README.md and/or wiki with details of changes to the interface, this includes new environment
-   variables, exposed ports, useful file locations and container parameters.
-
-2. You may merge the Pull Request in once you have the sign-off of one reviewer.
+1. Update `README.md` and/or `PRODUCT.md` when you change the interface,
+   environment variables, or ingest rules.
+2. Keep ingest metadata-only. Do not add code that downloads or hosts
+   copyrighted audio or video.
+3. Do not commit API keys. Document new variables in `.env.example`.
+4. `npm run typecheck`, `npm run lint`, and `npm test` should stay clean.
+5. Merge after one reviewer sign-off.

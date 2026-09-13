@@ -1,0 +1,336 @@
+{
+  "comment": "Apple Podcasts storefront packs for iTunes Search. Public search only; metadata + deep links. No API key. genreIds are Apple Podcasts genre IDs.",
+  "defaultGenreIds": [1311, 1324, 1304, 1487],
+  "storefronts": [
+    {
+      "country": "us",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["español", "crónica", "noticias"]
+    },
+    {
+      "country": "us",
+      "language": "en",
+      "region": "north-america",
+      "terms": ["indigenous", "public radio"]
+    },
+    {
+      "country": "mx",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["crónica", "noticias", "cultura", "náhuatl"]
+    },
+    {
+      "country": "br",
+      "language": "pt",
+      "region": "latin-america",
+      "terms": ["jornalismo", "conversa", "nordeste"]
+    },
+    {
+      "country": "ar",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["crónica", "noticias", "política"]
+    },
+    {
+      "country": "co",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["crónica", "noticias"]
+    },
+    {
+      "country": "pe",
+      "language": "qu",
+      "region": "andes",
+      "terms": ["quechua", "runasimi"]
+    },
+    {
+      "country": "pe",
+      "language": "es",
+      "region": "andes",
+      "terms": ["crónica", "noticias"]
+    },
+    {
+      "country": "cl",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["crónica", "noticias"]
+    },
+    {
+      "country": "ng",
+      "language": "ha",
+      "region": "sahel",
+      "terms": ["hausa", "labarai"]
+    },
+    {
+      "country": "ng",
+      "language": "yo",
+      "region": "west-africa",
+      "terms": ["yoruba", "irohin"]
+    },
+    {
+      "country": "ng",
+      "language": "ig",
+      "region": "west-africa",
+      "terms": ["igbo"]
+    },
+    {
+      "country": "ng",
+      "language": "en",
+      "region": "west-africa",
+      "terms": ["pidgin", "naija"]
+    },
+    {
+      "country": "za",
+      "language": "zu",
+      "region": "southern-africa",
+      "terms": ["zulu", "izindaba"]
+    },
+    {
+      "country": "za",
+      "language": "xh",
+      "region": "southern-africa",
+      "terms": ["xhosa"]
+    },
+    {
+      "country": "za",
+      "language": "af",
+      "region": "southern-africa",
+      "terms": ["afrikaans", "nuus"]
+    },
+    {
+      "country": "ke",
+      "language": "sw",
+      "region": "east-africa",
+      "terms": ["swahili", "habari"]
+    },
+    {
+      "country": "eg",
+      "language": "ar",
+      "region": "arabia",
+      "terms": ["عربي", "بودكاست", "أخبار"]
+    },
+    {
+      "country": "sa",
+      "language": "ar",
+      "region": "arabia",
+      "terms": ["بودكاست", "ثقافة"]
+    },
+    {
+      "country": "in",
+      "language": "hi",
+      "region": "india",
+      "terms": ["हिन्दी", "समाचार", "कथा"]
+    },
+    {
+      "country": "in",
+      "language": "ta",
+      "region": "india",
+      "terms": ["தமிழ்", "செய்தி"]
+    },
+    {
+      "country": "in",
+      "language": "te",
+      "region": "india",
+      "terms": ["తెలుగు"]
+    },
+    {
+      "country": "in",
+      "language": "ml",
+      "region": "india",
+      "terms": ["മലയാളം"]
+    },
+    {
+      "country": "in",
+      "language": "mr",
+      "region": "india",
+      "terms": ["मराठी"]
+    },
+    {
+      "country": "in",
+      "language": "pa",
+      "region": "india",
+      "terms": ["ਪੰਜਾਬੀ"]
+    },
+    {
+      "country": "bd",
+      "language": "bn",
+      "region": "india",
+      "terms": ["বাংলা", "খবর"]
+    },
+    {
+      "country": "pk",
+      "language": "ur",
+      "region": "india",
+      "terms": ["اردو"]
+    },
+    {
+      "country": "jp",
+      "language": "ja",
+      "region": "east-asia",
+      "terms": ["ラジオ", "ニュース", "対談"]
+    },
+    {
+      "country": "kr",
+      "language": "ko",
+      "region": "east-asia",
+      "terms": ["팟캐스트", "뉴스", "교양"]
+    },
+    {
+      "country": "tw",
+      "language": "zh",
+      "region": "east-asia",
+      "terms": ["中文", "台灣", "新聞"]
+    },
+    {
+      "country": "cn",
+      "language": "zh",
+      "region": "east-asia",
+      "terms": ["播客", "新闻"]
+    },
+    {
+      "country": "hk",
+      "language": "zh",
+      "region": "east-asia",
+      "terms": ["播客", "新聞"]
+    },
+    {
+      "country": "id",
+      "language": "id",
+      "region": "southeast-asia",
+      "terms": ["indonesia", "berita", "obrolan"]
+    },
+    {
+      "country": "ph",
+      "language": "tl",
+      "region": "southeast-asia",
+      "terms": ["filipino", "tagalog", "balita"]
+    },
+    {
+      "country": "vn",
+      "language": "vi",
+      "region": "southeast-asia",
+      "terms": ["podcast việt", "tin tức"]
+    },
+    {
+      "country": "th",
+      "language": "th",
+      "region": "southeast-asia",
+      "terms": ["พอดแคสต์", "ข่าว"]
+    },
+    {
+      "country": "my",
+      "language": "ms",
+      "region": "southeast-asia",
+      "terms": ["melayu", "berita"]
+    },
+    {
+      "country": "de",
+      "language": "de",
+      "region": "central-europe",
+      "terms": ["feature", "dokumentation", "nachrichten"]
+    },
+    {
+      "country": "fr",
+      "language": "fr",
+      "region": "western-europe",
+      "terms": ["documentaire", "actualité", "récit"]
+    },
+    {
+      "country": "es",
+      "language": "es",
+      "region": "iberia",
+      "terms": ["crónica", "noticias"]
+    },
+    {
+      "country": "es",
+      "language": "ca",
+      "region": "iberia",
+      "terms": ["català"]
+    },
+    {
+      "country": "es",
+      "language": "eu",
+      "region": "iberia",
+      "terms": ["euskara"]
+    },
+    {
+      "country": "es",
+      "language": "gl",
+      "region": "iberia",
+      "terms": ["galego"]
+    },
+    {
+      "country": "pl",
+      "language": "pl",
+      "region": "central-europe",
+      "terms": ["podcast", "reportaż", "wiadomości"]
+    },
+    {
+      "country": "tr",
+      "language": "tr",
+      "region": "western-europe",
+      "terms": ["podcast", "haber", "söyleşi"]
+    },
+    {
+      "country": "it",
+      "language": "it",
+      "region": "southern-europe",
+      "terms": ["podcast", "cronaca", "notizie"]
+    },
+    {
+      "country": "nl",
+      "language": "nl",
+      "region": "western-europe",
+      "terms": ["podcast", "documentaire"]
+    },
+    {
+      "country": "ua",
+      "language": "uk",
+      "region": "eastern-europe",
+      "terms": ["подкаст", "новини"]
+    },
+    {
+      "country": "ru",
+      "language": "ru",
+      "region": "eastern-europe",
+      "terms": ["подкаст", "новости"]
+    },
+    {
+      "country": "se",
+      "language": "sv",
+      "region": "nordic",
+      "terms": ["dokumentär", "nyheter"]
+    },
+    {
+      "country": "no",
+      "language": "no",
+      "region": "nordic",
+      "terms": ["dokumentar", "nyheter"]
+    },
+    {
+      "country": "gb",
+      "language": "cy",
+      "region": "uk-ireland",
+      "terms": ["cymraeg", "welsh"]
+    },
+    {
+      "country": "ie",
+      "language": "en",
+      "region": "uk-ireland",
+      "terms": ["gaeilge", "irish"]
+    },
+    {
+      "country": "nz",
+      "language": "mi",
+      "region": "oceania",
+      "terms": ["maori", "reo"]
+    },
+    {
+      "country": "au",
+      "language": "en",
+      "region": "oceania",
+      "terms": ["indigenous", "first nations"]
+    }
+  ]
+}

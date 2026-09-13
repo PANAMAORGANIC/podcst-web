@@ -1,185 +1,279 @@
-# [podcst-web](https://podcst.app)
+# World Audio Repository
 
-[![code style: biome](https://img.shields.io/badge/code_style-biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
+A **curated shelf for RED** — podcasts and long-form YouTube ranked from
+favorites, likes, and YouTube signals. The large ingest catalogue is a
+backend pool for related search. The homepage is not a public world
+directory.
 
-Podcst Web is a modern PWA to listen to podcasts.
+The interface is English. Titles and descriptions can be translated in
+place. We store metadata and deep links. We do not host audio files.
 
-The aim of this project is to provide an excellent podcast listening experience on all types of devices (desktop, tablets, mobile).
+This repository was forked from
+[shantanuraj/podcst-web](https://github.com/shantanuraj/podcst-web) and
+reshaped from a player into a repository. See [PRODUCT.md](PRODUCT.md)
+for the longer plan.
 
-Another major focus is on accessibility, with full keyboard navigation support.
+## Requirements
 
-> **Note:** This project only aims to support ever-green browsers.
+- Node.js 20+
+- npm
 
-## Features
+No PostgreSQL, Redis, or API key is required to run the demo.
 
-- User accounts with passkey authentication
-- Cross-device subscription and playback sync
-- Podcast search and discovery
-- Top podcasts by region
-- Chromecast and AirPlay support
-- Private feed support
-- Media session integration
-- Offline PWA capabilities
-
-## Architecture
-
-- **Frontend**: Next.js with App Router, React 19, TypeScript
-- **State Management**: Zustand for client state
-- **Data Fetching**: TanStack Query
-- **Database**: PostgreSQL (content + user data)
-- **Caching**: Redis + IndexedDB + LocalStorage
-- **Audio**: Howler.js
-- **Styling**: Tailwind CSS 4 + CSS Modules
-- **Code Quality**: Biome for formatting and linting
-
-### Data Flow
-
-```
-Background Jobs (cron):
-├── poll-top-charts.ts  → iTunes API → top_podcasts table
-├── poll-feeds.ts       → RSS feeds → episodes table
-└── sync-podcast-index  → Podcast Index dump → podcasts table
-
-API Routes (database-first):
-├── /api/top           → PostgreSQL → top podcasts
-├── /api/feed          → PostgreSQL → podcast + episodes
-└── /api/search        → PostgreSQL + iTunes fallback
-```
-
-### Branching Model
-
-Simple branch-and-merge workflow:
-
-- `main` is the production branch
-- Branch off `main` for new features or fixes
-- Open a PR and merge back to `main` when ready
-
-## Prerequisites
-
-- [Bun](https://bun.sh/) - JavaScript runtime (for scripts)
-- [Node](https://nodejs.org/) - LTS version
-- [yarn](https://yarnpkg.com/) - package manager
-- [PostgreSQL](https://www.postgresql.org/) - database
-- [Redis](https://redis.io/) - caching layer
-
-## Getting Started
-
-Clone this repository and install dependencies:
+## Setup
 
 ```bash
-git clone https://github.com/shantanuraj/podcst-web
-cd podcst-web
-yarn
+npm install
+npm run dev
 ```
 
-Set up environment variables (create `.env.local`):
+Open [http://localhost:3000](http://localhost:3000).
 
 ```bash
-# Vercel-style connection URLs are supported.
-DATABASE_URL=postgresql://...
-REDIS_URL=redis://...
-
-# Non-Vercel hosts can use host-based settings instead.
-PG_HOST=/var/run/postgresql
-PG_USER=podcst_app
-PG_DATABASE=podcst
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-REDIS_PASSWORD=...
-
-WEBAUTHN_RP_ID=localhost
-WEBAUTHN_RP_ORIGIN=http://localhost:3000
-RESEND_API_KEY=...  # optional, for email verification
+npm run typecheck
+npm run lint
+npm test
+npm run build
 ```
 
-Run database migrations:
+## What you can do
+
+- **Shelf / For you / Because you like / Explore** — taste-derived only
+- Search the ingest pool when you already know a title
+- Open a title page and follow RSS / YouTube / store links
+- Translate non-English titles and descriptions
+- **Feed agents** from a title page
+- Stochastic explore (`FOR_YOU_RANDOMNESS`, default 0.2) so ranking is
+  never fully deterministic — still inside the related neighborhood
+
+Primary IA is not Podcasts / Audiobooks / YouTube doors or global
+diversity shelves. Those pool routes still exist for lookup.
+
+## Translation
+
+The default translator reads curated English fields on the seed catalogue
+and needs no key.
+
+To use a [LibreTranslate](https://libretranslate.com/)-compatible service,
+copy `.env.example` to `.env.local` and set:
 
 ```bash
-yarn db:migrate
+LIBRETRANSLATE_URL=https://your-instance.example
+LIBRETRANSLATE_API_KEY=   # optional; only if the instance requires one
 ```
 
-Start the development server:
+Do not commit real keys. The app never invents credentials.
+
+## Feed agents
+
+On any title page, **Feed agents** builds a stable packet agents can ingest
+without scraping the UI: source, type, title, creators, language, region,
+tags, URLs, selected text / quote, note, optional timestamp, intent
+(`distill` | `research` | `remember`).
+
+Copy JSON or a Markdown “distill a source” brief, or download either file.
+That path needs no key.
+
+To POST the bundle `{ packet, markdown }` to your own agent inbox:
 
 ```bash
-yarn dev
+AGENT_FEED_WEBHOOK_URL=https://your-agent.example/ingest
+AGENT_FEED_WEBHOOK_SECRET=   # optional
+AGENT_FEED_WEBHOOK_HEADER=X-Agent-Feed-Secret
 ```
 
-## Development
+The webhook URL and secret stay on the server. If the URL is unset, Send
+is hidden and copy/download still work.
 
-### Available Scripts
+## Ingest (metadata only)
+
+The live catalog is the editorial seed plus the ingest snapshot
+(`data/catalog.json.gz`, with a compact `data/catalog.json` when it fits
+under 40MB). A snapshot is checked in, so `npm run dev` already shows
+ingested titles. Running the three scripts **upserts** more rows. Refresh
+the running app (pages are dynamic) to see new titles in search, browse,
+and rails.
 
 ```bash
-yarn dev                 # Start development server
-yarn build               # Build for production
-yarn start               # Start production server
-yarn format              # Format code with Biome
-yarn lint                # Lint code with Biome
-yarn db:migrate          # Run database migrations
+npm run ingest:podcasts     # Podcasts (diversity-first)
+npm run ingest:audiobooks   # LibriVox API + publisher cards
+npm run ingest:youtube      # Curated channels; optional YOUTUBE_API_KEY
+npm run ingest:favorites    # Owner RSS hubs + search-and-pin
+npm run ingest:recommend    # Related shows for liked / favorite seeds
+npm run ingest:for-you      # Learn topic weights + daily For You snapshot
 ```
 
-### Background Jobs
+Re-runs are idempotent (same ids update, they do not duplicate). Receipts
+land in `data/ingest/`. Nothing downloads audio or video files.
 
-These scripts run as background jobs to keep content fresh:
+### Podcasts
+
+`npm run ingest:podcasts` runs **two strategies** and upserts both into
+the live snapshot (idempotent `pi-*` / `it-*` ids):
+
+1. **Podcast Index dump** when a SQLite file is present or you opt in to
+   download. Diversity-first sample (not English-only charts).
+2. **Apple / iTunes storefront harvest** (default on). Public Search API,
+   no key. Language-first queries in `data/sources/podcast-queries.json`
+   plus storefront × term/genre packs in
+   `data/sources/itunes-storefronts.json` (us, mx, br, ng, in, jp, de,
+   fr, es, ar, eg, za, kr, cn, pl, tr, id, ph, and more).
 
 ```bash
-bun scripts/poll-top-charts.ts     # Sync iTunes top charts + poll missing episodes
-bun scripts/poll-feeds.ts          # Poll RSS feeds (single batch)
-bun scripts/poll-feeds.ts --daemon # Poll RSS feeds continuously
-bun scripts/sync-podcast-index.ts  # Sync from Podcast Index database dump
+# Apple harvest only (default if no dump is configured)
+npm run ingest:podcasts
+
+# Big English + Spanish pass (dump + Apple favorites)
+PODCASTINDEX_DOWNLOAD=1 INGEST_LIMIT=100000 INGEST_FOCUS=en,es npm run ingest:podcasts
+
+# Scaled dump-only pass (download ~1.8GB if missing, then cached in .tmp/)
+PODCASTINDEX_DOWNLOAD=1 INGEST_LIMIT=50000 ITUNES_HARVEST=0 npm run ingest:podcasts
+
+# Default dump limit is 25000; 50k–150k is supported without OOM
+ITUNES_HARVEST=0 npm run ingest:podcasts
+
+# Already-extracted dump
+PODCASTINDEX_DUMP_PATH=.tmp/podcastindex_feeds.db ITUNES_HARVEST=0 npm run ingest:podcasts
 ```
 
-### Building for Production
+`INGEST_FOCUS=en,es` reserves about a quarter of the batch for other
+languages (diversity floor), then fills the rest from English and
+Spanish ranked by popularity so mainstream and mid-tail shows appear.
+Apple harvest then adds extra us/gb/au/ca and mx/es/ar/co/cl/pe/uy
+storefront packs from `data/sources/itunes-focus-en-es.json`.
+
+iTunes Search is unauthenticated. The script spaces requests (~180ms),
+retries HTTP 429 with backoff, and requests 50 results per query (API
+max 200). Some storefronts return 400 (no store); those queries are
+skipped.
+
+Optional Podcast Index API batch (free keys from
+https://api.podcastindex.org/ — do not invent or commit them):
 
 ```bash
-yarn build
+PODCASTINDEX_API_KEY=...
+PODCASTINDEX_API_SECRET=...
 ```
 
-This creates an optimized production build in the `.next` folder.
+`INGEST_LIMIT` defaults to **25000 per strategy** (overridable). A 100k
+en/es pass is the documented big command above. The dump sampler uses a
+single SQL pass plus optional focus extras, truncated descriptions, and
+a gzip snapshot.
 
-## Deployment
+### Favorites (RSS hubs + search-and-pin)
 
-The app is deployed on both Vercel and Fly.io, with plans to consolidate on Fly.io.
-
-### Vercel
-
-Automatic deployment on every push to `main`.
-
-### Fly.io
-
-Deploy using the Fly CLI.
+Owner shows that dump sampling missed go in `data/sources/favorites.json`
+with the **real show RSS** (Anchor, SoundCloud, Transistor, Substack,
+Podbean, Libsyn, Pacifica — not Castbox HTML). `npm run ingest:favorites`
+fetches each channel for title, description, language, link, and artwork.
+It does
+**not** download enclosures. Apple ids become stable `it-{appleId}`
+rows; otherwise Podcast Index (API or local dump, by feed URL) yields
+`pi-*`, else `rss-*`.
 
 ```bash
-./scripts/deploy-fly.sh
+# Curated feeds + Pacifica / public-radio Apple cards
+npm run ingest:favorites
+
+# Skip hub expansion (just the JSON feeds + pins)
+FAVORITES_EXPAND=0 npm run ingest:favorites
+
+# Paste more titles (resolved via iTunes Search, then Podcast Index)
+FAVORITE_PINS='Another Show|One More Show' npm run ingest:favorites
+npm run ingest:favorites -- --pin "Radio Semilla"
 ```
 
-## Built With
+Add a lasting card by appending to `shows` in
+`data/sources/favorites.json` (title, feedUrl, appleId, language, tags,
+hub). One-off pins can also go in `data/sources/favorite-pins.json`.
+Re-runs are idempotent. After the first fetch, RSS XML is cached in
+`.tmp/favorites-rss/` so a later pass can run offline-ish.
 
-- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
-- [Next.js](https://nextjs.org/) - React framework
-- [React](https://react.dev/) - UI library
-- [TanStack Query](https://tanstack.com/query) - Data fetching and caching
-- [Zustand](https://zustand-demo.pmnd.rs/) - State management
-- [Howler](https://howlerjs.com/) - Audio playback
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
-- [PostgreSQL](https://www.postgresql.org/) - Database
-- [Redis](https://redis.io/) - Caching
-- [Biome](https://biomejs.dev/) - Linting and formatting
+### Likes and recommendations
 
-## Contributing
+Owner favorites are the default liked seeds. On a title page, **Like this
+show** stores the id in `localStorage` (`war-liked-ids`) and POSTs to
+`/api/likes`, which writes `data/sources/liked.json` (gitignored) so
+ingest can read extra likes on this machine.
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for process details on collaborating on this project.
+Home leads with **For you** and **Because you like**. `/explore` is a
+higher-epsilon draw from the same neighborhood (not random junk from
+unrelated categories). `GET /api/recommend?seed=id` ranks related
+neighbours, then epsilon-greedy samples them (`FOR_YOU_RANDOMNESS`).
+Spanish seeds stay Spanish-first.
 
-## Versioning
+```bash
+# Pull related shows from Podcast Index + Apple for every favorite seed
+npm run ingest:recommend
 
-We use [SemVer](http://semver.org/) for versioning. For available versions of this software, see the [releases on this repository](https://github.com/shantanuraj/podcst-web/releases).
+# Optional: related/similar by feed URL or iTunes id
+PODCASTINDEX_API_KEY=...
+PODCASTINDEX_API_SECRET=...
+npm run ingest:recommend
+```
 
-## Authors
+Without API keys the script still uses the local Podcast Index dump
+(language + category neighbors) and Apple Search (`relatedTerms` /
+`relatedGenreIds` on each favorite). Metadata and feed links only.
 
-See the list of [contributors][Contributor List] who participated in this project.
+### For you (continuous learning)
 
-[Contributor List]: https://github.com/shantanuraj/podcst-web/contributors
+`/for-you` ranks podcasts and long-form YouTube from **topic weights that
+update over time**. Each `npm run ingest:for-you` (or a daily cron):
+
+1. Re-reads owner favorites and runtime likes (`liked.json`).
+2. If `YOUTUBE_API_KEY` is set, searches public channels for the top
+   weighted topics (English and Spanish heavy, still open).
+3. If OAuth refresh-token env vars are set later, pulls
+   `subscriptions.list` and liked videos (`videos.list?myRating=like`)
+   and maps channel topics into those weights.
+4. Expands the YouTube + podcast catalog with related/search hits.
+5. Writes `data/for-you/latest.json` (and a dated copy) that the page
+   reads.
+
+The UI explains this is **learned from your likes & YouTube signals
+(not homepage scrape)** and shows last learned-at. You can paste a
+YouTube channel or video URL as a strong positive signal. Each page
+load samples the related pool with `FOR_YOU_RANDOMNESS` (default 0.2).
+
+`GET /api/for-you` and `GET /api/health` dump `LEARNED_TOPICS` for
+debugging. Signal state lives in `data/sources/user-signals.json`.
+
+**Out of scope:** scraping `youtube.com` homepage or recommendation
+HTML. That feed has no supported API. The path is Google Cloud → YouTube
+Data API (key now; OAuth later). Setup notes: [docs/youtube-signals.md](docs/youtube-signals.md).
+
+```bash
+# Daily refresh from databases + learned weights
+npm run ingest:for-you
+```
+
+### Audiobooks
+
+Paginates the public LibriVox JSON API, then merges
+`data/sources/publisher-audiobooks.json` (in-copyright cards + store links).
+
+### YouTube
+
+Reads `data/sources/youtube-channels.json` — a curated pack of **400+**
+podcast, lecture, and interview channels (English and Spanish heavy,
+plus other languages). If `YOUTUBE_API_KEY` is set, enriches
+title/description/thumbnail and topic tags via the Data API. Without a
+key the curated file still writes real catalog rows. This is an index
+of channel URLs, not a media host, and not a scrape of YouTube’s
+logged-in homepage.
+
+## Stack
+
+- Next.js (App Router) · React 19 · TypeScript
+- Tailwind CSS 4
+- File-based seed catalogue + `match-sorter` search
+- Biome for lint/format
+
+Player, accounts, Chromecast, Redis, and the old episode store were
+removed from the running app so the product can be catalog-first.
 
 ## License
 
-This project is licensed under the MIT License - see the
-[LICENSE](LICENSE.md) file for details.
+MIT — see [LICENSE.md](LICENSE.md). Catalogue descriptions are editorial
+metadata; linked works remain with their rights holders.
