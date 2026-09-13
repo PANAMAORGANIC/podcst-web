@@ -59,7 +59,7 @@ describe('weight learning', () => {
     const climate = entry({
       id: 'it-climate',
       title: 'Planet: Critical',
-      tags: ['climate', 'ecology'],
+      tags: ['climate', 'ecology', 'favorite', 'rss', 'en'],
       genres: ['news'],
     });
     const seeds = entry({
@@ -79,6 +79,9 @@ describe('weight learning', () => {
     });
     assert.ok((first.weights.climate ?? 0) > 2);
     assert.ok((first.weights.seeds ?? 0) > 2);
+    assert.equal(first.weights.favorite, undefined);
+    assert.equal(first.weights.rss, undefined);
+    assert.equal(first.weights.en, undefined);
     assert.ok(first.sources.includes('favorites'));
     assert.ok(first.sources.includes('likes'));
     assert.ok(first.learnedAt);

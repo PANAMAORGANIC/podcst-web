@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { listFavoriteSeedIds } from '@/catalog/likes';
 import type { CatalogRail } from '@/catalog/rails';
 import {
   loadRuntimeLikedIds,
@@ -51,8 +52,8 @@ export function scoreForYouTitle(
   if (title.originalLanguage === 'en' || title.originalLanguage === 'es') {
     score += 1.4;
   }
-  if (likedIds.has(title.id)) score += 6;
-  if (title.type === 'youtube') score += 0.8;
+  if (likedIds.has(title.id)) score += 1.2;
+  if (title.type === 'youtube') score += 1.8;
   score += Math.min(2.2, Math.log10((title.signals.popularity ?? 0) + 10) / 2);
   return Number(score.toFixed(3));
 }
@@ -63,8 +64,10 @@ export function rankForYouFrom(
   likedIds: string[],
   limit = 36,
   now = new Date(),
+  excludeIds: string[] = [],
 ): CatalogEntry[] {
   const liked = new Set(likedIds);
+  const excluded = new Set(excludeIds);
   const day = dayKey(now);
   return catalog
     .map((title) => ({
@@ -73,19 +76,23 @@ export function rankForYouFrom(
         scoreForYouTitle(title, signals, liked) +
         (hashMix(`${title.id}:${day}`) % 17) / 100,
     }))
-    .filter((row) => row.score > 0)
+    .filter((row) => row.score > 0 && !excluded.has(row.title.id))
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
     .map((row) => row.title);
 }
 
 export function rankForYou(limit = 36, now = new Date()): CatalogEntry[] {
+  const known = [
+    ...new Set([...listFavoriteSeedIds(), ...loadRuntimeLikedIds()]),
+  ];
   return rankForYouFrom(
     getCatalog(),
     loadUserSignals(),
     loadRuntimeLikedIds(),
     limit,
     now,
+    known,
   );
 }
 

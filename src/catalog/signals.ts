@@ -24,6 +24,19 @@ const SKIP_TAGS = new Set([
   'ingested',
   'recommend',
   'itunes',
+  'favorite',
+  'rss',
+  'pin',
+  'hub-expand',
+  'podcast-index',
+  'for-you',
+  'anchor',
+  'soundcloud',
+  'transistor',
+  'substack',
+  'podbean',
+  'libsyn',
+  'spanish',
 ]);
 
 export type UserSignals = {
@@ -175,6 +188,7 @@ export function bumpWeight(
 ) {
   const tag = key.trim().toLowerCase();
   if (!tag || SKIP_TAGS.has(tag)) return;
+  if (/^[a-z]{2}$/.test(tag)) return;
   weights[tag] = Number(((weights[tag] ?? 0) + amount).toFixed(3));
 }
 
@@ -238,6 +252,7 @@ export function computeLearnedSignals(options: {
   const byId = new Map(catalog.map((title) => [title.id, title]));
   const weights: Record<string, number> = {};
   for (const [key, value] of Object.entries(previous.weights)) {
+    if (SKIP_TAGS.has(key) || /^[a-z]{2}$/.test(key)) continue;
     weights[key] = Number((value * (decay ? DECAY : 1)).toFixed(3));
   }
 
@@ -367,6 +382,9 @@ export function searchTermsFromWeights(
     'imported-subscription',
     'imported-like',
     'uc',
+    'society-culture',
+    'news',
+    ...SKIP_TAGS,
   ]);
   return topWeightedTopics(signals, 24)
     .map(({ topic }) => topic)
