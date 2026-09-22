@@ -44,8 +44,9 @@ Use Railway unless you already live on Render or Fly.
    - `HOSTNAME` defaults to `0.0.0.0` in the container. You do not
      need to set it.
 8. Wait until the deploy is **Success**. `/api/health` is cheap and
-   must not gunzip the catalogue. On a trial (~512MB) the app uses
-   the seed shelf until you have ≥1GB (or set `CATALOG_FULL=1`).
+   must not gunzip the catalogue. Railway/Render/Fly default to the
+   seed shelf (Acres, Radio Semilla, pins). Set `CATALOG_FULL=1` only
+   on a **≥1GB** service when you want the 119k ingest pool.
 9. Optional Variables — add only keys you actually have
    (`YOUTUBE_API_KEY`, LibreTranslate, Podcast Index,
    `AGENT_FEED_WEBHOOK_*`). Leave them blank otherwise. Do not set

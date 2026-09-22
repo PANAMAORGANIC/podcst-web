@@ -8,6 +8,10 @@ const catalogTrace = [
 
 const config: NextConfig = {
   output: 'standalone',
+  experimental: {
+    cpus: 1,
+    workerThreads: false,
+  },
   outputFileTracingIncludes: {
     '*': catalogTrace,
   },
