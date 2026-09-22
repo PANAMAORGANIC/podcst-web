@@ -47,6 +47,11 @@ surfaces.
   persistent mini-player streams the publisher enclosure (or embeds a
   YouTube watch URL). Queue, speed, skip, Media Session, and
   localStorage resume. We never host or mirror the file.
+- **Phone / PWA:** web manifest, PNG icons, Apple home-screen meta, and
+  a shell-only service worker. Deploy on a Node host that can hold
+  `data/catalog.json.gz` in memory (Railway / Render / Fly). Likes are
+  local-first so a read-only filesystem is fine. Steps:
+  [docs/deploy.md](docs/deploy.md).
 - Detail pages with original language, signals, and external deep links.
 - **Feed agents** from a title: structured JSON packet + Markdown brief
   (copy / download; optional webhook). Agents ingest context without
@@ -101,6 +106,8 @@ documented in `.env.example`; no key is invented for the demo.
   labeled from RED’s graph (`Learned: ecology`, climate/energy, soil).
 - Stable public read API: `GET /api/catalog` and `GET /api/catalog/{id}`.
 - Cover art: remote artwork URL when present; generated mark fallback.
+- Phone-ready HTTPS deploy (standalone Node + Dockerfile) and PWA Add
+  to Home Screen. Catalog size rules out casual Vercel Hobby.
 
 ### Later (still not a host)
 

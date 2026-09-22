@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
+import { PwaRegister } from '@/components/PwaRegister';
 import { PlayerRoot } from '@/components/player/PlayerRoot';
 import { ThemeListener } from '@/theme/ThemeListener';
 import '@/styles/global.css';
@@ -14,6 +15,25 @@ export const metadata: Metadata = {
   description:
     'A curated shelf for RED — For You and related finds from likes and YouTube signals, not a public podcast directory.',
   applicationName: 'World Audio Repository',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    title: 'WAR',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      {
+        url: '/icons/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
+  },
   openGraph: {
     title: 'World Audio Repository',
     siteName: 'World Audio Repository',
@@ -28,6 +48,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   width: 'device-width',
   themeColor: '#141311',
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -51,6 +72,7 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeListener />
+        <PwaRegister />
         <a className="skip-link" href="#main">
           Skip to content
         </a>

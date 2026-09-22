@@ -1,12 +1,10 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
-import path from 'node:path';
 import { NextResponse } from 'next/server';
 import {
   isLikeId,
-  LIKED_FILE,
   listFavoriteSeedIds,
   readLikedFile,
   uniqueIds,
+  writeLikedFile,
 } from '@/catalog/likes';
 
 export const dynamic = 'force-dynamic';
@@ -15,6 +13,7 @@ export async function GET() {
   return NextResponse.json({
     seeds: listFavoriteSeedIds(),
     liked: readLikedFile(),
+    persist: 'local-first',
   });
 }
 
@@ -34,13 +33,11 @@ export async function POST(request: Request) {
     body.liked === false
       ? current.filter((item) => item !== id)
       : uniqueIds([...current, id]);
-  mkdirSync(path.dirname(LIKED_FILE), { recursive: true });
-  writeFileSync(
-    LIKED_FILE,
-    `${JSON.stringify({ ids: next, updatedAt: new Date().toISOString() }, null, 2)}\n`,
-  );
+  const persisted = writeLikedFile(next);
   return NextResponse.json({
     ok: true,
+    persisted,
+    persist: persisted ? 'disk' : 'local-first',
     seeds: listFavoriteSeedIds(),
     liked: next,
   });

@@ -25,8 +25,9 @@ export default function AboutPage() {
         This project started as a podcast player (
         <a href="https://github.com/shantanuraj/podcst-web">podcst-web</a>
         ). We kept the Next.js, TypeScript, and Tailwind bones, plus the idea of
-        Podcast Index / RSS ingest. We stripped the player, queue, and account
-        shell. v1 is a repository: metadata, search, and deep links.
+        Podcast Index / RSS ingest. Accounts and hosted media are gone. v1 is a
+        repository: metadata, search, deep links, and an optional source-stream
+        player.
       </p>
       <h2>What we do not do</h2>
       <ul>
@@ -58,7 +59,13 @@ export default function AboutPage() {
         remote feed artwork when present and fall back to a generated mark.
         Read-only catalogue: <code>GET /api/catalog</code>. Title pages list RSS
         episodes and play them in a persistent mini-player (source stream only).
-        No Postgres, Redis, or API key required to run.
+        No Postgres, Redis, or API key required to run. On a phone, open the
+        HTTPS URL and use the browser&apos;s Add to Home Screen — likes stay in
+        this device&apos;s storage. Deploy steps:{' '}
+        <a href="https://github.com/PANAMAORGANIC/podcst-web/blob/cursor/world-audio-repository-0e8f/docs/deploy.md">
+          docs/deploy.md
+        </a>
+        .
       </p>
       <h2 id="ingest">Ingest path</h2>
       <p>

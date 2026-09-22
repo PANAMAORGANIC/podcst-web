@@ -19,5 +19,8 @@ export async function GET() {
     homepageScrape: false,
     exploreRate: exploreRate(),
     curatedHome: true,
+    player: 'source-stream',
+    pwa: true,
+    likesPersist: 'local-first',
   });
 }

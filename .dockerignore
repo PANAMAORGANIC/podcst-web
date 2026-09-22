@@ -1,5 +1,12 @@
 node_modules
 .next
 .git
+.github
+.tmp
 data/ingest
+coverage
 *.md
+!README.md
+.env
+.env.*
+!.env.example

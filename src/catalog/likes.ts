@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { favoriteId, loadFavoritesFile } from '../../scripts/lib/favorites';
 import { getCatalog, getEntry } from './store';
@@ -6,12 +6,11 @@ import type { CatalogEntry } from './types';
 
 export { isLikeId, LIKED_STORAGE_KEY } from './like-constants';
 
-export const LIKED_FILE = path.join(
-  process.cwd(),
-  'data',
-  'sources',
-  'liked.json',
-);
+export function likedFilePath(root = process.cwd()): string {
+  return path.join(root, 'data', 'sources', 'liked.json');
+}
+
+export const LIKED_FILE = likedFilePath();
 
 export interface LikedFile {
   ids: string[];
@@ -23,7 +22,7 @@ export function listFavoriteSeedIds(root = process.cwd()): string[] {
 }
 
 export function readLikedFile(root = process.cwd()): string[] {
-  const file = path.join(root, 'data', 'sources', 'liked.json');
+  const file = likedFilePath(root);
   if (!existsSync(file)) return [];
   try {
     const parsed = JSON.parse(readFileSync(file, 'utf8')) as
@@ -33,6 +32,21 @@ export function readLikedFile(root = process.cwd()): string[] {
     return (ids ?? []).filter((id) => typeof id === 'string' && id.length > 0);
   } catch {
     return [];
+  }
+}
+
+/** Returns false on a read-only host. Browser likes stay in localStorage. */
+export function writeLikedFile(ids: string[], root = process.cwd()): boolean {
+  const file = likedFilePath(root);
+  try {
+    mkdirSync(path.dirname(file), { recursive: true });
+    writeFileSync(
+      file,
+      `${JSON.stringify({ ids, updatedAt: new Date().toISOString() }, null, 2)}\n`,
+    );
+    return true;
+  } catch {
+    return false;
   }
 }
 

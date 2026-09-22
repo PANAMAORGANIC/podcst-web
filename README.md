@@ -37,6 +37,34 @@ npm test
 npm run build
 ```
 
+## Phone / Deploy
+
+Give the shelf an HTTPS URL, then Add to Home Screen. The checked-in
+catalogue (`data/catalog.json.gz`, ~24MB gzip / ~100MB raw) needs a
+**long-running Node 20 process with about 1GB RAM**, not a tiny
+serverless function. Railway, Render, or Fly with the included
+Dockerfile is the intended host. Vercel Hobby often fails on function
+size or cold-start gunzip.
+
+This repo has no host token, so the agent cannot push a live URL.
+Exact click-path (under ten minutes once you have a free Railway
+account): **[docs/deploy.md](docs/deploy.md)**.
+
+On the phone:
+
+1. Open the HTTPS URL in Safari (iOS) or Chrome (Android).
+2. Smoke `/` then `/title/it-1747339811` (Acres U.S.A.) and
+   `/title/it-1547894245` (Radio Semilla). Play latest if the
+   enclosure allows it.
+3. iOS: Share → **Add to Home Screen**. Android: menu → **Add to Home
+   screen** / Install app.
+4. Likes stay in this browser’s `localStorage`. Hosted disks are often
+   read-only; `/api/likes` will not throw if it cannot write.
+
+No audio files are uploaded. Optional keys (`YOUTUBE_API_KEY`,
+LibreTranslate, Podcast Index, `AGENT_FEED_*`) stay in the host
+dashboard — never in git. The app is useful with none of them.
+
 ## What you can do
 
 - **Shelf / For you / Because you like / Explore** — taste-derived only
