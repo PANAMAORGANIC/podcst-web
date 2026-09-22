@@ -59,23 +59,10 @@ export function SearchBox({
     return () => window.clearTimeout(handle);
   }, [term]);
 
-  function submit(next = term) {
-    const q = next.trim();
-    if (!q) return;
-    setOpen(false);
-    router.push(`/search?q=${encodeURIComponent(q)}`);
-  }
-
   return (
     <div className={`search-box search-box-${size}`}>
       <search>
-        <form
-          action="/search"
-          onSubmit={(event) => {
-            event.preventDefault();
-            submit();
-          }}
-        >
+        <form action="/search" method="get">
           <label className="sr-only" htmlFor={`war-search-${size}`}>
             Search the repository
           </label>

@@ -61,6 +61,17 @@ export function readIngested(): CatalogEntry[] {
   return items;
 }
 
+/** Editorial seed only. Never gunzips the 24MB ingest snapshot. */
+export function getShelfCatalog(): CatalogEntry[] {
+  return SEED_CATALOG;
+}
+
+/** Full snapshot only when CATALOG_FULL=1; otherwise the seed shelf. */
+export function getSearchCatalog(): CatalogEntry[] {
+  if (shouldLoadFullSnapshot()) return getCatalog();
+  return getShelfCatalog();
+}
+
 export function getCatalog(): CatalogEntry[] {
   const ingested = readIngested();
   const mtime = snapshotMtime() || 1;
@@ -85,6 +96,9 @@ export function getCatalog(): CatalogEntry[] {
 }
 
 export function getEntry(id: string): CatalogEntry | undefined {
+  const seed = SEED_CATALOG.find((item) => item.id === id);
+  if (seed) return seed;
+  if (!shouldLoadFullSnapshot()) return undefined;
   return getCatalog().find((item) => item.id === id);
 }
 

@@ -15,7 +15,7 @@ import {
   loadUserSignals,
   type UserSignals,
 } from '@/catalog/signals';
-import { getCatalog } from '@/catalog/store';
+import { getShelfCatalog } from '@/catalog/store';
 import type { CatalogEntry } from '@/catalog/types';
 
 export const FOR_YOU_DIR = join(process.cwd(), 'data/for-you');
@@ -104,7 +104,7 @@ export function rankForYou(
     ...new Set([...listFavoriteSeedIds(), ...loadRuntimeLikedIds()]),
   ];
   return rankForYouFrom(
-    getCatalog(),
+    getShelfCatalog(),
     loadUserSignals(),
     loadRuntimeLikedIds(),
     limit,
@@ -153,7 +153,7 @@ export function loadForYouTitles(
   options: ExploreOptions = {},
 ): CatalogEntry[] {
   const snapshot = loadForYouSnapshot();
-  const catalog = getCatalog();
+  const catalog = getShelfCatalog();
   const byId = new Map(catalog.map((title) => [title.id, title]));
   let pool: CatalogEntry[] = [];
   if (snapshot?.ids.length) {

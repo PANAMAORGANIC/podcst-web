@@ -54,5 +54,8 @@ export function shouldLoadFullSnapshot(
   const flag = env.CATALOG_FULL?.trim().toLowerCase();
   if (flag === '0' || flag === 'false') return false;
   if (flag === '1' || flag === 'true') return true;
+  // Railway/Render/Fly: never auto-load ~120k titles. A 1GB dyno still
+  // freezes if home scores the full snapshot on every request.
+  if (hostedTrialFallbackBytes(env)) return false;
   return memoryBytes >= FULL_CATALOG_MIN_BYTES;
 }

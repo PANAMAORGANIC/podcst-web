@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { listSeedEntries, resolveLikeIds, uniqueIds } from '@/catalog/likes';
 import { exploreRate } from '@/catalog/random';
 import { recommendRails } from '@/catalog/recommend';
-import { getCatalog, getEntry } from '@/catalog/store';
+import { getEntry, getShelfCatalog } from '@/catalog/store';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const limit = Number(url.searchParams.get('limit') ?? '8') || 8;
   const seedParam = url.searchParams.get('seed');
   const seedsParam = url.searchParams.get('seeds');
-  const catalog = getCatalog();
+  const catalog = getShelfCatalog();
 
   if (seedParam) {
     const seed = getEntry(seedParam);

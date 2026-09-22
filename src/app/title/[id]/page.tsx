@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { listFavoriteSeedIds } from '@/catalog/likes';
 import { relatedEntries } from '@/catalog/query';
 import { recommendFor } from '@/catalog/recommend';
-import { getCatalog, getEntry } from '@/catalog/store';
+import { getEntry, getShelfCatalog } from '@/catalog/store';
 import { CatalogGrid } from '@/components/CatalogGrid';
 import { TitleDetail } from '@/components/TitleDetail';
 
@@ -31,7 +31,7 @@ export default async function TitlePage({ params }: PageProps) {
   const entry = getEntry(id);
   if (!entry) notFound();
   const related = relatedEntries(entry);
-  const because = recommendFor(entry, getCatalog(), 8);
+  const because = recommendFor(entry, getShelfCatalog(), 8);
   const seedIds = listFavoriteSeedIds();
 
   return (

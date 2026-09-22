@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { favoriteId, loadFavoritesFile } from '../../scripts/lib/favorites';
-import { getCatalog, getEntry } from './store';
+import { getEntry, getShelfCatalog } from './store';
 import type { CatalogEntry } from './types';
 
 export { isLikeId, LIKED_STORAGE_KEY } from './like-constants';
@@ -55,7 +55,7 @@ export function listIngestLikeIds(root = process.cwd()): string[] {
 }
 
 export function listSeedEntries(root = process.cwd()): CatalogEntry[] {
-  const catalog = getCatalog();
+  const catalog = getShelfCatalog();
   const byId = new Map(catalog.map((item) => [item.id, item]));
   const out: CatalogEntry[] = [];
   const seen = new Set<string>();

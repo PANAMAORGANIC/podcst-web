@@ -41,6 +41,13 @@ describe('catalog memory gate', () => {
       ),
       true,
     );
+    assert.equal(
+      shouldLoadFullSnapshot(
+        { RAILWAY_ENVIRONMENT: 'production' },
+        2 * FULL_CATALOG_MIN_BYTES,
+      ),
+      false,
+    );
   });
 });
 

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { listFavoriteSeedIds, listSeedEntries } from '@/catalog/likes';
 import { recommendRails } from '@/catalog/recommend';
-import { getCatalog } from '@/catalog/store';
+import { getShelfCatalog } from '@/catalog/store';
 import { BecauseYouLikeRails } from '@/components/BecauseYouLike';
 
 export const dynamic = 'force-dynamic';
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function RecommendationsPage() {
   const seeds = listSeedEntries();
   const seedIds = listFavoriteSeedIds();
-  const rails = recommendRails(seeds, getCatalog(), 8);
+  const rails = recommendRails(seeds, getShelfCatalog(), 8);
 
   return (
     <div className="page-recommend">

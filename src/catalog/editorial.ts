@@ -9,7 +9,7 @@ import {
   requestExploreSeed,
 } from '@/catalog/random';
 import { loadUserSignals, type UserSignals } from '@/catalog/signals';
-import { getCatalog } from '@/catalog/store';
+import { getShelfCatalog } from '@/catalog/store';
 import type { CatalogEntry } from '@/catalog/types';
 
 const MIN_WEIGHT = 0.8;
@@ -283,7 +283,7 @@ export function editorialRailsFrom(options: {
 
 export function editorialRails(maxRails = 4, limit = 8): CatalogRail[] {
   return editorialRailsFrom({
-    catalog: getCatalog(),
+    catalog: getShelfCatalog(),
     signals: loadUserSignals(),
     favorites: listSeedEntries(),
     maxRails,

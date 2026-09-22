@@ -1,7 +1,7 @@
 import { matchSorter } from 'match-sorter';
 import { getLanguage } from './languages';
 import { getRegion } from './regions';
-import { getCatalog } from './store';
+import { getSearchCatalog } from './store';
 import type {
   CatalogEntry,
   CatalogQuery,
@@ -79,7 +79,7 @@ function sortEntries(
 }
 
 export function queryCatalog(query: CatalogQuery = {}): CatalogResult {
-  const catalog = getCatalog();
+  const catalog = getSearchCatalog();
   const filtered = catalog.filter((entry) => matchesFilters(entry, query));
   const term = query.q?.trim();
 
@@ -128,7 +128,7 @@ export function queryCatalog(query: CatalogQuery = {}): CatalogResult {
 }
 
 export function relatedEntries(entry: CatalogEntry, limit = 6): CatalogEntry[] {
-  return getCatalog()
+  return getSearchCatalog()
     .filter((item) => item.id !== entry.id)
     .map((item) => {
       let score = 0;
@@ -154,19 +154,21 @@ export function relatedEntries(entry: CatalogEntry, limit = 6): CatalogEntry[] {
 }
 
 export function listLanguages(): string[] {
-  return [...new Set(getCatalog().map((item) => item.originalLanguage))].sort(
-    (a, b) => getLanguage(a).name.localeCompare(getLanguage(b).name, 'en'),
+  return [
+    ...new Set(getSearchCatalog().map((item) => item.originalLanguage)),
+  ].sort((a, b) =>
+    getLanguage(a).name.localeCompare(getLanguage(b).name, 'en'),
   );
 }
 
 export function listRegions(): string[] {
-  return [...new Set(getCatalog().map((item) => item.region))].sort((a, b) =>
-    getRegion(a).name.localeCompare(getRegion(b).name, 'en'),
+  return [...new Set(getSearchCatalog().map((item) => item.region))].sort(
+    (a, b) => getRegion(a).name.localeCompare(getRegion(b).name, 'en'),
   );
 }
 
 export function listGenres(): string[] {
-  return [...new Set(getCatalog().flatMap((item) => item.genres))].sort(
+  return [...new Set(getSearchCatalog().flatMap((item) => item.genres))].sort(
     (a, b) => a.localeCompare(b, 'en'),
   );
 }

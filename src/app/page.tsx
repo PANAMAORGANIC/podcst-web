@@ -1,20 +1,13 @@
 import Link from 'next/link';
-import { listFavoriteSeedIds, listSeedEntries } from '@/catalog/likes';
-import { homeRails } from '@/catalog/rails';
-import { exploreRate } from '@/catalog/random';
-import { recommendRails } from '@/catalog/recommend';
-import { getCatalog } from '@/catalog/store';
+import { loadCachedHome } from '@/catalog/home';
 import { BecauseYouLikeRails } from '@/components/BecauseYouLike';
 import { CatalogRail } from '@/components/CatalogRail';
 import { SearchBox } from '@/components/SearchBox';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default function HomePage() {
-  const seedIds = listFavoriteSeedIds();
-  const likedRails = recommendRails(listSeedEntries(), getCatalog(), 8);
-  const rate = exploreRate();
-  const rails = homeRails();
+  const { seedIds, likedRails, rate, rails } = loadCachedHome();
   const forYou = rails.find((rail) => rail.id === 'for-you');
   const rest = rails.filter((rail) => rail.id !== 'for-you');
 
