@@ -156,9 +156,12 @@ function explainRail(
   recipe: EditorialRecipe,
   favorites: CatalogEntry[],
 ): { title: string; lede: string } {
-  const seed = favorites.find((favorite) =>
-    favoriteMatchesRecipe(favorite, recipe),
-  );
+  const seed =
+    favorites.find((favorite) =>
+      recipe.favoriteTitleIncludes?.some((needle) =>
+        favorite.title.toLowerCase().includes(needle),
+      ),
+    ) ?? favorites.find((favorite) => favoriteMatchesRecipe(favorite, recipe));
   if (seed) {
     return {
       title: `Learned: ${recipe.label}`,
