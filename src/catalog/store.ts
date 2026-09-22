@@ -1,6 +1,7 @@
 import { existsSync, statSync } from 'node:fs';
 import { shouldLoadFullSnapshot } from './memory';
 import { SEED_CATALOG } from './seed';
+import { getShelfCatalog } from './shelf';
 import {
   CATALOG_GZ_PATH,
   CATALOG_JSON_PATH,
@@ -61,10 +62,7 @@ export function readIngested(): CatalogEntry[] {
   return items;
 }
 
-/** Editorial seed only. Never gunzips the 24MB ingest snapshot. */
-export function getShelfCatalog(): CatalogEntry[] {
-  return SEED_CATALOG;
-}
+export { getShelfCatalog } from './shelf';
 
 /** Full snapshot only when CATALOG_FULL=1; otherwise the seed shelf. */
 export function getSearchCatalog(): CatalogEntry[] {
@@ -96,8 +94,8 @@ export function getCatalog(): CatalogEntry[] {
 }
 
 export function getEntry(id: string): CatalogEntry | undefined {
-  const seed = SEED_CATALOG.find((item) => item.id === id);
-  if (seed) return seed;
+  const shelf = getShelfCatalog().find((item) => item.id === id);
+  if (shelf) return shelf;
   if (!shouldLoadFullSnapshot()) return undefined;
   return getCatalog().find((item) => item.id === id);
 }

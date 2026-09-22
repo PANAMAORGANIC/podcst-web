@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { buildHomePayload } from './home';
-import { SEED_CATALOG } from './seed';
+import { getShelfCatalog } from './shelf';
 
 describe('cached seed home', () => {
   it('builds rails only from the editorial seed', () => {
-    const seedIds = new Set(SEED_CATALOG.map((item) => item.id));
+    const seedIds = new Set(getShelfCatalog().map((item) => item.id));
     const home = buildHomePayload();
     assert.ok(home.rails.length >= 2);
     assert.ok(home.seedIds.includes('it-1747339811'));
@@ -17,5 +17,6 @@ describe('cached seed home', () => {
     }
     const pins = home.rails.find((rail) => rail.id === 'pins');
     assert.ok(pins?.items.some((item) => /acres/i.test(item.title)));
+    assert.ok(pins?.items.some((item) => /semilla/i.test(item.title)));
   });
 });
