@@ -6,7 +6,6 @@ import { relatedEntries } from '@/catalog/query';
 import { recommendFor } from '@/catalog/recommend';
 import { getCatalog, getEntry } from '@/catalog/store';
 import { CatalogGrid } from '@/components/CatalogGrid';
-import { EpisodeList } from '@/components/player/EpisodeList';
 import { TitleDetail } from '@/components/TitleDetail';
 
 export const dynamic = 'force-dynamic';
@@ -47,7 +46,6 @@ export default async function TitlePage({ params }: PageProps) {
         <span>{entry.id}</span>
       </p>
       <TitleDetail entry={entry} seedIds={seedIds} />
-      <EpisodeList entry={entry} />
       {because.length > 0 ? (
         <section className="related">
           <h2>Because you like {entry.title}</h2>

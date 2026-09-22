@@ -9,6 +9,7 @@ import { ExternalLinks } from './ExternalLinks';
 import { FeedAgents } from './FeedAgents';
 import { FeedIcon } from './Icons';
 import { LikeButton } from './LikeButton';
+import { EpisodeList } from './player/EpisodeList';
 import { TranslateToggle } from './TranslateToggle';
 import { TypeBadge } from './TypeBadge';
 
@@ -112,6 +113,7 @@ export function TitleDetail({
             </li>
           ))}
         </ul>
+        <EpisodeList entry={entry} />
         <h2>Open externally</h2>
         <p className="lede">
           The repository stores metadata and links. Media stays with the
