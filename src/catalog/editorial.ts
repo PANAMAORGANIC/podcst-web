@@ -51,7 +51,14 @@ export const EDITORIAL_RECIPES: EditorialRecipe[] = [
   {
     id: 'acres-organic',
     label: 'organic / regenerative farming',
-    tags: ['acres', 'organic', 'farming', 'soil'],
+    tags: [
+      'acres',
+      'organic',
+      'farming',
+      'soil',
+      'agroecology',
+      'regeneration',
+    ],
     requireTopics: ['acres', 'organic', 'farming'],
     favoriteTitleIncludes: ['acres'],
   },
@@ -139,7 +146,10 @@ function itemMatchesRecipe(
   const tags = new Set(
     [...item.tags, ...item.genres].map((tag) => tag.toLowerCase()),
   );
-  return recipe.tags.some((tag) => tags.has(tag));
+  if (recipe.tags.some((tag) => tags.has(tag))) return true;
+  if (!recipe.favoriteTitleIncludes?.length) return false;
+  const hay = `${item.title} ${item.description}`.toLowerCase();
+  return recipe.favoriteTitleIncludes.some((needle) => hay.includes(needle));
 }
 
 export function scoreEditorialItem(
