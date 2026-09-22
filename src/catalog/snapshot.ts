@@ -36,28 +36,51 @@ export interface SnapshotWriteResult {
 
 const GIT_WARN_BYTES = 40 * 1024 * 1024;
 
+export function snapshotFileStats() {
+  const gz = existsSync(CATALOG_GZ_PATH);
+  const json = existsSync(CATALOG_JSON_PATH);
+  return {
+    gz,
+    json,
+    gzBytes: gz ? statSync(CATALOG_GZ_PATH).size : 0,
+    jsonBytes: json ? statSync(CATALOG_JSON_PATH).size : 0,
+  };
+}
+
 export function loadSnapshot(): CatalogEntry[] {
-  return snapshotItems(readSnapshotFile()) ?? [];
+  try {
+    return snapshotItems(readSnapshotFile()) ?? [];
+  } catch (error) {
+    console.error('[war] catalog snapshot failed', error);
+    return [];
+  }
 }
 
 function readSnapshotFile(): CatalogSnapshot | CatalogEntry[] | null {
   const gz = existsSync(CATALOG_GZ_PATH);
   const json = existsSync(CATALOG_JSON_PATH);
   if (gz && json) {
-    const jsonParsed = parseBuffer(readFileSync(CATALOG_JSON_PATH));
-    const jsonItems = snapshotItems(jsonParsed);
-    const gzNewer =
-      statSync(CATALOG_GZ_PATH).mtimeMs >= statSync(CATALOG_JSON_PATH).mtimeMs;
-    if (jsonItems && !gzNewer) return jsonParsed;
-    return parseBuffer(gunzipSync(readFileSync(CATALOG_GZ_PATH)));
+    const jsonNewer =
+      statSync(CATALOG_JSON_PATH).mtimeMs > statSync(CATALOG_GZ_PATH).mtimeMs;
+    if (jsonNewer) {
+      const jsonParsed = parseUtf8(readFileSync(CATALOG_JSON_PATH, 'utf8'));
+      if (snapshotItems(jsonParsed)) return jsonParsed;
+    }
+    return parseUtf8(inflateGzipFile(CATALOG_GZ_PATH));
   }
-  if (gz) return parseBuffer(gunzipSync(readFileSync(CATALOG_GZ_PATH)));
-  if (json) return parseBuffer(readFileSync(CATALOG_JSON_PATH));
+  if (gz) return parseUtf8(inflateGzipFile(CATALOG_GZ_PATH));
+  if (json) return parseUtf8(readFileSync(CATALOG_JSON_PATH, 'utf8'));
   return null;
 }
 
-function parseBuffer(buf: Buffer): CatalogSnapshot | CatalogEntry[] {
-  return JSON.parse(buf.toString('utf8')) as CatalogSnapshot | CatalogEntry[];
+/** Gunzip then drop the compressed buffer before JSON.parse. */
+export function inflateGzipFile(file: string): string {
+  const raw = gunzipSync(readFileSync(file));
+  return raw.toString('utf8');
+}
+
+function parseUtf8(text: string): CatalogSnapshot | CatalogEntry[] {
+  return JSON.parse(text) as CatalogSnapshot | CatalogEntry[];
 }
 
 function snapshotItems(

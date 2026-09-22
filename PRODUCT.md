@@ -50,7 +50,8 @@ surfaces.
 - **Phone / PWA:** web manifest, PNG icons, Apple home-screen meta, and
   a shell-only service worker. Deploy on a Node host that can hold
   `data/catalog.json.gz` in memory (Railway / Render / Fly). Likes are
-  local-first so a read-only filesystem is fine. Steps:
+  local-first so a read-only filesystem is fine. `/api/health` does
+  not gunzip the catalogue. Steps:
   [docs/deploy.md](docs/deploy.md).
 - Detail pages with original language, signals, and external deep links.
 - **Feed agents** from a title: structured JSON packet + Markdown brief

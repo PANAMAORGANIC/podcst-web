@@ -35,13 +35,36 @@ Use Railway unless you already live on Render or Fly.
    instead: Settings → Build → Builder → **Dockerfile**.
 6. Settings → **Networking** → **Generate Domain**. Copy the
    `https://….up.railway.app` URL.
-7. Wait until the deploy is **Success**. First boot can take a couple
-   of minutes while Next.js starts and gunzips the catalogue.
-8. Optional: Variables — add only keys you actually have
+7. **Target port (502s):** Settings → Networking → **Target port**
+   must be the port the process listens on.
+   - **Best:** delete any `PORT` variable you added. Railway injects
+     `PORT`. Leave Target port empty (or set it to that same value).
+   - If you keep `PORT=3000`, set Target port to **3000** as well.
+   - Do not set `PORT` in the Dockerfile (the image does not).
+   - `HOSTNAME` defaults to `0.0.0.0` in the container. You do not
+     need to set it.
+8. Wait until the deploy is **Success**. `/api/health` is cheap and
+   must not gunzip the catalogue. On a trial (~512MB) the app uses
+   the seed shelf until you have ≥1GB (or set `CATALOG_FULL=1`).
+9. Optional Variables — add only keys you actually have
    (`YOUTUBE_API_KEY`, LibreTranslate, Podcast Index,
-   `AGENT_FEED_WEBHOOK_*`). Leave them blank otherwise.
+   `AGENT_FEED_WEBHOOK_*`). Leave them blank otherwise. Do not set
+   `PORT` unless it matches Target port.
 
-Public URL: the generated Railway domain.
+Public URL: the generated Railway domain (this project:
+`https://podcst-production.up.railway.app`).
+
+### Railway 502 / timeouts
+
+1. Deploy logs should show `[war] listen 0.0.0.0:<port>` — that
+   `<port>` is what Target port must match.
+2. `curl -sS https://podcst-production.up.railway.app/api/health`
+   should return 200 in about a second. If it hangs, the proxy is
+   not reaching the process (port mismatch) or the old image is
+   still serving a health handler that loads the catalogue.
+3. Homepage search of the 119k ingest pool needs ~1GB RAM. Trial
+   RAM stays on the editorial seed (Acres, Radio Semilla, and the
+   other pins still resolve).
 
 ## Render (same Dockerfile)
 
@@ -119,7 +142,7 @@ UI still works.
 ```bash
 npm ci
 npm run build   # next build + copies public/static into standalone
-npm start       # node .next/standalone/server.js  (PORT=3000)
+npm start       # node .next/standalone/listen.cjs (PORT or 3000)
 # open http://localhost:3000
 ```
 

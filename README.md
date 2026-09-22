@@ -35,17 +35,17 @@ npm run typecheck
 npm run lint
 npm test
 npm run build
-npm start          # production: standalone Node server on :3000
+npm start          # production: listen.cjs honors PORT, binds 0.0.0.0
 ```
 
 ## Phone / Deploy
 
-Give the shelf an HTTPS URL, then Add to Home Screen. The checked-in
-catalogue (`data/catalog.json.gz`, ~24MB gzip / ~100MB raw) needs a
-**long-running Node 20 process with about 1GB RAM**, not a tiny
-serverless function. Railway, Render, or Fly with the included
-Dockerfile is the intended host. Vercel Hobby often fails on function
-size or cold-start gunzip.
+Give the shelf an HTTPS URL, then Add to Home Screen. Production URL:
+[https://podcst-production.up.railway.app](https://podcst-production.up.railway.app).
+`/api/health` is cheap (no catalog gunzip). The checked-in catalogue
+(`data/catalog.json.gz`, ~24MB gzip / ~100MB raw) needs **~1GB RAM**
+for the full ingest pool; Railway trial stays on the seed shelf.
+Vercel Hobby often fails on function size or cold-start gunzip.
 
 This repo has no host token, so the agent cannot push a live URL.
 Exact click-path (under ten minutes once you have a free Railway

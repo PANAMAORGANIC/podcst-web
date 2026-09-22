@@ -21,3 +21,8 @@ if (existsSync(staticDir)) {
     recursive: true,
   });
 }
+
+const listen = path.join(root, 'scripts', 'listen.cjs');
+if (existsSync(listen)) {
+  cpSync(listen, path.join(standalone, 'listen.cjs'));
+}
