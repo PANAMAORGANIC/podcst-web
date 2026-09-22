@@ -49,6 +49,13 @@ export const EDITORIAL_RECIPES: EditorialRecipe[] = [
     favoriteTitleIncludes: ['planet: critical', 'great simplification'],
   },
   {
+    id: 'acres-organic',
+    label: 'organic / regenerative farming',
+    tags: ['acres', 'organic', 'farming', 'soil'],
+    requireTopics: ['acres', 'organic', 'farming'],
+    favoriteTitleIncludes: ['acres'],
+  },
+  {
     id: 'soil-regenerative',
     label: 'soil & regenerative (ES + EN)',
     tags: [
@@ -64,20 +71,6 @@ export const EDITORIAL_RECIPES: EditorialRecipe[] = [
     languages: ['es', 'en'],
     requireTopics: ['agroecology', 'seeds', 'semillas', 'regeneration', 'soil'],
     favoriteTitleIncludes: ['radio semilla'],
-  },
-  {
-    id: 'acres-organic',
-    label: 'organic / regenerative farming',
-    tags: [
-      'agroecology',
-      'regeneration',
-      'soil',
-      'organic',
-      'acres',
-      'farming',
-    ],
-    requireTopics: ['agroecology', 'regeneration', 'soil', 'organic'],
-    favoriteTitleIncludes: ['acres'],
   },
   {
     id: 'science-longform',
