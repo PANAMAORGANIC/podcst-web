@@ -10,6 +10,7 @@ import { FeedAgents } from './FeedAgents';
 import { FeedIcon } from './Icons';
 import { LikeButton } from './LikeButton';
 import { EpisodeList } from './player/EpisodeList';
+import { SubscribeButton } from './SubscribeButton';
 import { TranslateToggle } from './TranslateToggle';
 import { TypeBadge } from './TypeBadge';
 
@@ -47,6 +48,7 @@ export function TitleDetail({
               onToggle={() => setTranslated((value) => !value)}
             />
             <LikeButton id={entry.id} title={entry.title} seeds={seedIds} />
+            <SubscribeButton id={entry.id} title={entry.title} />
             <a className="btn btn-primary" href="#feed-agents">
               <FeedIcon />
               Feed agents

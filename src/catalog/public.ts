@@ -23,6 +23,25 @@ export type PublicCatalogItem = {
   signals: CatalogSignals;
 };
 
+export function fromPublicCatalogItem(item: PublicCatalogItem): CatalogEntry {
+  return {
+    id: item.id,
+    type: item.type,
+    title: item.title,
+    originalLanguage: item.language,
+    creators: item.creators,
+    description: item.description,
+    tags: item.tags,
+    genres: item.genres,
+    region: item.region,
+    country: item.country,
+    countryCode: '',
+    externalUrls: item.urls,
+    coverArt: item.cover,
+    signals: item.signals,
+  };
+}
+
 export function toPublicCatalogItem(entry: CatalogEntry): PublicCatalogItem {
   return {
     id: entry.id,

@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { clampCatalogLimit, toPublicCatalogItem } from './public';
+import {
+  clampCatalogLimit,
+  fromPublicCatalogItem,
+  toPublicCatalogItem,
+} from './public';
 import { queryCatalog } from './query';
 import type { CatalogEntry } from './types';
 
@@ -41,6 +45,8 @@ describe('public catalog record', () => {
     assert.equal(item.urls.rss, 'https://example.com/pc');
     assert.equal(item.signals.popularity, 50);
     assert.equal('originalLanguage' in item, false);
+    assert.equal(fromPublicCatalogItem(item).originalLanguage, 'en');
+    assert.equal(fromPublicCatalogItem(item).id, item.id);
   });
 
   it('clamps list limits', () => {

@@ -8,10 +8,12 @@ export function CoverArt({
   entry,
   priority = false,
   size = 'card',
+  alt = '',
 }: {
   entry: CatalogEntry;
   priority?: boolean;
   size?: 'card' | 'hero';
+  alt?: string;
 }) {
   const generated = generatedCoverPath(entry.id);
   const preferred = coverUrl(entry);
@@ -25,9 +27,9 @@ export function CoverArt({
     // biome-ignore lint/performance/noImgElement: remote artwork + generated SVG fallback
     <img
       src={src}
-      alt=""
-      width={size === 'hero' ? 420 : 320}
-      height={size === 'hero' ? 420 : 320}
+      alt={alt}
+      width={size === 'hero' ? 420 : 120}
+      height={size === 'hero' ? 420 : 120}
       className={`cover-art cover-${size}`}
       decoding="async"
       fetchPriority={priority ? 'high' : 'auto'}

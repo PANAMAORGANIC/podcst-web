@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { loadCachedHome } from '@/catalog/home';
 import { BecauseYouLikeRails } from '@/components/BecauseYouLike';
 import { CatalogRail } from '@/components/CatalogRail';
+import { LibraryRail } from '@/components/LibraryRail';
 import { SearchBox } from '@/components/SearchBox';
 
 export const revalidate = 60;
@@ -23,6 +24,8 @@ export default function HomePage() {
         </p>
         <SearchBox size="hero" />
         <p className="recommend-more">
+          <Link href="/library">Library</Link>
+          {' · '}
           <Link href="/for-you">For you</Link>
           {' · '}
           <Link href="/recommendations">Because you like</Link>
@@ -31,6 +34,7 @@ export default function HomePage() {
         </p>
       </section>
       {forYou ? <CatalogRail rail={forYou} /> : null}
+      <LibraryRail />
       <BecauseYouLikeRails
         seedIds={seedIds}
         initialRails={likedRails}

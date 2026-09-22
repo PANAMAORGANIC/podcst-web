@@ -23,6 +23,23 @@ export async function GET(request: Request) {
     return NextResponse.json({ item: toPublicCatalogItem(entry) });
   }
 
+  const idsParam = url.searchParams.get('ids')?.trim();
+  if (idsParam) {
+    const ids = [
+      ...new Set(
+        idsParam
+          .split(',')
+          .map((value) => value.trim())
+          .filter(Boolean),
+      ),
+    ].slice(0, 48);
+    const items = ids
+      .map((itemId) => getEntry(itemId))
+      .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+      .map(toPublicCatalogItem);
+    return NextResponse.json({ items });
+  }
+
   const type = url.searchParams.get('type') ?? undefined;
   const sort = (url.searchParams.get('sort') ?? undefined) as
     | CatalogSort

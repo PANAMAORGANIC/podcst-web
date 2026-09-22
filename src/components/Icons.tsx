@@ -107,6 +107,17 @@ export function HeartIcon({
   );
 }
 
+export function BookmarkIcon({
+  filled = false,
+  ...props
+}: IconProps & { filled?: boolean }) {
+  return (
+    <Svg {...props} fill={filled ? 'currentColor' : 'none'}>
+      <path d="M6 4.5h12v16l-6-3.4-6 3.4v-16z" />
+    </Svg>
+  );
+}
+
 export function FeedIcon(props: IconProps) {
   return (
     <Svg {...props}>
