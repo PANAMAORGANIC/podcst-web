@@ -33,6 +33,14 @@ surfaces.
   fully deterministic. Explore is surprising-but-related, not junk from
   unrelated categories.
 - Search still hits the ingest pool when you already know a title.
+- **Editorial rails** on home, seeded by favorites and LEARNED_TOPICS
+  (climate/energy interviews, soil & regenerative ES+EN, science
+  long-form, Spanish regenerative, ecojustice). Titles are
+  `Learned: …` with a lede that names the seed show when there is one.
+- **Public read API** `GET /api/catalog` (list + pagination) and
+  `GET /api/catalog/{id}` (single item). Metadata and links only.
+- **Cover art:** remote feed / iTunes / YouTube artwork when the URL is
+  http(s); generated mark on missing or broken images.
 - Detail pages with original language, signals, and external deep links.
 - **Feed agents** from a title: structured JSON packet + Markdown brief
   (copy / download; optional webhook). Agents ingest context without
@@ -81,12 +89,12 @@ documented in `.env.example`; no key is invented for the demo.
 
 ## Roadmap
 
-### Next (still catalogue)
+### Next (still catalogue) — shipped in this slice
 
-- Editorial rails on top of the Podcast Index dump + Apple harvest.
-- Stable public read API (`/api/catalog` is the sketch).
-- Cover art: optional remote artwork when a licence is clear; keep generated
-  marks as the default so the grid never shows broken images.
+- Editorial rails on top of the Podcast Index dump + Apple harvest,
+  labeled from RED’s graph (`Learned: ecology`, climate/energy, soil).
+- Stable public read API: `GET /api/catalog` and `GET /api/catalog/{id}`.
+- Cover art: remote artwork URL when present; generated mark fallback.
 
 ### Later (still not a general player)
 

@@ -50,7 +50,10 @@ export default function AboutPage() {
         <code>FOR_YOU_RANDOMNESS</code> (default 0.2) is an epsilon-greedy
         explore rate over the related neighborhood. The ingest pool behind the
         scenes has {stats.titles} titles so related search has somewhere to
-        look. No Postgres, Redis, or API key required to run.
+        look. Editorial rails on home are labeled <code>Learned: …</code> from
+        those weights. Covers use remote feed artwork when present and fall back
+        to a generated mark. Read-only catalogue: <code>GET /api/catalog</code>.
+        No Postgres, Redis, or API key required to run.
       </p>
       <h2 id="ingest">Ingest path</h2>
       <p>

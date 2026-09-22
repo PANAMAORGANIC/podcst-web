@@ -39,7 +39,11 @@ npm run build
 ## What you can do
 
 - **Shelf / For you / Because you like / Explore** — taste-derived only
+- **Editorial rails** on home: `Learned: climate / energy interviews`,
+  soil & regenerative (ES+EN), science long-form, Spanish regenerative —
+  seeded by favorites and LEARNED_TOPICS, not generic genre chrome
 - Search the ingest pool when you already know a title
+- **Public read API** `GET /api/catalog` (see below)
 - Open a title page and follow RSS / YouTube / store links
 - Translate non-English titles and descriptions
 - **Feed agents** from a title page
@@ -63,6 +67,28 @@ LIBRETRANSLATE_API_KEY=   # optional; only if the instance requires one
 ```
 
 Do not commit real keys. The app never invents credentials.
+
+## Public read API
+
+Stable, read-only catalogue access. Metadata and deep links only — no
+writes, no secrets, no media files.
+
+```bash
+# List / search (default limit 24, max 100)
+GET /api/catalog
+GET /api/catalog?q=semilla&language=es&type=podcast&limit=24&offset=0
+GET /api/catalog?type=youtube&sort=popularity
+
+# Single title
+GET /api/catalog/it-1547894245
+GET /api/catalog?id=it-1547894245
+```
+
+Each item: `id`, `type`, `title`, `language`, `creators`, `description`,
+`tags`, `genres`, `region`, `country`, `urls`, `cover`, `signals`.
+`cover` is a remote artwork URL when ingest stored one, otherwise
+`/api/cover/{id}` (generated mark). List responses include `total`,
+`limit`, `offset`, and `nextOffset`.
 
 ## Feed agents
 
@@ -235,6 +261,11 @@ The UI explains this is **learned from your likes & YouTube signals
 (not homepage scrape)** and shows last learned-at. You can paste a
 YouTube channel or video URL as a strong positive signal. Each page
 load samples the related pool with `FOR_YOU_RANDOMNESS` (default 0.2).
+
+Home also shows **editorial rails** from that same graph over the
+Podcast Index + Apple harvest pool (`Learned: climate / energy
+interviews`, soil & regenerative, science long-form). Refresh to draw
+again inside the neighborhood.
 
 `GET /api/for-you` and `GET /api/health` dump `LEARNED_TOPICS` for
 debugging. Signal state lives in `data/sources/user-signals.json`.

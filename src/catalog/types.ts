@@ -60,6 +60,7 @@ export interface CatalogQuery {
   genre?: string;
   sort?: CatalogSort;
   limit?: number;
+  offset?: number;
 }
 
 export type CatalogSort =

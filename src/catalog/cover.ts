@@ -32,9 +32,24 @@ export function coverPalette(id: string): { bg: string; fg: string } {
   return { bg: pair[0], fg: pair[1] };
 }
 
+export function generatedCoverPath(id: string): string {
+  return `/api/cover/${encodeURIComponent(id)}`;
+}
+
+export function isRemoteArtworkUrl(url: string | undefined): url is string {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 export function coverUrl(entry: CatalogEntry): string {
-  if (entry.coverArt) return entry.coverArt;
-  return `/api/cover/${encodeURIComponent(entry.id)}`;
+  const remote = entry.coverArt;
+  if (isRemoteArtworkUrl(remote)) return remote;
+  return generatedCoverPath(entry.id);
 }
 
 export function renderCoverSvg(entry: CatalogEntry): string {

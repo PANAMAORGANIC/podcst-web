@@ -116,9 +116,12 @@ export function queryCatalog(query: CatalogQuery = {}): CatalogResult {
   }
 
   const total = items.length;
+  const offset = query.offset && query.offset > 0 ? query.offset : 0;
   const limit = query.limit;
   if (limit && limit > 0) {
-    items = items.slice(0, limit);
+    items = items.slice(offset, offset + limit);
+  } else if (offset > 0) {
+    items = items.slice(offset);
   }
 
   return { items, total };

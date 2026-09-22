@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { favoritePinsRail, learnedTopicRails } from '@/catalog/curated';
+import { favoritePinsRail } from '@/catalog/curated';
+import { editorialRails } from '@/catalog/editorial';
 import { exploreRail, forYouRail } from '@/catalog/for-you';
 import { listFavoriteSeedIds, listSeedEntries } from '@/catalog/likes';
 import { exploreRate } from '@/catalog/random';
@@ -43,7 +44,7 @@ export default function HomePage() {
       />
       <CatalogRail rail={exploreRail(8)} />
       <CatalogRail rail={favoritePinsRail(8)} />
-      {learnedTopicRails(3, 8).map((rail) => (
+      {editorialRails(4, 8).map((rail) => (
         <CatalogRail key={rail.id} rail={rail} />
       ))}
     </div>
