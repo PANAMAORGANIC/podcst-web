@@ -19,6 +19,7 @@ interface EntryDraft {
   country: string;
   countryCode: string;
   urls: ExternalUrls;
+  coverArt?: string;
   signals: CatalogSignals;
   english?: LocalizedText;
   year?: number;
@@ -40,6 +41,7 @@ export function entry(draft: EntryDraft): CatalogEntry {
     country: draft.country,
     countryCode: draft.countryCode,
     externalUrls: draft.urls,
+    coverArt: draft.coverArt,
     signals: draft.signals,
     year: draft.year,
     episodeCount: draft.episodeCount,

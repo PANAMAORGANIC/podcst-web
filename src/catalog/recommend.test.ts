@@ -175,7 +175,7 @@ describe('recommend ranking', () => {
     assert.ok(orders.size >= 2);
   });
 
-  it('lists the six owner favorite ids as recommend seeds', () => {
+  it('lists the owner favorite ids as recommend seeds', () => {
     const ids = listFavoriteSeedIds();
     for (const id of [
       'it-1547894245',
@@ -184,6 +184,7 @@ describe('recommend ranking', () => {
       'it-566908883',
       'it-1545009586',
       'it-1604218333',
+      'it-1747339811',
     ]) {
       assert.ok(ids.includes(id), `missing seed ${id}`);
     }

@@ -12,11 +12,33 @@ export const GENERIC_DIRECTORY_RAIL_IDS = [
   'long-video',
 ] as const;
 
+/** Titles from the old marketing home — strip even if an id is renamed. */
+export const GENERIC_DIRECTORY_RAIL_TITLES = [
+  'beyond the usual charts',
+  'open voices',
+  'from the global south',
+  'languages with fewer records',
+  'long-form on video',
+] as const;
+
+export function isGenericDirectoryRail(rail: {
+  id: string;
+  title: string;
+}): boolean {
+  if ((GENERIC_DIRECTORY_RAIL_IDS as readonly string[]).includes(rail.id)) {
+    return true;
+  }
+  const title = rail.title.toLowerCase();
+  return GENERIC_DIRECTORY_RAIL_TITLES.some(
+    (blocked) => title === blocked || title.includes(blocked),
+  );
+}
+
 export function favoritePinsRail(limit = 8): CatalogRail {
   return {
     id: 'pins',
     title: 'Pinned favorites',
-    lede: 'Radio Semilla, EcoJustice Radio, 632nm, Tangentially Speaking, Planet: Critical, The Great Simplification — the owner graph.',
+    lede: 'Radio Semilla, EcoJustice Radio, 632nm, Tangentially Speaking, Planet: Critical, The Great Simplification, Acres U.S.A. — the owner graph.',
     items: listSeedEntries().slice(0, limit),
   };
 }
@@ -28,8 +50,8 @@ export function learnedTopicRails(topicCount = 3, limit = 8): CatalogRail[] {
 export function curatedHomeRails(): CatalogRail[] {
   return [
     forYouRail(8),
-    favoritePinsRail(8),
     exploreRail(8),
-    ...editorialRails(4, 8),
-  ].filter((rail) => rail.items.length > 0);
+    favoritePinsRail(8),
+    ...editorialRails(5, 8),
+  ].filter((rail) => rail.items.length > 0 && !isGenericDirectoryRail(rail));
 }

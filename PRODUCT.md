@@ -25,18 +25,20 @@ surfaces.
 
 ## What v1 is (this slice)
 
-- **Curated-for-owner IA:** home is For You + Because you like + Explore.
-  No Podcasts / Audiobooks / YouTube doors and no generic diversity /
-  Global South / public-domain shelves on the home page.
+- **Curated-for-owner IA:** home is For You + Because you like + Explore
+  + pinned favorites + learned-topic rails. No Podcasts / Audiobooks /
+  YouTube doors and no generic diversity / Global South / public-domain
+  shelves on the home page (`homeRails()` strips those ids and titles).
 - **Stochastic explore:** `FOR_YOU_RANDOMNESS` (default 0.2) is an
   epsilon-greedy rate over the related neighborhood. Ranking is never
   fully deterministic. Explore is surprising-but-related, not junk from
   unrelated categories.
 - Search still hits the ingest pool when you already know a title.
 - **Editorial rails** on home, seeded by favorites and LEARNED_TOPICS
-  (climate/energy interviews, soil & regenerative ES+EN, science
-  long-form, Spanish regenerative, ecojustice). Titles are
-  `Learned: …` with a lede that names the seed show when there is one.
+  (climate/energy interviews, soil & regenerative ES+EN, organic /
+  regenerative farming from Acres U.S.A., science long-form, Spanish
+  regenerative, ecojustice). Titles are `Learned: …` with a lede that
+  names the seed show when there is one.
 - **Public read API** `GET /api/catalog` (list + pagination) and
   `GET /api/catalog/{id}` (single item). Metadata and links only.
 - **Cover art:** remote feed / iTunes / YouTube artwork when the URL is
@@ -108,7 +110,7 @@ documented in `.env.example`; no key is invented for the demo.
 ## Success for this repository
 
 The product is working when opening the app feels like RED’s shelf —
-Radio Semilla, EcoJustice, climate/energy interviews, Spanish
-regenerative shows that follow from those seeds — plus surprising but
-related finds, not a public podcast directory. Copyrighted works stay
-cards, not files we should not have.
+Radio Semilla, EcoJustice, Acres U.S.A., climate/energy interviews,
+Spanish regenerative shows that follow from those seeds — plus
+surprising but related finds, not a public podcast directory.
+Copyrighted works stay cards, not files we should not have.

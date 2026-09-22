@@ -40,8 +40,13 @@ npm run build
 
 - **Shelf / For you / Because you like / Explore** — taste-derived only
 - **Editorial rails** on home: `Learned: climate / energy interviews`,
-  soil & regenerative (ES+EN), science long-form, Spanish regenerative —
-  seeded by favorites and LEARNED_TOPICS, not generic genre chrome
+  soil & regenerative (ES+EN), organic / regenerative farming (Acres
+  U.S.A.), science long-form, Spanish regenerative — seeded by favorites
+  and LEARNED_TOPICS, not generic genre chrome. Home is assembled only
+  from `homeRails()` (For you / Explore / pins / learned) plus Because
+  you like. Marketing shelves (Beyond the usual charts, Open voices,
+  From the Global South, Languages with fewer records, Long-form on
+  video) are stripped by id and title.
 - Search the ingest pool when you already know a title
 - **Public read API** `GET /api/catalog` (see below)
 - Open a title page and follow RSS / YouTube / store links
@@ -264,8 +269,10 @@ load samples the related pool with `FOR_YOU_RANDOMNESS` (default 0.2).
 
 Home also shows **editorial rails** from that same graph over the
 Podcast Index + Apple harvest pool (`Learned: climate / energy
-interviews`, soil & regenerative, science long-form). Refresh to draw
-again inside the neighborhood.
+interviews`, soil & regenerative, organic / regenerative farming from
+Acres U.S.A., science long-form). Refresh to draw again inside the
+neighborhood. `homeRails()` is the only home shelf source; leftover
+Global South / public-domain chrome is filtered out.
 
 `GET /api/for-you` and `GET /api/health` dump `LEARNED_TOPICS` for
 debugging. Signal state lives in `data/sources/user-signals.json`.

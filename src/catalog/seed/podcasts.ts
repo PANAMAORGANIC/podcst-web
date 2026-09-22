@@ -1116,4 +1116,28 @@ export const PODCASTS = [
         'Latin American history in episodes: independences, coups, and the street. A classroom without desks, in Rioplatense Spanish and beyond.',
     },
   }),
+  podcast({
+    id: 'it-1747339811',
+    title: 'The Acres U.S.A. Podcast',
+    language: 'en',
+    creators: ['Taylor Henry', 'Acres U.S.A.'],
+    description:
+      'Weekly interviews on production-scale organic and regenerative farming from Acres U.S.A. Metadata and the Anchor RSS only; we do not host the audio.',
+    tags: ['agroecology', 'regeneration', 'soil', 'organic', 'acres'],
+    genres: ['science', 'society-culture'],
+    region: 'north-america',
+    country: 'United States',
+    countryCode: 'US',
+    urls: {
+      rss: 'https://anchor.fm/s/f00de8c8/podcast/rss',
+      website: 'https://www.acresusa.com/',
+      store:
+        'https://podcasts.apple.com/us/podcast/the-acres-u-s-a-podcast/id1747339811',
+    },
+    coverArt:
+      'https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/40174434/40174434-1715120326137-31acfdd32b592.jpg',
+    signals: { popularity: 78, diversity: 34 },
+    episodeCount: 128,
+    year: 2024,
+  }),
 ];

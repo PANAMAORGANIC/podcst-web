@@ -20,6 +20,7 @@ const OWNER_FAVORITES = [
   'Tangentially Speaking with Christopher Ryan',
   'Planet: Critical',
   'The Great Simplification with Nate Hagens',
+  'The Acres U.S.A. Podcast',
 ];
 
 const OWNER_IDS: Record<string, string> = {
@@ -29,6 +30,7 @@ const OWNER_IDS: Record<string, string> = {
   'Tangentially Speaking with Christopher Ryan': 'it-566908883',
   'Planet: Critical': 'it-1545009586',
   'The Great Simplification with Nate Hagens': 'it-1604218333',
+  'The Acres U.S.A. Podcast': 'it-1747339811',
 };
 
 describe('favorites source file', () => {
@@ -50,6 +52,7 @@ describe('favorites source file', () => {
     );
     assert.equal(hubs['Planet: Critical'], 'podbean');
     assert.equal(hubs['The Great Simplification with Nate Hagens'], 'libsyn');
+    assert.equal(hubs['The Acres U.S.A. Podcast'], 'anchor');
     const byTitle = new Map(file.shows.map((show) => [show.title, show]));
     for (const [title, id] of Object.entries(OWNER_IDS)) {
       assert.equal(favoriteId(byTitle.get(title) ?? { feedUrl: '' }), id);
@@ -129,7 +132,7 @@ describe('search-and-pin matching', () => {
 });
 
 describe('live catalog favorites', () => {
-  it('finds all six owner titles after RSS ingest', () => {
+  it('finds all owner titles after RSS ingest', () => {
     const catalog = getCatalog();
     for (const title of OWNER_FAVORITES) {
       const hit = catalog.find((item) => item.title === title);
@@ -146,6 +149,7 @@ describe('live catalog favorites', () => {
       '632nm',
       'Planet: Critical',
       'The Great Simplification with Nate Hagens',
+      'The Acres U.S.A. Podcast',
     ]) {
       assert.ok(
         queryCatalog({ q: title }).items.some((item) => item.title === title),

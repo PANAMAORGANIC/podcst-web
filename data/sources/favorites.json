@@ -127,6 +127,34 @@
       "website": "https://www.thegreatsimplification.com/",
       "relatedTerms": ["Nate Hagens", "Great Simplification", "energy economics"],
       "relatedGenreIds": [1315, 1324]
+    },
+    {
+      "title": "The Acres U.S.A. Podcast",
+      "feedUrl": "https://anchor.fm/s/f00de8c8/podcast/rss",
+      "appleId": 1747339811,
+      "language": "en",
+      "hub": "anchor",
+      "creators": ["Taylor Henry", "Acres U.S.A."],
+      "description": "Weekly interviews on production-scale organic and regenerative farming from Acres U.S.A. Anchor RSS is the source of truth; metadata only.",
+      "tags": [
+        "agroecology",
+        "regeneration",
+        "soil",
+        "organic",
+        "acres"
+      ],
+      "genres": ["science", "society-culture"],
+      "region": "north-america",
+      "country": "United States",
+      "countryCode": "US",
+      "website": "https://www.acresusa.com/",
+      "relatedTerms": [
+        "Acres U.S.A.",
+        "Acres USA",
+        "regenerative farming",
+        "organic agriculture"
+      ],
+      "relatedGenreIds": [1315, 1324]
     }
   ],
   "pins": [],

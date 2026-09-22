@@ -126,6 +126,49 @@ describe('editorial rails from consumption signals', () => {
     assert.match(soil.lede, /Radio Semilla/);
   });
 
+  it('labels the Acres rail from the favorite seed', () => {
+    const acres = entry({
+      id: 'it-1747339811',
+      title: 'The Acres U.S.A. Podcast',
+      tags: ['agroecology', 'regeneration', 'soil', 'organic', 'acres'],
+      genres: ['science'],
+    });
+    const catalog = [
+      acres,
+      entry({
+        id: 'farm-1',
+        title: 'Soil Week',
+        tags: ['soil', 'organic'],
+        genres: ['science'],
+      }),
+      entry({
+        id: 'farm-2',
+        title: 'Regen Hour',
+        tags: ['regeneration', 'agroecology'],
+        genres: ['science'],
+      }),
+      entry({
+        id: 'farm-3',
+        title: 'Market Garden',
+        tags: ['organic', 'acres'],
+        genres: ['science'],
+      }),
+    ];
+    const rails = editorialRailsFrom({
+      catalog,
+      signals: defaultSignals(),
+      favorites: [acres],
+      maxRails: 5,
+      limit: 4,
+      explore: { exploreRate: 0, seed: 'acres' },
+    });
+    const rail = rails.find((row) => row.id === 'editorial-acres-organic');
+    assert.ok(rail);
+    assert.equal(rail.title, 'Learned: organic / regenerative farming');
+    assert.match(rail.lede, /Acres U\.S\.A/);
+    assert.ok(rail.items.some((item) => item.id === 'it-1747339811'));
+  });
+
   it('explore rate > 0 changes editorial order across seeds', () => {
     const signals = defaultSignals();
     signals.weights = { climate: 5 };

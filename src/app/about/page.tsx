@@ -44,16 +44,17 @@ export default function AboutPage() {
       <h2>This slice</h2>
       <p>
         Home leads with your graph (Radio Semilla, EcoJustice Radio, 632nm,
-        Tangentially Speaking, Planet: Critical, The Great Simplification) and
-        learned topics — ecology, climate, agroecology, seeds, science
-        interviews, energy. Ranking is never fully deterministic:{' '}
-        <code>FOR_YOU_RANDOMNESS</code> (default 0.2) is an epsilon-greedy
-        explore rate over the related neighborhood. The ingest pool behind the
-        scenes has {stats.titles} titles so related search has somewhere to
-        look. Editorial rails on home are labeled <code>Learned: …</code> from
-        those weights. Covers use remote feed artwork when present and fall back
-        to a generated mark. Read-only catalogue: <code>GET /api/catalog</code>.
-        No Postgres, Redis, or API key required to run.
+        Tangentially Speaking, Planet: Critical, The Great Simplification, The
+        Acres U.S.A. Podcast) and learned topics — ecology, climate,
+        agroecology, seeds, regenerative farming, science interviews, energy.
+        Ranking is never fully deterministic: <code>FOR_YOU_RANDOMNESS</code>{' '}
+        (default 0.2) is an epsilon-greedy explore rate over the related
+        neighborhood. The ingest pool behind the scenes has {stats.titles}{' '}
+        titles so related search has somewhere to look. Editorial rails on home
+        are labeled <code>Learned: …</code> from those weights. Covers use
+        remote feed artwork when present and fall back to a generated mark.
+        Read-only catalogue: <code>GET /api/catalog</code>. No Postgres, Redis,
+        or API key required to run.
       </p>
       <h2 id="ingest">Ingest path</h2>
       <p>

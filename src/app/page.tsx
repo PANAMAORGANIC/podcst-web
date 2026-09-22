@@ -1,8 +1,6 @@
 import Link from 'next/link';
-import { favoritePinsRail } from '@/catalog/curated';
-import { editorialRails } from '@/catalog/editorial';
-import { exploreRail, forYouRail } from '@/catalog/for-you';
 import { listFavoriteSeedIds, listSeedEntries } from '@/catalog/likes';
+import { homeRails } from '@/catalog/rails';
 import { exploreRate } from '@/catalog/random';
 import { recommendRails } from '@/catalog/recommend';
 import { getCatalog } from '@/catalog/store';
@@ -16,6 +14,9 @@ export default function HomePage() {
   const seedIds = listFavoriteSeedIds();
   const likedRails = recommendRails(listSeedEntries(), getCatalog(), 8);
   const rate = exploreRate();
+  const rails = homeRails();
+  const forYou = rails.find((rail) => rail.id === 'for-you');
+  const rest = rails.filter((rail) => rail.id !== 'for-you');
 
   return (
     <div className="page-home">
@@ -36,15 +37,13 @@ export default function HomePage() {
           <Link href="/explore">Explore</Link>
         </p>
       </section>
-      <CatalogRail rail={forYouRail(8)} />
+      {forYou ? <CatalogRail rail={forYou} /> : null}
       <BecauseYouLikeRails
         seedIds={seedIds}
         initialRails={likedRails}
         heading="Because you like these shows"
       />
-      <CatalogRail rail={exploreRail(8)} />
-      <CatalogRail rail={favoritePinsRail(8)} />
-      {editorialRails(4, 8).map((rail) => (
+      {rest.map((rail) => (
         <CatalogRail key={rail.id} rail={rail} />
       ))}
     </div>
