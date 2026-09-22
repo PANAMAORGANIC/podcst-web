@@ -118,8 +118,8 @@ UI still works.
 
 ```bash
 npm ci
-npm run build
-npm start
+npm run build   # next build + copies public/static into standalone
+npm start       # node .next/standalone/server.js  (PORT=3000)
 # open http://localhost:3000
 ```
 

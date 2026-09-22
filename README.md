@@ -35,6 +35,7 @@ npm run typecheck
 npm run lint
 npm test
 npm run build
+npm start          # production: standalone Node server on :3000
 ```
 
 ## Phone / Deploy

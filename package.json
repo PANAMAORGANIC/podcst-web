@@ -5,8 +5,8 @@
   "description": "A global catalogue of podcasts, audiobooks, and long-form YouTube.",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "next build && tsx scripts/prepare-standalone.ts",
+    "start": "node .next/standalone/server.js",
     "lint": "biome check src scripts",
     "format": "biome format --write src scripts",
     "typecheck": "tsc --noEmit",
