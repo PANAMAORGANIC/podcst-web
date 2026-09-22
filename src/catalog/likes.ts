@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { favoriteId, loadFavoritesFile } from '../../scripts/lib/favorites';
+import { favoriteId } from '../../scripts/lib/favorites';
+import { bundledFavoriteIds, bundledFavoriteShows } from './favorites-data';
 import { getEntry, getShelfCatalog } from './store';
 import type { CatalogEntry } from './types';
 
@@ -17,8 +18,8 @@ export interface LikedFile {
   updatedAt?: string;
 }
 
-export function listFavoriteSeedIds(root = process.cwd()): string[] {
-  return loadFavoritesFile(root).shows.map((show) => favoriteId(show));
+export function listFavoriteSeedIds(_root = process.cwd()): string[] {
+  return bundledFavoriteIds();
 }
 
 export function readLikedFile(root = process.cwd()): string[] {
@@ -54,21 +55,15 @@ export function listIngestLikeIds(root = process.cwd()): string[] {
   return uniqueIds([...listFavoriteSeedIds(root), ...readLikedFile(root)]);
 }
 
-export function listSeedEntries(root = process.cwd()): CatalogEntry[] {
+export function listSeedEntries(_root = process.cwd()): CatalogEntry[] {
   const catalog = getShelfCatalog();
   const byId = new Map(catalog.map((item) => [item.id, item]));
   const out: CatalogEntry[] = [];
   const seen = new Set<string>();
-  for (const id of listFavoriteSeedIds(root)) {
-    const hit = byId.get(id) ?? catalog.find((item) => item.id === id);
-    if (hit && !seen.has(hit.id)) {
-      seen.add(hit.id);
-      out.push(hit);
-    }
-  }
-  for (const show of loadFavoritesFile(root).shows) {
-    if (seen.has(favoriteId(show))) continue;
-    const hit = catalog.find((item) => item.title === show.title);
+  for (const show of bundledFavoriteShows()) {
+    const id = favoriteId(show);
+    const hit =
+      byId.get(id) ?? catalog.find((item) => item.title === show.title);
     if (hit && !seen.has(hit.id)) {
       seen.add(hit.id);
       out.push(hit);

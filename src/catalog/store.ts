@@ -1,6 +1,5 @@
 import { existsSync, statSync } from 'node:fs';
 import { shouldLoadFullSnapshot } from './memory';
-import { SEED_CATALOG } from './seed';
 import { getShelfCatalog } from './shelf';
 import {
   CATALOG_GZ_PATH,
@@ -75,15 +74,16 @@ export function getCatalog(): CatalogEntry[] {
   const mtime = snapshotMtime() || 1;
   if (mergedCache && mergedCache.mtime === mtime) return mergedCache.items;
   let items: CatalogEntry[];
+  const shelf = getShelfCatalog();
   if (ingested.length === 0) {
     mode = 'seed';
-    items = SEED_CATALOG;
+    items = shelf;
   } else {
     const byId = new Map<string, CatalogEntry>();
     for (const item of ingested) {
       byId.set(item.id, item);
     }
-    for (const item of SEED_CATALOG) {
+    for (const item of shelf) {
       byId.set(item.id, item);
     }
     items = [...byId.values()];

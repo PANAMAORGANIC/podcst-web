@@ -26,3 +26,11 @@ const listen = path.join(root, 'scripts', 'listen.cjs');
 if (existsSync(listen)) {
   cpSync(listen, path.join(standalone, 'listen.cjs'));
 }
+
+const sources = path.join(root, 'data', 'sources');
+if (existsSync(sources)) {
+  mkdirSync(path.join(standalone, 'data'), { recursive: true });
+  cpSync(sources, path.join(standalone, 'data', 'sources'), {
+    recursive: true,
+  });
+}

@@ -55,9 +55,24 @@ export interface FavoritesFile {
   };
 }
 
+export function favoritesJsonCandidates(root = process.cwd()): string[] {
+  return [
+    path.join(root, 'data', 'sources', 'favorites.json'),
+    path.resolve(root, 'data/sources/favorites.json'),
+    path.join(process.cwd(), 'data', 'sources', 'favorites.json'),
+    '/app/data/sources/favorites.json',
+  ];
+}
+
 export function loadFavoritesFile(root = process.cwd()): FavoritesFile {
-  const file = path.join(root, 'data', 'sources', 'favorites.json');
-  return JSON.parse(readFileSync(file, 'utf8')) as FavoritesFile;
+  for (const file of favoritesJsonCandidates(root)) {
+    if (existsSync(file)) {
+      return JSON.parse(readFileSync(file, 'utf8')) as FavoritesFile;
+    }
+  }
+  throw new Error(
+    `favorites.json not found (cwd=${process.cwd()} root=${root})`,
+  );
 }
 
 export function loadPinFile(root = process.cwd()): FavoritePin[] {

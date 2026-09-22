@@ -8,7 +8,7 @@ import { getEntry, getShelfCatalog } from '@/catalog/store';
 import { CatalogGrid } from '@/components/CatalogGrid';
 import { TitleDetail } from '@/components/TitleDetail';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 type PageProps = {
   params: Promise<{ id: string }>;

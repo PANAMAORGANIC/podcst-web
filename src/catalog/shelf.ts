@@ -1,4 +1,5 @@
-import { favoriteId, loadFavoritesFile } from '../../scripts/lib/favorites';
+import { favoriteId } from '../../scripts/lib/favorites';
+import { bundledFavoriteShows } from './favorites-data';
 import { SEED_CATALOG } from './seed';
 import type { CatalogEntry } from './types';
 
@@ -43,10 +44,10 @@ function favoriteToEntry(show: {
   };
 }
 
-/** Seed + owner favorites. Never reads catalog.json.gz. */
+/** Seed + owner favorites. Never reads catalog.json.gz or the filesystem. */
 export function buildShelfCatalog(): CatalogEntry[] {
   const byId = new Map<string, CatalogEntry>();
-  for (const show of loadFavoritesFile().shows) {
+  for (const show of bundledFavoriteShows()) {
     const entry = favoriteToEntry(show);
     byId.set(entry.id, entry);
   }
@@ -59,4 +60,8 @@ export function buildShelfCatalog(): CatalogEntry[] {
 export function getShelfCatalog(): CatalogEntry[] {
   cache ??= buildShelfCatalog();
   return cache;
+}
+
+export function resetShelfCache() {
+  cache = null;
 }

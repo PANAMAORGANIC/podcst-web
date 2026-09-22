@@ -72,7 +72,7 @@ export function SearchBox({
             ref={inputRef}
             name="q"
             type="search"
-            value={term}
+            defaultValue={defaultValue}
             autoComplete="off"
             placeholder="Search titles, creators, languages, tags…"
             aria-controls={listId}
