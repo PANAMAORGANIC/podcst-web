@@ -10,7 +10,7 @@ export function AppFooter() {
           <p className="footer-mark">World Audio Repository</p>
           <p className="footer-copy">
             Curated for RED from likes, favorites, and YouTube signals. Metadata
-            and deep links only — we do not host audio files. The ingest
+            and source streams only — we do not host audio files. The ingest
             catalogue is a backend pool, not the homepage.
           </p>
         </div>

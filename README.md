@@ -6,7 +6,8 @@ backend pool for related search. The homepage is not a public world
 directory.
 
 The interface is English. Titles and descriptions can be translated in
-place. We store metadata and deep links. We do not host audio files.
+place. We store metadata and deep links. Playback streams from the
+publisher enclosure or YouTube watch URL. We do not host audio files.
 
 This repository was forked from
 [shantanuraj/podcst-web](https://github.com/shantanuraj/podcst-web) and
@@ -49,7 +50,9 @@ npm run build
   video) are stripped by id and title.
 - Search the ingest pool when you already know a title
 - **Public read API** `GET /api/catalog` (see below)
-- Open a title page and follow RSS / YouTube / store links
+- Open a title page, list recent episodes, and play them in the
+  persistent source-stream player (queue, speed, skip, resume)
+- Follow RSS / YouTube / store links when a stream is blocked
 - Translate non-English titles and descriptions
 - **Feed agents** from a title page
 - Stochastic explore (`FOR_YOU_RANDOMNESS`, default 0.2) so ranking is
@@ -72,6 +75,25 @@ LIBRETRANSLATE_API_KEY=   # optional; only if the instance requires one
 ```
 
 Do not commit real keys. The app never invents credentials.
+
+## Source-stream player
+
+On a podcast title page, `GET /api/episodes/{id}` fetches the show RSS
+**server-side** and returns episode metadata plus enclosure URLs. The
+mini-player at the bottom of every route plays that URL in the browser
+`<audio>` element (YouTube titles embed the canonical watch URL). Queue,
+0.75–2× speed, ±15/30s skip, mute, next/previous, and Media Session are
+included. Playhead and queue persist in `localStorage` (`war-player-v1`).
+
+If an enclosure is 403 / CORS / missing, the bar shows **Open in source**
+instead of failing silently. We never download or store the media file,
+never scrape Castbox, and never scrape youtube.com homepage HTML.
+
+```bash
+npm run dev
+# open a favorite, e.g. /title/it-1747339811 (Acres) or /title/it-1547894245
+# press Play latest, scrub, change speed, queue another episode, refresh
+```
 
 ## Public read API
 

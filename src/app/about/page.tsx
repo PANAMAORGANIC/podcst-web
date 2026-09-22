@@ -30,7 +30,10 @@ export default function AboutPage() {
       </p>
       <h2>What we do not do</h2>
       <ul>
-        <li>We do not host or scrape copyrighted audio files.</li>
+        <li>
+          We do not host or scrape copyrighted audio files. The player streams
+          the publisher enclosure or opens the source.
+        </li>
         <li>
           Copyrighted audiobooks appear as catalogue cards with publisher or
           store links only.
@@ -53,8 +56,9 @@ export default function AboutPage() {
         titles so related search has somewhere to look. Editorial rails on home
         are labeled <code>Learned: …</code> from those weights. Covers use
         remote feed artwork when present and fall back to a generated mark.
-        Read-only catalogue: <code>GET /api/catalog</code>. No Postgres, Redis,
-        or API key required to run.
+        Read-only catalogue: <code>GET /api/catalog</code>. Title pages list RSS
+        episodes and play them in a persistent mini-player (source stream only).
+        No Postgres, Redis, or API key required to run.
       </p>
       <h2 id="ingest">Ingest path</h2>
       <p>

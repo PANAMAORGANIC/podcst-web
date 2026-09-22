@@ -116,3 +116,64 @@ export function FeedIcon(props: IconProps) {
     </Svg>
   );
 }
+
+export function PlayIcon(props: IconProps) {
+  return (
+    <Svg {...props} fill="currentColor" stroke="none">
+      <path d="M8 5.5v13l11-6.5-11-6.5z" />
+    </Svg>
+  );
+}
+
+export function PauseIcon(props: IconProps) {
+  return (
+    <Svg {...props} fill="currentColor" stroke="none">
+      <path d="M7 5h3v14H7zM14 5h3v14h-3z" />
+    </Svg>
+  );
+}
+
+export function SkipBackIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M11 12 18 6v12z" />
+      <path d="M6 6v12" />
+    </Svg>
+  );
+}
+
+export function SkipForwardIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M13 12 6 6v12z" />
+      <path d="M18 6v12" />
+    </Svg>
+  );
+}
+
+export function QueueIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 7h16M4 12h10M4 17h10" />
+      <path d="m15 14 5 3-5 3z" />
+    </Svg>
+  );
+}
+
+export function VolumeIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M5 10v4h4l5 4V6l-5 4H5z" />
+      <path d="M16 9.5a3 3 0 0 1 0 5" />
+    </Svg>
+  );
+}
+
+export function MuteIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M5 10v4h4l5 4V6l-5 4H5z" />
+      <path d="m16 10 5 5M21 10l-5 5" />
+    </Svg>
+  );
+}

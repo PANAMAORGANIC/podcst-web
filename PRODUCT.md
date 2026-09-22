@@ -43,6 +43,10 @@ surfaces.
   `GET /api/catalog/{id}` (single item). Metadata and links only.
 - **Cover art:** remote feed / iTunes / YouTube artwork when the URL is
   http(s); generated mark on missing or broken images.
+- **Source-stream player:** title pages list recent RSS episodes. The
+  persistent mini-player streams the publisher enclosure (or embeds a
+  YouTube watch URL). Queue, speed, skip, Media Session, and
+  localStorage resume. We never host or mirror the file.
 - Detail pages with original language, signals, and external deep links.
 - **Feed agents** from a title: structured JSON packet + Markdown brief
   (copy / download; optional webhook). Agents ingest context without
@@ -98,14 +102,13 @@ documented in `.env.example`; no key is invented for the demo.
 - Stable public read API: `GET /api/catalog` and `GET /api/catalog/{id}`.
 - Cover art: remote artwork URL when present; generated mark fallback.
 
-### Later (still not a general player)
+### Later (still not a host)
 
-- User shelves / “saved cards” without playback sync.
+- User shelves / “saved cards” without account sync.
 - Editorial collections (e.g. “Sahel news desks”, “Andean languages”).
 - Community corrections for language and region.
-- If playback returns, it should be *optional* and always via the source
-  (open the feed, the library, or the platform). Hosting remains out of
-  scope.
+- Playback is already optional and always via the source stream
+  (enclosure, library, or YouTube). Hosting remains out of scope.
 
 ## Success for this repository
 
@@ -113,4 +116,4 @@ The product is working when opening the app feels like RED’s shelf —
 Radio Semilla, EcoJustice, Acres U.S.A., climate/energy interviews,
 Spanish regenerative shows that follow from those seeds — plus
 surprising but related finds, not a public podcast directory.
-Copyrighted works stay cards, not files we should not have.
+Copyrighted works stay cards or source streams, not files we host.

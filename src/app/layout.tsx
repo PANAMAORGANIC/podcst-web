@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
+import { PlayerRoot } from '@/components/player/PlayerRoot';
 import { ThemeListener } from '@/theme/ThemeListener';
 import '@/styles/global.css';
 
@@ -56,6 +57,7 @@ export default function RootLayout({
         <AppHeader />
         <main id="main">{children}</main>
         <AppFooter />
+        <PlayerRoot />
       </body>
     </html>
   );
