@@ -92,6 +92,16 @@ export function ChevronDownIcon(props: IconProps) {
   );
 }
 
+export function MicIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z" />
+      <path d="M7 11a5 5 0 0 0 10 0" />
+      <path d="M12 16v4M9 20h6" />
+    </Svg>
+  );
+}
+
 export function TranslateIcon(props: IconProps) {
   return (
     <Svg {...props}>

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { type PointerEvent, useEffect, useRef } from 'react';
 import { generatedCoverPath } from '@/catalog/cover';
+import { AskWar } from '@/components/AskWar';
 import {
   ChevronDownIcon,
   CloseIcon,
@@ -314,6 +315,8 @@ export function NowPlayingSheet() {
       </div>
 
       <QueuePanel />
+
+      <AskWar episode={item} timestamp={formatClock(currentTime)} expanded />
 
       {item.description ? (
         <div className="now-playing-notes">

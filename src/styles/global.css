@@ -1469,6 +1469,70 @@ body.now-playing-open {
   margin: 0 0 1rem;
 }
 
+.ask-war {
+  margin: 0.4rem 0 1rem;
+}
+
+.ask-war-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  text-align: left;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.ask-war-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  align-items: flex-start;
+}
+
+.ask-war-head h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.ask-war-head p,
+.ask-war-hint,
+.ask-war-status {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.ask-war-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4rem;
+  align-items: start;
+}
+
+.ask-war-input textarea {
+  width: 100%;
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.ask-war-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.ask-war-actions .btn {
+  min-height: 44px;
+}
+
+.episode-actions .ask-war {
+  margin: 0;
+  width: 100%;
+}
+
 @media (max-width: 860px) {
   .now-playing-play {
     width: 4.4rem;

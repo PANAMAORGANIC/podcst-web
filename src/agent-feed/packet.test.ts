@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { getEntry } from '../catalog/store';
-import { buildAgentFeed } from './packet';
+import type { Playable } from '../player/types';
+import { buildAgentFeed, buildAskWarFeed, grokBotSidebarUrl } from './packet';
+import { WAR_GROK_AGENT_ID } from './types';
 
 describe('buildAgentFeed', () => {
   it('builds a stable packet from a title', () => {
@@ -47,5 +49,40 @@ describe('buildAgentFeed', () => {
     assert.equal(packet.userNote, undefined);
     assert.equal(packet.timestamp, undefined);
     assert.equal(packet.intent, 'distill');
+  });
+
+  it('builds an Ask WAR packet for agent 5140399 only', () => {
+    const entry = getEntry('it-1547894245') ?? getEntry('radio-ambulante');
+    assert.ok(entry);
+    const episode: Playable = {
+      id: `${entry.id}:ep-1`,
+      showId: entry.id,
+      showTitle: entry.title,
+      title: 'Soil week',
+      kind: 'audio',
+      sourceUrl: 'https://example.com/soil-week',
+      description: 'Notes from the field.',
+      durationSeconds: 3600,
+    };
+    const { packet, markdown } = buildAskWarFeed(entry, episode, {
+      question: 'Who is Primavesi in this episode?',
+      timestamp: '12:04',
+      capturedAt: '2026-09-23T02:00:00.000Z',
+      url: 'https://example.test/title/show',
+    });
+    assert.equal(packet.agent?.id, WAR_GROK_AGENT_ID);
+    assert.equal(packet.agent?.name, 'WAR');
+    assert.equal(packet.intent, 'research');
+    assert.equal(packet.episode?.title, 'Soil week');
+    assert.equal(packet.episode?.sourceUrl, 'https://example.com/soil-week');
+    assert.equal(
+      packet.userNote,
+      "RED's question: Who is Primavesi in this episode?",
+    );
+    assert.ok(!JSON.stringify(packet).includes('enclosure'));
+    assert.match(markdown, /Ask WAR/);
+    assert.match(markdown, /5140399/);
+    assert.match(markdown, /RED's question/);
+    assert.equal(grokBotSidebarUrl(), 'grokbot://app/v1/sidebar?agent=5140399');
   });
 });

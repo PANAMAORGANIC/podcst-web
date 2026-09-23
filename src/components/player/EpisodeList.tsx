@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { coverUrl } from '@/catalog/cover';
 import type { CatalogEntry } from '@/catalog/types';
+import { AskWar } from '@/components/AskWar';
 import { ExternalIcon, PlayIcon, QueueIcon } from '@/components/Icons';
 import {
   formatClock,
@@ -153,6 +154,7 @@ export function EpisodeList({ entry }: { entry: CatalogEntry }) {
                     Source
                   </a>
                 ) : null}
+                <AskWar episode={withArtwork(episode, entry)} entry={entry} />
               </div>
             </li>
           );

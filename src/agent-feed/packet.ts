@@ -1,13 +1,37 @@
 import { getLanguage } from '@/catalog/languages';
 import { getRegion } from '@/catalog/regions';
 import type { CatalogEntry } from '@/catalog/types';
+import type { Playable } from '@/player/types';
 import {
   AGENT_FEED_SOURCE,
   type AgentFeedBundle,
+  type AgentFeedEpisode,
   type AgentFeedPacket,
   type AgentFeedSelection,
   type AgentIntent,
+  WAR_GROK_AGENT_ID,
+  WAR_GROK_AGENT_NAME,
 } from './types';
+
+/** Documented Grok Bot sidebar deep link — this WAR agent only. */
+export function grokBotSidebarUrl(agentId: string = WAR_GROK_AGENT_ID): string {
+  return `grokbot://app/v1/sidebar?agent=${encodeURIComponent(agentId)}`;
+}
+
+export function episodeToFeed(episode: Playable): AgentFeedEpisode {
+  return {
+    id: episode.id,
+    title: episode.title,
+    showId: episode.showId,
+    showTitle: episode.showTitle,
+    kind: episode.kind,
+    publishedAt: episode.publishedAt,
+    durationSeconds: episode.durationSeconds,
+    sourceUrl: episode.sourceUrl,
+    youtubeId: episode.youtubeId,
+    description: episode.description,
+  };
+}
 
 const INTENT_PROMPTS: Record<AgentIntent, string> = {
   distill:
@@ -50,10 +74,59 @@ export function buildAgentFeed(
   if (quote) packet.quote = quote;
   if (userNote) packet.userNote = userNote;
   if (timestamp) packet.timestamp = timestamp;
+  if (selection.episode) packet.episode = selection.episode;
+  if (selection.agent) packet.agent = selection.agent;
 
   return {
     packet,
     markdown: renderMarkdown(entry, packet),
+  };
+}
+
+export function buildAskWarFeed(
+  entry: CatalogEntry,
+  episode: Playable,
+  options: {
+    question?: string;
+    timestamp?: string;
+    url?: string;
+    capturedAt?: string;
+  } = {},
+): AgentFeedBundle {
+  const question = clean(options.question);
+  const userNote = question ? `RED's question: ${question}` : undefined;
+  return buildAgentFeed(entry, {
+    includeTitle: true,
+    excerpt: episode.description || entry.description,
+    userNote,
+    timestamp: options.timestamp,
+    url: options.url,
+    intent: 'research',
+    capturedAt: options.capturedAt,
+    episode: episodeToFeed(episode),
+    agent: { id: WAR_GROK_AGENT_ID, name: WAR_GROK_AGENT_NAME },
+  });
+}
+
+export function stubEntryFromEpisode(episode: Playable): CatalogEntry {
+  return {
+    id: episode.showId,
+    type: episode.kind === 'youtube' ? 'youtube' : 'podcast',
+    title: episode.showTitle,
+    originalLanguage: 'en',
+    creators: [],
+    description: episode.description ?? '',
+    tags: [],
+    genres: [],
+    region: '',
+    country: '',
+    countryCode: '',
+    externalUrls: episode.sourceUrl
+      ? episode.kind === 'youtube'
+        ? { youtube: episode.sourceUrl }
+        : { website: episode.sourceUrl }
+      : {},
+    signals: { popularity: 0, diversity: 0 },
   };
 }
 
@@ -73,14 +146,46 @@ function renderMarkdown(entry: CatalogEntry, packet: AgentFeedPacket): string {
     .filter((row): row is [string, string] => Boolean(row[1]))
     .map(([key, href]) => `- ${labelLink(key)}: ${href}`);
 
+  const isAskWar = packet.agent?.id === WAR_GROK_AGENT_ID;
   const lines = [
-    '# Distill a source',
+    isAskWar ? '# Ask WAR' : '# Distill a source',
     '',
-    INTENT_PROMPTS[packet.intent],
+    isAskWar
+      ? `You are the WAR agent (id ${WAR_GROK_AGENT_ID}) for World Audio Repository. Answer about this episode — themes, authors, books, terms. Use only the metadata and source links below.`
+      : INTENT_PROMPTS[packet.intent],
     '',
     `Intent: ${packet.intent}`,
     `Captured: ${packet.capturedAt}`,
     `Source: ${packet.source}`,
+  ];
+
+  if (packet.agent) {
+    lines.push(`Agent: ${packet.agent.name} (${packet.agent.id})`);
+  }
+
+  if (packet.episode) {
+    const ep = packet.episode;
+    lines.push(
+      '',
+      '## Episode',
+      '',
+      `- Title: ${ep.title}`,
+      `- Show: ${ep.showTitle}`,
+      `- Episode id: ${ep.id}`,
+      `- Kind: ${ep.kind}`,
+    );
+    if (ep.publishedAt) lines.push(`- Published: ${ep.publishedAt}`);
+    if (ep.durationSeconds != null) {
+      lines.push(`- Duration seconds: ${ep.durationSeconds}`);
+    }
+    if (ep.sourceUrl) lines.push(`- Source: ${ep.sourceUrl}`);
+    if (ep.youtubeId) lines.push(`- YouTube: ${ep.youtubeId}`);
+    if (ep.description) {
+      lines.push('', '## Episode notes', '', ep.description);
+    }
+  }
+
+  lines.push(
     '',
     '## Catalogue card',
     '',
@@ -91,7 +196,7 @@ function renderMarkdown(entry: CatalogEntry, packet: AgentFeedPacket): string {
     `- Region: ${region.name}`,
     `- Tags: ${packet.tags.join(', ')}`,
     `- Catalogue: ${packet.url}`,
-  ];
+  );
 
   if (packet.timestamp) {
     lines.push(`- Timestamp / locus: ${packet.timestamp}`);
@@ -118,8 +223,13 @@ function renderMarkdown(entry: CatalogEntry, packet: AgentFeedPacket): string {
     '## Constraint',
     '',
     'Metadata and deep links only. Do not fetch or host copyrighted audio files.',
-    '',
   );
+  if (isAskWar) {
+    lines.push(
+      'If the listener pasted a question, answer that first. Otherwise propose useful angles on the episode.',
+    );
+  }
+  lines.push('');
 
   return lines.join('\n');
 }
