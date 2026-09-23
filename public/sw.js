@@ -1,5 +1,5 @@
 /* World Audio Repository — app-shell only. Never cache audio or the catalog. */
-const CACHE = 'war-shell-v1';
+const CACHE = 'war-shell-v2';
 const SHELL = [
   '/',
   '/manifest.webmanifest',
@@ -22,7 +22,9 @@ self.addEventListener('activate', (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))),
+        Promise.all(
+          keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)),
+        ),
       )
       .then(() => self.clients.claim()),
   );
@@ -33,7 +35,8 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
-  if (request.destination === 'audio' || request.destination === 'video') return;
+  if (request.destination === 'audio' || request.destination === 'video')
+    return;
   if (url.pathname.startsWith('/api/episodes')) return;
   if (url.pathname.startsWith('/api/catalog')) return;
   if (url.pathname.startsWith('/api/cover')) return;

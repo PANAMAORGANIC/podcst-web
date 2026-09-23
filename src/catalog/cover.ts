@@ -67,7 +67,7 @@ export function renderCoverSvg(entry: CatalogEntry): string {
   const mark = TYPE_MARK[entry.type];
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="${title}">
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-label="${title}">
   <rect width="600" height="600" fill="${bg}"/>
   <rect x="28" y="28" width="544" height="544" fill="none" stroke="${fg}" stroke-width="2" opacity="0.45"/>
   <text x="48" y="80" fill="${fg}" font-family="Georgia, serif" font-size="22" letter-spacing="4">${mark}</text>

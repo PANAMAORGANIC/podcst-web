@@ -9,6 +9,7 @@ function favoriteToEntry(show: {
   title: string;
   feedUrl: string;
   appleId?: number;
+  artworkUrl?: string;
   language: string;
   creators?: string[];
   description?: string;
@@ -40,6 +41,7 @@ function favoriteToEntry(show: {
         ? `https://podcasts.apple.com/podcast/id${appleId}`
         : undefined,
     },
+    coverArt: show.artworkUrl,
     signals: { popularity: 70, diversity: 40 },
   };
 }

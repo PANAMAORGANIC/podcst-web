@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { coverUrl, generatedCoverPath } from '@/catalog/cover';
+import { generatedCoverPath } from '@/catalog/cover';
 import type { CatalogEntry } from '@/catalog/types';
 
 export function CoverArt({
@@ -15,16 +14,10 @@ export function CoverArt({
   size?: 'card' | 'hero';
   alt?: string;
 }) {
-  const generated = generatedCoverPath(entry.id);
-  const preferred = coverUrl(entry);
-  const [src, setSrc] = useState(preferred);
-
-  useEffect(() => {
-    setSrc(preferred);
-  }, [preferred]);
+  const src = generatedCoverPath(entry.id);
 
   return (
-    // biome-ignore lint/performance/noImgElement: remote artwork + generated SVG fallback
+    // biome-ignore lint/performance/noImgElement: same-origin cover route + generated SVG
     <img
       src={src}
       alt={alt}
@@ -33,9 +26,7 @@ export function CoverArt({
       className={`cover-art cover-${size}`}
       decoding="async"
       fetchPriority={priority ? 'high' : 'auto'}
-      onError={() => {
-        if (src !== generated) setSrc(generated);
-      }}
+      referrerPolicy="no-referrer"
     />
   );
 }

@@ -6,7 +6,9 @@
       "appleId": 1547894245,
       "language": "es",
       "hub": "anchor",
-      "creators": ["Red de Guardianes de Semillas"],
+      "creators": [
+        "Red de Guardianes de Semillas"
+      ],
       "description": "Podcast de la Red de Guardianes de Semillas: agroecología, semillas criollas y la vida campesina en los Andes. Metadatos y enlace RSS; el audio queda en el feed.",
       "tags": [
         "seeds",
@@ -15,7 +17,10 @@
         "spanish",
         "red-de-guardianes"
       ],
-      "genres": ["society-culture", "science"],
+      "genres": [
+        "society-culture",
+        "science"
+      ],
       "region": "andes",
       "country": "Ecuador",
       "countryCode": "EC",
@@ -26,7 +31,11 @@
         "agroecología Andes",
         "Red de Guardianes de Semillas"
       ],
-      "relatedGenreIds": [1324, 1315]
+      "relatedGenreIds": [
+        1324,
+        1315
+      ],
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/17/7c/c8/177cc8de-a3a4-092a-a506-90a933166162/mza_9885830759486970380.jpg/600x600bb.jpg"
     },
     {
       "title": "EcoJustice Radio",
@@ -34,7 +43,11 @@
       "appleId": 1447211636,
       "language": "en",
       "hub": "soundcloud",
-      "creators": ["Jack Eidt", "SoCal 350", "KPFK"],
+      "creators": [
+        "Jack Eidt",
+        "SoCal 350",
+        "KPFK"
+      ],
       "description": "Environmental justice interviews from the Pacifica / KPFK orbit and SoCal 350 Climate Action. Metadata and the SoundCloud RSS only.",
       "tags": [
         "climate",
@@ -43,7 +56,10 @@
         "kpfk",
         "public-radio"
       ],
-      "genres": ["news", "society-culture"],
+      "genres": [
+        "news",
+        "society-culture"
+      ],
       "region": "north-america",
       "country": "United States",
       "countryCode": "US",
@@ -54,7 +70,12 @@
         "climate justice",
         "Pacifica Radio"
       ],
-      "relatedGenreIds": [1311, 1489, 1324]
+      "relatedGenreIds": [
+        1311,
+        1489,
+        1324
+      ],
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts126/v4/c7/20/c5/c720c577-2344-2a4a-28a3-1d7ee543b8db/mza_11046634011850932939.jpg/600x600bb.jpg"
     },
     {
       "title": "632nm",
@@ -62,15 +83,29 @@
       "appleId": 1751170269,
       "language": "en",
       "hub": "transistor",
-      "creators": ["632nm"],
+      "creators": [
+        "632nm"
+      ],
       "description": "Science interviews: researchers talking through the work, not the press release. Transistor RSS is the source of truth.",
-      "tags": ["science", "interviews", "research"],
-      "genres": ["science"],
+      "tags": [
+        "science",
+        "interviews",
+        "research"
+      ],
+      "genres": [
+        "science"
+      ],
       "region": "north-america",
       "country": "United States",
       "countryCode": "US",
-      "relatedTerms": ["632nm", "science interviews"],
-      "relatedGenreIds": [1315]
+      "relatedTerms": [
+        "632nm",
+        "science interviews"
+      ],
+      "relatedGenreIds": [
+        1315
+      ],
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/f3/aa/4f/f3aa4f96-38d2-7e60-e6f6-e81dbb349798/mza_1819373216578180556.jpg/600x600bb.jpg"
     },
     {
       "title": "Tangentially Speaking with Christopher Ryan",
@@ -78,7 +113,9 @@
       "appleId": 566908883,
       "language": "en",
       "hub": "substack",
-      "creators": ["Christopher Ryan"],
+      "creators": [
+        "Christopher Ryan"
+      ],
       "description": "Christopher Ryan's long conversations — the Substack podcast feed, not an unrelated show that shares the name. Apple id 566908883.",
       "tags": [
         "conversation",
@@ -86,13 +123,21 @@
         "longform",
         "substack"
       ],
-      "genres": ["society-culture"],
+      "genres": [
+        "society-culture"
+      ],
       "region": "north-america",
       "country": "United States",
       "countryCode": "US",
       "website": "https://chrisryan.substack.com/",
-      "relatedTerms": ["Christopher Ryan", "Tangentially Speaking"],
-      "relatedGenreIds": [1324]
+      "relatedTerms": [
+        "Christopher Ryan",
+        "Tangentially Speaking"
+      ],
+      "relatedGenreIds": [
+        1324
+      ],
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/4a/28/20/4a282088-da1a-bc5f-7334-1e66b52f76ef/mza_11117144977670281899.jpeg/600x600bb.jpg"
     },
     {
       "title": "Planet: Critical",
@@ -100,16 +145,34 @@
       "appleId": 1545009586,
       "language": "en",
       "hub": "podbean",
-      "creators": ["Rachel Donald"],
+      "creators": [
+        "Rachel Donald"
+      ],
       "description": "Rachel Donald on the intersecting climate, ecological, and political crises. Podbean RSS is the source of truth; metadata only.",
-      "tags": ["climate", "politics", "ecology", "rachel-donald"],
-      "genres": ["news", "society-culture"],
+      "tags": [
+        "climate",
+        "politics",
+        "ecology",
+        "rachel-donald"
+      ],
+      "genres": [
+        "news",
+        "society-culture"
+      ],
       "region": "uk-ireland",
       "country": "United Kingdom",
       "countryCode": "GB",
       "website": "https://planetcritical.com/",
-      "relatedTerms": ["Planet Critical", "Rachel Donald", "climate crisis"],
-      "relatedGenreIds": [1311, 1489]
+      "relatedTerms": [
+        "Planet Critical",
+        "Rachel Donald",
+        "climate crisis"
+      ],
+      "relatedGenreIds": [
+        1311,
+        1489
+      ],
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/99/1b/4f/991b4fb9-01f7-be6b-8a6d-e0275ca26ed1/mza_2144265945840755011.jpeg/600x600bb.jpg"
     },
     {
       "title": "The Great Simplification with Nate Hagens",
@@ -117,16 +180,34 @@
       "appleId": 1604218333,
       "language": "en",
       "hub": "libsyn",
-      "creators": ["Nate Hagens"],
+      "creators": [
+        "Nate Hagens"
+      ],
       "description": "Nate Hagens on energy, ecology, and the economic transition ahead. Libsyn RSS is the source of truth; metadata only.",
-      "tags": ["energy", "ecology", "economy", "nate-hagens"],
-      "genres": ["science", "society-culture"],
+      "tags": [
+        "energy",
+        "ecology",
+        "economy",
+        "nate-hagens"
+      ],
+      "genres": [
+        "science",
+        "society-culture"
+      ],
       "region": "north-america",
       "country": "United States",
       "countryCode": "US",
       "website": "https://www.thegreatsimplification.com/",
-      "relatedTerms": ["Nate Hagens", "Great Simplification", "energy economics"],
-      "relatedGenreIds": [1315, 1324]
+      "relatedTerms": [
+        "Nate Hagens",
+        "Great Simplification",
+        "energy economics"
+      ],
+      "relatedGenreIds": [
+        1315,
+        1324
+      ],
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/3c/be/97/3cbe97fb-f542-6271-7c4f-c986b5f4c51f/mza_8932915024380387774.jpg/600x600bb.jpg"
     },
     {
       "title": "The Acres U.S.A. Podcast",
@@ -134,7 +215,10 @@
       "appleId": 1747339811,
       "language": "en",
       "hub": "anchor",
-      "creators": ["Taylor Henry", "Acres U.S.A."],
+      "creators": [
+        "Taylor Henry",
+        "Acres U.S.A."
+      ],
       "description": "Weekly interviews on production-scale organic and regenerative farming from Acres U.S.A. Anchor RSS is the source of truth; metadata only.",
       "tags": [
         "agroecology",
@@ -143,7 +227,10 @@
         "organic",
         "acres"
       ],
-      "genres": ["science", "society-culture"],
+      "genres": [
+        "science",
+        "society-culture"
+      ],
       "region": "north-america",
       "country": "United States",
       "countryCode": "US",
@@ -154,7 +241,11 @@
         "regenerative farming",
         "organic agriculture"
       ],
-      "relatedGenreIds": [1315, 1324]
+      "relatedGenreIds": [
+        1315,
+        1324
+      ],
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/c9/5b/f3/c95bf374-66a7-61fb-7666-ab6fff748c5e/mza_4156077354665549157.jpg/600x600bb.jpg"
     }
   ],
   "pins": [],

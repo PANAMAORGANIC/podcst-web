@@ -16,6 +16,7 @@ export interface FavoriteShow {
   title: string;
   feedUrl: string;
   appleId?: number;
+  artworkUrl?: string;
   language: string;
   hub: FavoriteHub;
   creators?: string[];

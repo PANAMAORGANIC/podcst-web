@@ -1135,7 +1135,7 @@ export const PODCASTS = [
         'https://podcasts.apple.com/us/podcast/the-acres-u-s-a-podcast/id1747339811',
     },
     coverArt:
-      'https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/40174434/40174434-1715120326137-31acfdd32b592.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/c9/5b/f3/c95bf374-66a7-61fb-7666-ab6fff748c5e/mza_4156077354665549157.jpg/600x600bb.jpg',
     signals: { popularity: 78, diversity: 34 },
     episodeCount: 128,
     year: 2024,

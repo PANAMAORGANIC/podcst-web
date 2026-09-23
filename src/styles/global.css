@@ -563,10 +563,13 @@ main {
 }
 
 .cover-art {
+  display: block;
+  flex-shrink: 0;
   width: 100%;
   aspect-ratio: 1;
+  min-height: 5.5rem;
   object-fit: cover;
-  background: var(--surface);
+  background: var(--ink);
   border: 1px solid var(--rule);
 }
 
