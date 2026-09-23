@@ -3,15 +3,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useId, useRef, useState } from 'react';
-import type { CatalogEntry } from '@/catalog/types';
+import type { WarSearchResult } from '@/catalog/search-types';
 import { SearchIcon } from './Icons';
-
-interface Suggestion {
-  id: string;
-  title: string;
-  type: CatalogEntry['type'];
-  creators: string[];
-}
 
 interface SearchBoxProps {
   defaultValue?: string;
@@ -28,7 +21,11 @@ export function SearchBox({
   const [term, setTerm] = useState(defaultValue);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
-  const [results, setResults] = useState<Suggestion[]>([]);
+  const [data, setData] = useState<WarSearchResult | null>(null);
+
+  useEffect(() => {
+    setTerm(defaultValue);
+  }, [defaultValue]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -44,27 +41,43 @@ export function SearchBox({
   useEffect(() => {
     const q = term.trim();
     if (q.length < 2) {
-      setResults([]);
+      setData(null);
       return;
     }
     const handle = window.setTimeout(async () => {
-      const response = await fetch(
-        `/api/search?q=${encodeURIComponent(q)}&limit=8`,
-      );
+      const response = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
       if (!response.ok) return;
-      const data = (await response.json()) as { items: Suggestion[] };
-      setResults(data.items);
+      const next = (await response.json()) as WarSearchResult;
+      setData(next);
       setActive(0);
-    }, 180);
+    }, 200);
     return () => window.clearTimeout(handle);
   }, [term]);
+
+  const suggestions = [
+    ...(data?.shows.slice(0, 4).map((item) => ({
+      href: `/title/${encodeURIComponent(item.id)}`,
+      title: item.title,
+      meta: `Show · ${item.type}`,
+    })) ?? []),
+    ...(data?.episodes.slice(0, 3).map((item) => ({
+      href: `/title/${encodeURIComponent(item.showId)}`,
+      title: item.title,
+      meta: `Episode · ${item.showTitle}`,
+    })) ?? []),
+    ...(data?.themes.slice(0, 2).map((item) => ({
+      href: `/search?q=${encodeURIComponent(item.query)}&tab=themes`,
+      title: item.label,
+      meta: `Theme · ${item.count} shows`,
+    })) ?? []),
+  ];
 
   return (
     <div className={`search-box search-box-${size}`}>
       <search>
         <form action="/search" method="get">
           <label className="sr-only" htmlFor={`war-search-${size}`}>
-            Search the repository
+            Search shows, episodes, and themes
           </label>
           <SearchIcon className="search-box-icon" />
           <input
@@ -72,9 +85,13 @@ export function SearchBox({
             ref={inputRef}
             name="q"
             type="search"
-            defaultValue={defaultValue}
+            value={term}
             autoComplete="off"
-            placeholder="Search titles, creators, languages, tags…"
+            placeholder={
+              size === 'header'
+                ? 'Shows, episodes, themes'
+                : 'Search shows, episodes, themes…'
+            }
             aria-controls={listId}
             onChange={(event) => {
               setTerm(event.target.value);
@@ -83,46 +100,52 @@ export function SearchBox({
             onFocus={() => setOpen(true)}
             onBlur={() => window.setTimeout(() => setOpen(false), 120)}
             onKeyDown={(event) => {
-              if (!results.length) return;
+              if (!suggestions.length) return;
               if (event.key === 'ArrowDown') {
                 event.preventDefault();
-                setActive((index) => (index + 1) % results.length);
+                setActive((index) => (index + 1) % suggestions.length);
               }
               if (event.key === 'ArrowUp') {
                 event.preventDefault();
                 setActive(
-                  (index) => (index - 1 + results.length) % results.length,
+                  (index) =>
+                    (index - 1 + suggestions.length) % suggestions.length,
                 );
               }
-              if (event.key === 'Enter' && open && results[active]) {
+              if (event.key === 'Enter' && open && suggestions[active]) {
                 event.preventDefault();
-                router.push(`/title/${results[active].id}`);
+                router.push(suggestions[active].href);
               }
             }}
           />
-          {size === 'hero' ? (
-            <button type="submit" className="btn btn-primary">
-              Search
-            </button>
-          ) : null}
+          <button type="submit" className="btn btn-primary">
+            Search
+          </button>
         </form>
       </search>
-      {open && results.length > 0 ? (
+      {open && (suggestions.length > 0 || term.trim().length >= 2) ? (
         <ul id={listId} className="search-suggest">
-          {results.map((item, index) => (
-            <li key={item.id}>
+          {suggestions.map((item, index) => (
+            <li key={`${item.href}-${item.title}`}>
               <Link
-                href={`/title/${item.id}`}
+                href={item.href}
                 data-active={index === active}
                 onMouseDown={(event) => event.preventDefault()}
               >
                 <span className="suggest-title">{item.title}</span>
-                <span className="suggest-meta">
-                  {item.type} · {item.creators[0]}
-                </span>
+                <span className="suggest-meta">{item.meta}</span>
               </Link>
             </li>
           ))}
+          <li>
+            <Link
+              href={`/search?q=${encodeURIComponent(term.trim())}`}
+              onMouseDown={(event) => event.preventDefault()}
+            >
+              <span className="suggest-title">See all results</span>
+              <span className="suggest-meta">Shows · Episodes · Themes</span>
+            </Link>
+          </li>
         </ul>
       ) : null}
     </div>

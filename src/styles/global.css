@@ -208,6 +208,9 @@ main {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
 }
 
 .icon-btn {
@@ -242,7 +245,13 @@ main {
 }
 
 .search-box-header form {
-  width: min(22rem, 42vw);
+  width: min(22rem, 100%);
+}
+
+.search-box-header {
+  flex: 1;
+  min-width: 0;
+  max-width: 28rem;
 }
 
 .search-box-hero form {
@@ -952,7 +961,18 @@ main {
   }
 
   .search-box-header {
-    display: none;
+    display: block;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .search-box-header form {
+    width: 100%;
+  }
+
+  .search-box-header .btn {
+    min-height: 44px;
+    padding-inline: 0.7rem;
   }
 
   .type-doors,
@@ -1547,4 +1567,104 @@ body.now-playing-open {
     min-width: 70px;
     min-height: 70px;
   }
+}
+
+.search-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin: 1rem 0 0.8rem;
+}
+
+.search-tab {
+  flex: 1;
+  min-height: 44px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink-2);
+  text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.search-tab.is-active {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+}
+
+.search-tab span {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+
+.search-hint,
+.search-empty {
+  color: var(--ink-2);
+}
+
+.search-hits,
+.search-themes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.search-hits a,
+.search-theme {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-decoration: none;
+  padding: 0.7rem 0.2rem;
+  min-height: 44px;
+}
+
+.search-hits strong,
+.search-theme {
+  color: var(--ink);
+}
+
+.search-hits span,
+.search-theme span {
+  color: var(--ink-3);
+  font-size: 0.85rem;
+}
+
+.search-hits em {
+  margin-left: 0.45rem;
+  font-style: normal;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.search-episode {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.search-episode .btn {
+  flex-shrink: 0;
+  min-height: 44px;
+}
+
+.search-themes {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.search-theme {
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  padding: 0.65rem 0.85rem;
 }

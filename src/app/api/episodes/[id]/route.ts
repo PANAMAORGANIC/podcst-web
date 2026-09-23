@@ -2,15 +2,13 @@ import { NextResponse } from 'next/server';
 import { coverUrl } from '@/catalog/cover';
 import { parseYoutubeUrl } from '@/catalog/signals';
 import { getEntry } from '@/catalog/store';
-import { parseRssEpisodes, preferHttps } from '@/player/rss-episodes';
+import { cachedRssEpisodes } from '@/player/feed';
+import { preferHttps } from '@/player/rss-episodes';
 import type { EpisodesResponse, Playable } from '@/player/types';
 
 export const dynamic = 'force-dynamic';
 
-const UA =
-  'WorldAudioRepository/1.0 (+https://github.com/PANAMAORGANIC/podcst-web)';
 const CACHE_MS = 10 * 60 * 1000;
-const MAX_XML = 4_000_000;
 
 const cache = new Map<string, { at: number; payload: EpisodesResponse }>();
 
@@ -49,20 +47,19 @@ export async function GET(
   let message: string | undefined;
 
   if (entry.externalUrls.rss) {
-    const xml = await fetchFeed(entry.externalUrls.rss);
-    if (xml) {
-      episodes = parseRssEpisodes(
-        xml,
-        { id: entry.id, title: entry.title, artwork },
-        50,
-      );
-      source = episodes.length ? 'rss' : 'none';
-      if (!episodes.length) {
-        message =
-          'The feed had no playable enclosures. Open the show in its source.';
-      }
-    } else {
-      message = 'Could not load the RSS feed. Open the show in its source.';
+    episodes = await cachedRssEpisodes(
+      {
+        id: entry.id,
+        title: entry.title,
+        artwork,
+        rss: entry.externalUrls.rss,
+      },
+      { timeoutMs: 20_000, limit: 50 },
+    );
+    source = episodes.length ? 'rss' : 'none';
+    if (!episodes.length) {
+      message =
+        'Could not load playable enclosures from the RSS feed. Open the show in its source.';
     }
   }
 
@@ -109,27 +106,4 @@ export async function GET(
   };
   cache.set(id, { at: Date.now(), payload });
   return NextResponse.json(payload);
-}
-
-async function fetchFeed(url: string): Promise<string | null> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 20_000);
-  try {
-    const response = await fetch(preferHttps(url), {
-      signal: controller.signal,
-      headers: {
-        'User-Agent': UA,
-        Accept: 'application/rss+xml, application/xml, text/xml, */*',
-      },
-      next: { revalidate: 600 },
-    });
-    if (!response.ok) return null;
-    const text = await response.text();
-    if (text.length > MAX_XML) return text.slice(0, MAX_XML);
-    return text;
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
 }

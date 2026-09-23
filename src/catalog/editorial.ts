@@ -56,6 +56,7 @@ export const EDITORIAL_RECIPES: EditorialRecipe[] = [
       'organic',
       'farming',
       'soil',
+      'compost',
       'agroecology',
       'regeneration',
     ],
