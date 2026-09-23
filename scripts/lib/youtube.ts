@@ -89,6 +89,7 @@ export function mapYoutubeChannel(
     countryCode,
     externalUrls: {
       youtube: source.youtube,
+      youtubeChannelId: source.channelId,
       website: source.website,
     },
     coverArt:

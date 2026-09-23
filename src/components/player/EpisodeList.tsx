@@ -75,8 +75,9 @@ export function EpisodeList({ entry }: { entry: CatalogEntry }) {
         <div>
           <h2>Episodes</h2>
           <p className="lede">
-            Streamed from the publisher. We store metadata and the enclosure URL
-            only — never the audio file.
+            {data.source === 'youtube'
+              ? "Latest uploads from the channel's YouTube feed. We embed the watch page — never host the file."
+              : 'Streamed from the publisher. We store metadata and the enclosure URL only — never the audio file.'}
           </p>
         </div>
         <button
@@ -109,6 +110,7 @@ export function EpisodeList({ entry }: { entry: CatalogEntry }) {
                   {episode.durationSeconds
                     ? ` · ${formatClock(episode.durationSeconds)}`
                     : ''}
+                  {episode.kind === 'youtube' ? ' · YouTube' : ''}
                   {mark === 'in-progress' ? ' · In progress' : ''}
                   {mark === 'played' ? ' · Played' : ''}
                 </p>

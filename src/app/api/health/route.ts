@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { catalogRuntime } from '@/catalog/store';
+import { hasYoutubeApiKey } from '@/player/youtube-feed';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +12,8 @@ export async function GET() {
     homepageScrape: false,
     curatedHome: true,
     player: 'source-stream',
+    youtubeEpisodes: 'on-demand',
+    youtubeDataApi: hasYoutubeApiKey(),
     pwa: true,
     likesPersist: 'local-first',
   });

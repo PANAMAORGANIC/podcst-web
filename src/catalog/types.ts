@@ -11,6 +11,8 @@ export const CATALOG_TYPE_LABELS: Record<CatalogType, string> = {
 export interface ExternalUrls {
   rss?: string;
   youtube?: string;
+  /** UC… id for the official videos.xml / Data API uploads playlist. */
+  youtubeChannelId?: string;
   website?: string;
   store?: string;
   librivox?: string;

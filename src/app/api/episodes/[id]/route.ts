@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
 import { coverUrl } from '@/catalog/cover';
-import { parseYoutubeUrl } from '@/catalog/signals';
 import { getEntry } from '@/catalog/store';
 import { cachedRssEpisodes } from '@/player/feed';
 import { preferHttps } from '@/player/rss-episodes';
 import type { EpisodesResponse, Playable } from '@/player/types';
+import { loadYoutubeEpisodes } from '@/player/youtube-feed';
 
 export const dynamic = 'force-dynamic';
 
-const CACHE_MS = 10 * 60 * 1000;
+const SUCCESS_CACHE_MS = 10 * 60 * 1000;
+const EMPTY_CACHE_MS = 45 * 1000;
 
-const cache = new Map<string, { at: number; payload: EpisodesResponse }>();
+const cache = new Map<
+  string,
+  { at: number; ttl: number; payload: EpisodesResponse }
+>();
 
 export async function GET(
   _request: Request,
@@ -23,7 +27,7 @@ export async function GET(
   }
 
   const cached = cache.get(id);
-  if (cached && Date.now() - cached.at < CACHE_MS) {
+  if (cached && Date.now() - cached.at < cached.ttl) {
     return NextResponse.json(cached.payload);
   }
 
@@ -64,25 +68,22 @@ export async function GET(
   }
 
   if (!episodes.length && entry.externalUrls.youtube) {
-    const parsed = parseYoutubeUrl(entry.externalUrls.youtube);
-    if (parsed.videoId) {
-      episodes = [
-        {
-          id: `${entry.id}:${parsed.videoId}`,
-          showId: entry.id,
-          showTitle: entry.title,
-          title: entry.title,
-          kind: 'youtube',
-          sourceUrl: `https://www.youtube.com/watch?v=${parsed.videoId}`,
-          artwork,
-          youtubeId: parsed.videoId,
-        },
-      ];
+    const youtube = await loadYoutubeEpisodes(
+      {
+        id: entry.id,
+        title: entry.title,
+        artwork,
+        youtube: entry.externalUrls.youtube,
+        youtubeChannelId: entry.externalUrls.youtubeChannelId,
+      },
+      { timeoutMs: 14_000, limit: 50 },
+    );
+    if (youtube.episodes.length) {
+      episodes = youtube.episodes;
       source = 'youtube';
       message = undefined;
-    } else if (!message) {
-      message =
-        'This YouTube title is a channel. Open it on YouTube — we do not scrape watch pages.';
+    } else {
+      message = youtube.message ?? message;
     }
   }
 
@@ -104,6 +105,10 @@ export async function GET(
     })),
     message,
   };
-  cache.set(id, { at: Date.now(), payload });
+  cache.set(id, {
+    at: Date.now(),
+    ttl: episodes.length ? SUCCESS_CACHE_MS : EMPTY_CACHE_MS,
+    payload,
+  });
   return NextResponse.json(payload);
 }
