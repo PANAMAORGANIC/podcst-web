@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { usePlayer } from '@/player/store';
 import { MiniPlayer } from './MiniPlayer';
+import { NowPlayingSheet } from './NowPlayingSheet';
 import { PlayerEngine } from './PlayerEngine';
 
 export function PlayerRoot() {
@@ -22,6 +23,7 @@ export function PlayerRoot() {
     <>
       <PlayerEngine />
       <MiniPlayer />
+      <NowPlayingSheet />
     </>
   );
 }
