@@ -16,15 +16,18 @@ export function LibraryShelf() {
   useHydrateSubscriptions();
   const ready = useSubscriptions((state) => state.ready);
   const ids = useSubscriptions((state) => state.ids);
-  const [items, setItems] = useState<CatalogEntry[] | null>(null);
+  const [items, setItems] = useState<CatalogEntry[]>([]);
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
     if (!ready) return;
     if (!ids.length) {
       setItems([]);
+      setPending(false);
       return;
     }
     const controller = new AbortController();
+    setPending(true);
     void fetch(`/api/catalog?ids=${encodeURIComponent(ids.join(','))}`, {
       signal: controller.signal,
     })
@@ -39,14 +42,18 @@ export function LibraryShelf() {
           (a, b) => (order.get(a.id) ?? 99) - (order.get(b.id) ?? 99),
         );
         setItems(resolved);
+        setPending(false);
       })
       .catch(() => {
-        if (!controller.signal.aborted) setItems([]);
+        if (!controller.signal.aborted) {
+          setItems([]);
+          setPending(false);
+        }
       });
     return () => controller.abort();
   }, [ids, ready]);
 
-  if (!ready || items === null) {
+  if (ready && pending) {
     return (
       <p className="lede" role="status">
         Loading your library from this device…
