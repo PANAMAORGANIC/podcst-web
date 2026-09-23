@@ -81,10 +81,6 @@ export function NowPlayingSheet() {
     window.addEventListener('popstate', onPop);
     return () => {
       window.removeEventListener('popstate', onPop);
-      if (pushedHistory.current && history.state?.warNowPlaying) {
-        pushedHistory.current = false;
-        history.back();
-      }
     };
   }, [open, closeNowPlaying]);
 

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { usePlayer } from '@/player/store';
 import { CloseIcon, MenuIcon } from './Icons';
 import { SearchBox } from './SearchBox';
 import { ThemeToggle } from './ThemeToggle';
@@ -19,11 +20,20 @@ const NAV = [
 export function AppHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const closeNowPlaying = usePlayer((state) => state.closeNowPlaying);
 
   return (
     <header className="site-header">
       <div className="site-header-inner">
-        <Link href="/" className="wordmark">
+        <Link
+          href="/"
+          className="wordmark"
+          aria-label="Home"
+          onClick={() => {
+            setOpen(false);
+            closeNowPlaying();
+          }}
+        >
           <span className="wordmark-mark" aria-hidden="true">
             WAR
           </span>
