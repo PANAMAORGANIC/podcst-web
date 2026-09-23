@@ -84,6 +84,14 @@ export function CloseIcon(props: IconProps) {
   );
 }
 
+export function ChevronDownIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="m6 9 6 6 6-6" />
+    </Svg>
+  );
+}
+
 export function TranslateIcon(props: IconProps) {
   return (
     <Svg {...props}>

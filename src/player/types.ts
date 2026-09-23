@@ -17,6 +17,8 @@ export type Playable = {
   sourceUrl?: string;
   artwork?: string;
   youtubeId?: string;
+  /** Plain-text episode notes from the publisher feed — never a hosted file. */
+  description?: string;
 };
 
 export type EpisodeProgress = {

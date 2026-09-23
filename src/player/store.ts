@@ -26,6 +26,7 @@ type PlayerState = {
   error: string | null;
   sourceBlocked: boolean;
   queueOpen: boolean;
+  nowPlayingOpen: boolean;
   progress: PersistedPlayer['progress'];
   hydrate: () => void;
   playItem: (item: Playable, extras?: { queue?: Playable[] }) => void;
@@ -45,6 +46,9 @@ type PlayerState = {
   move: (from: number, to: number) => void;
   clear: () => void;
   toggleQueue: () => void;
+  openNowPlaying: () => void;
+  closeNowPlaying: () => void;
+  toggleNowPlaying: () => void;
   reportTime: (currentTime: number, duration: number) => void;
   reportReady: (duration: number) => void;
   reportEnded: () => void;
@@ -78,6 +82,7 @@ export const usePlayer = create<PlayerState>((set, get) => ({
   error: null,
   sourceBlocked: false,
   queueOpen: false,
+  nowPlayingOpen: false,
   progress: {},
   seekRequest: null,
   hydrate: () => {
@@ -194,6 +199,8 @@ export const usePlayer = create<PlayerState>((set, get) => ({
       index: nextIndex,
       status: next.length ? get().status : 'idle',
       currentTime: next.length ? get().currentTime : 0,
+      nowPlayingOpen: next.length ? get().nowPlayingOpen : false,
+      queueOpen: next.length ? get().queueOpen : false,
     });
     persistSlice(get());
   },
@@ -218,10 +225,21 @@ export const usePlayer = create<PlayerState>((set, get) => ({
       duration: 0,
       error: null,
       sourceBlocked: false,
+      nowPlayingOpen: false,
+      queueOpen: false,
     });
     persistSlice(get());
   },
   toggleQueue: () => set({ queueOpen: !get().queueOpen }),
+  openNowPlaying: () => {
+    if (!get().queue.length) return;
+    set({ nowPlayingOpen: true });
+  },
+  closeNowPlaying: () => set({ nowPlayingOpen: false }),
+  toggleNowPlaying: () => {
+    if (!get().queue.length) return;
+    set({ nowPlayingOpen: !get().nowPlayingOpen });
+  },
   reportTime: (currentTime, duration) => {
     const item = get().queue[get().index];
     set({ currentTime, duration: duration || get().duration });

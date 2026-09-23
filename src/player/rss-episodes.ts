@@ -2,6 +2,17 @@ import type { Playable } from './types';
 
 const AUDIO_HINT = /audio|mpeg|mp3|m4a|aac|ogg|opus|wav|x-m4a|mp4|quicktime/i;
 
+/** Keep localStorage and the Now Playing sheet light. */
+export const DESCRIPTION_MAX = 700;
+
+export function clipDescription(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const text = value.replace(/\s+/g, ' ').trim();
+  if (!text) return undefined;
+  if (text.length <= DESCRIPTION_MAX) return text;
+  return `${text.slice(0, DESCRIPTION_MAX - 1).trimEnd()}…`;
+}
+
 export function decodeXmlText(value: string): string {
   return value
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
@@ -196,6 +207,9 @@ export function parseRssEpisodes(
           : undefined,
       artwork: isHttpUrl(itemImage) ? preferHttps(itemImage) : artwork,
       youtubeId,
+      description: clipDescription(
+        tagText(item, ['itunes:summary', 'description', 'content:encoded']),
+      ),
     });
     if (out.length >= limit) break;
   }
