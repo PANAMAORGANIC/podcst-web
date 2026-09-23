@@ -249,8 +249,8 @@ main {
 }
 
 .search-box-header {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 8.5rem;
+  min-width: 8.5rem;
   max-width: 28rem;
 }
 

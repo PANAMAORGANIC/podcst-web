@@ -51,7 +51,7 @@ export function AppHeader() {
           ))}
         </nav>
         <div className="site-header-actions">
-          {pathname !== '/' ? <SearchBox size="header" /> : null}
+          <SearchBox size="header" />
           <ThemeToggle />
           <button
             type="button"
