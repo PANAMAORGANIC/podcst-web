@@ -342,21 +342,18 @@ async function fetchAtomEpisodes(
   timeoutMs: number,
   limit: number,
 ): Promise<Playable[]> {
-  const first = await fetchText(
-    youtubeVideosXmlUrl(channelId),
-    timeoutMs,
-    'application/atom+xml, application/xml, text/xml, */*',
-  );
-  if (first?.ok && first.text.includes('<entry')) {
-    return parseYoutubeAtomFeed(first.text, show, limit);
-  }
-  const retry = await fetchText(
-    youtubeVideosXmlUrl(channelId),
-    timeoutMs,
-    'application/atom+xml, application/xml, text/xml, */*',
-  );
-  if (retry?.ok && retry.text.includes('<entry')) {
-    return parseYoutubeAtomFeed(retry.text, show, limit);
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if (attempt > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 700 * attempt));
+    }
+    const response = await fetchText(
+      youtubeVideosXmlUrl(channelId),
+      timeoutMs,
+      'application/atom+xml, application/xml, text/xml, */*',
+    );
+    if (response?.ok && response.text.includes('<entry')) {
+      return parseYoutubeAtomFeed(response.text, show, limit);
+    }
   }
   return [];
 }
