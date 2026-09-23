@@ -39,9 +39,9 @@ export function LibraryRail() {
           return;
         }
         setRail({
-          id: 'library',
-          title: 'From your library',
-          lede: 'Shows you subscribed to on this device.',
+          id: 'shelf',
+          title: 'On your shelf',
+          lede: 'Shows you subscribed to on this phone. Open Shelf for the full list.',
           items,
         });
       })
@@ -52,5 +52,5 @@ export function LibraryRail() {
   }, [key, ready]);
 
   if (!rail) return null;
-  return <CatalogRail rail={rail} />;
+  return <CatalogRail rail={rail} moreHref="/shelf" moreLabel="Open Shelf" />;
 }

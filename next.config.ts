@@ -15,6 +15,15 @@ const config: NextConfig = {
   outputFileTracingIncludes: {
     '*': catalogTrace,
   },
+  async redirects() {
+    return [
+      {
+        source: '/library',
+        destination: '/',
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {

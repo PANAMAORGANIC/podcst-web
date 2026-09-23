@@ -9,9 +9,8 @@ import { SearchBox } from './SearchBox';
 import { ThemeToggle } from './ThemeToggle';
 
 const NAV = [
-  { href: '/', label: 'Shelf' },
-  { href: '/library', label: 'Library' },
-  { href: '/for-you', label: 'For you' },
+  { href: '/', label: 'Library' },
+  { href: '/shelf', label: 'Shelf' },
   { href: '/recommendations', label: 'Because you like' },
   { href: '/explore', label: 'Explore' },
   { href: '/about', label: 'About' },
@@ -84,6 +83,6 @@ export function AppHeader() {
 }
 
 function isActive(pathname: string, href: string) {
-  if (href === '/') return pathname === '/';
+  if (href === '/') return pathname === '/' || pathname === '/for-you';
   return pathname === href || pathname.startsWith(`${href}/`);
 }

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     template: '%s — World Audio Repository',
   },
   description:
-    'A curated shelf for RED — For You and related finds from likes and YouTube signals, not a public podcast directory.',
+    'A library for RED — For You on the home screen, Shelf for subscriptions. Source streams only.',
   applicationName: 'World Audio Repository',
   manifest: '/manifest.webmanifest',
   appleWebApp: {

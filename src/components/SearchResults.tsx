@@ -86,7 +86,7 @@ export function SearchResults({ q, tab }: { q: string; tab: SearchTab }) {
         <h1>{q ? `Results for “${q}”` : 'Search shows, episodes, themes'}</h1>
         <p className="lede">
           Find a title, an episode phrase, or a topic like soil or compost. Seed
-          mode stays on the shelf — we never host audio.
+          mode stays on the library catalog — we never host audio.
         </p>
         <SearchBox size="hero" defaultValue={q} />
       </header>
@@ -122,7 +122,9 @@ export function SearchResults({ q, tab }: { q: string; tab: SearchTab }) {
       {data?.hint ? <p className="search-hint">{data.hint}</p> : null}
 
       {failed ? (
-        <p className="lede">Search failed. Try again, or open a shelf title.</p>
+        <p className="lede">
+          Search failed. Try again, or open a library title.
+        </p>
       ) : null}
 
       {empty ? (
@@ -133,11 +135,11 @@ export function SearchResults({ q, tab }: { q: string; tab: SearchTab }) {
           <Link href="/search?q=Acres">Acres</Link>.
         </p>
       ) : !data ? (
-        <p className="lede">Searching the shelf…</p>
+        <p className="lede">Searching the library…</p>
       ) : current.length === 0 ? (
         <p className="search-empty">
           No {tab} matched “{q}”. Try soil, compost, or a show name from your
-          shelf.
+          library.
         </p>
       ) : tab === 'shows' && data ? (
         <ul className="search-hits">
@@ -146,7 +148,7 @@ export function SearchResults({ q, tab }: { q: string; tab: SearchTab }) {
               <Link href={`/title/${encodeURIComponent(item.id)}`}>
                 <strong>
                   {item.title}
-                  {item.boosted ? <em>Shelf</em> : null}
+                  {item.boosted ? <em>Favorite</em> : null}
                 </strong>
                 <span>
                   {item.type}

@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'World Audio Repository',
     short_name: 'WAR',
     description:
-      'A curated shelf for RED — For You and related finds. Source streams only.',
+      'A library for RED — For You on home, Shelf for subscriptions. Source streams only.',
     start_url: '/',
     scope: '/',
     display: 'standalone',

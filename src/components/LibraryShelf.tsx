@@ -56,7 +56,7 @@ export function LibraryShelf() {
   if (ready && pending) {
     return (
       <p className="lede" role="status">
-        Loading your library from this device…
+        Loading your shelf from this device…
       </p>
     );
   }
@@ -64,8 +64,8 @@ export function LibraryShelf() {
   if (items.length === 0) {
     return (
       <p className="empty-state" role="status">
-        Nothing in your library yet. Subscribe to a show on its title page — we
-        keep the list on this phone only. <a href="/">Back to the shelf</a>
+        Nothing on your shelf yet. Subscribe to a show on its title page — we
+        keep the list on this phone only. <a href="/">Back to the library</a>
         {' · '}
         <a href="/explore">Explore</a>
       </p>

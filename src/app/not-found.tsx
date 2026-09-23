@@ -10,9 +10,9 @@ export default function NotFound() {
         page or browse by type.
       </p>
       <p>
-        <Link href="/">Return home</Link>
+        <Link href="/">Return to the library</Link>
         {' · '}
-        <Link href="/for-you">For you</Link>
+        <Link href="/shelf">Shelf</Link>
       </p>
     </div>
   );

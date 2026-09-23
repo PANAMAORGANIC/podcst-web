@@ -15,10 +15,10 @@ export default function AboutPage() {
       <p className="eyebrow">About</p>
       <h1>World Audio Repository</h1>
       <p className="lede">
-        A curated shelf for RED. The interface is For You, Because you like, and
-        Explore — learned from favorites, likes, and YouTube signals. The large
-        ingest catalogue is a backend pool for related search, not a public
-        directory homepage.
+        A library for RED. Home is Library, with For You inside it. Shelf is the
+        shows you Subscribe. Because you like and Explore stay learned from
+        favorites, likes, and YouTube signals. The large ingest catalogue is a
+        backend pool for related search, not a public directory homepage.
       </p>
       <h2>What this is</h2>
       <p>

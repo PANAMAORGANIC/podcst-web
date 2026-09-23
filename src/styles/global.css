@@ -526,9 +526,27 @@ main {
   max-width: 40rem;
 }
 
+.rail-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.6rem 1.2rem;
+}
+
 .rail-header h2 {
   font-size: 1.35rem;
   margin-bottom: 0.25rem;
+}
+
+.rail-more {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .rail-header p {

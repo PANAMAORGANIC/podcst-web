@@ -31,7 +31,7 @@ export default function RecommendationsPage() {
           Spanish-first. Not a genre directory.
         </p>
         <p className="lede">
-          The learned mix lives on <Link href="/for-you">For you</Link>
+          The learned mix lives in your <Link href="/">library</Link>
           {' · '}
           <Link href="/explore">Explore</Link> walks the same neighborhood with
           a higher explore rate.

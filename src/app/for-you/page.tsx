@@ -26,7 +26,7 @@ export default function ForYouPage() {
   return (
     <div className="page-recommend">
       <header className="page-header">
-        <p className="eyebrow">For you</p>
+        <p className="eyebrow">Library · For you</p>
         <h1>Learned from your likes &amp; YouTube signals</h1>
         <p className="lede">
           Ranked from your likes and YouTube signals, then sampled with
@@ -63,6 +63,8 @@ export default function ForYouPage() {
         ) : null}
         <YoutubeSignalForm />
         <p className="lede">
+          <Link href="/">Library</Link>
+          {' · '}
           <Link href="/recommendations">Because you like</Link>
           {' · '}
           <Link href="/explore">Explore</Link>

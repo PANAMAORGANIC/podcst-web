@@ -41,7 +41,7 @@ export default function ExplorePage() {
           </ul>
         ) : null}
         <p className="lede">
-          <Link href="/for-you">For you</Link>
+          <Link href="/">Library</Link>
           {' · '}
           <Link href="/recommendations">Because you like</Link>
           {' · '}

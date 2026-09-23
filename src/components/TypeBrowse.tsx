@@ -24,7 +24,7 @@ export function TypeBrowse({
         <p className="eyebrow">Collection</p>
         <h1>{title}</h1>
         <p className="lede">
-          {lede} This page is the ingest pool for one format — your home shelf
+          {lede} This page is the ingest pool for one format — your library home
           is For You, not a type directory.
         </p>
       </header>
