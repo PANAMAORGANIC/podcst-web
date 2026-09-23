@@ -20,7 +20,7 @@ const FEED = `<?xml version="1.0" encoding="UTF-8"?>
       <itunes:duration>1:02:03</itunes:duration>
       <link>https://example.com/soil-week</link>
       <enclosure url="http://cdn.example.com/soil.mp3" type="audio/mpeg" length="123"/>
-      <itunes:summary>Notes from the field about living soil.</itunes:summary>
+      <itunes:summary><![CDATA[<p>Notes from the field about <em>living soil</em>.</p>]]></itunes:summary>
     </item>
     <item>
       <title>No audio</title>
@@ -50,6 +50,7 @@ describe('RSS episode parser', () => {
       episodes[0]?.description,
       'Notes from the field about living soil.',
     );
+    assert.ok(!episodes[0]?.description?.includes('<'));
     assert.ok(!JSON.stringify(episodes).includes('never-fetch'));
     assert.equal(episodes[1]?.kind, 'youtube');
     assert.equal(episodes[1]?.youtubeId, 'abcdefghijk');
@@ -79,7 +80,7 @@ describe('duration and ids', () => {
   });
 
   it('clips long episode notes for the player sheet', () => {
-    assert.equal(clipDescription('  Soil notes  '), 'Soil notes');
+    assert.equal(clipDescription('  <p>Soil notes</p>  '), 'Soil notes');
     assert.equal(clipDescription('   '), undefined);
     const long = 'x'.repeat(800);
     const clipped = clipDescription(long);
