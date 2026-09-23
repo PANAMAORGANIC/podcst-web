@@ -1,7 +1,6 @@
 /* World Audio Repository — app-shell only. Never cache audio or the catalog. */
-const CACHE = 'war-shell-v2';
+const CACHE = 'war-shell-v3';
 const SHELL = [
-  '/',
   '/manifest.webmanifest',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -37,6 +36,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (request.destination === 'audio' || request.destination === 'video')
     return;
+  if (request.destination === 'image') return;
   if (url.pathname.startsWith('/api/episodes')) return;
   if (url.pathname.startsWith('/api/catalog')) return;
   if (url.pathname.startsWith('/api/cover')) return;

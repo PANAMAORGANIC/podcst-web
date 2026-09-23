@@ -4,6 +4,13 @@ import { SEED_CATALOG } from './seed';
 import { catalogStats, getCatalog, getEntry, readIngested } from './store';
 
 describe('catalog store', () => {
+  it('resolves owner hubs by Apple id and title slug', () => {
+    const semilla = getEntry('it-1547894245');
+    assert.equal(semilla?.title, 'Radio Semilla');
+    assert.equal(getEntry('radio-semilla')?.id, 'it-1547894245');
+    assert.equal(getEntry('acres')?.id, 'it-1747339811');
+  });
+
   it('keeps seed ids when they overlap ingested rows', () => {
     const seed = SEED_CATALOG[0];
     assert.ok(seed);

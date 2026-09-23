@@ -27,19 +27,29 @@ export async function GET(
   if (remote) {
     const proxied = await proxyArtwork(remote);
     if (proxied) {
-      return new NextResponse(Buffer.from(proxied.body), {
+      const body = Buffer.from(proxied.body);
+      return new NextResponse(body, {
         headers: {
           'Content-Type': proxied.type,
-          'Cache-Control': 'public, max-age=86400',
+          'Content-Length': String(body.byteLength),
+          'Cache-Control': 'public, max-age=86400, immutable',
+          'X-Content-Type-Options': 'nosniff',
+          'Cross-Origin-Resource-Policy': 'cross-origin',
+          'Access-Control-Allow-Origin': '*',
         },
       });
     }
   }
 
-  return new NextResponse(renderCoverSvg(entry), {
+  const svg = renderCoverSvg(entry);
+  return new NextResponse(svg, {
     headers: {
       'Content-Type': 'image/svg+xml; charset=utf-8',
+      'Content-Length': String(Buffer.byteLength(svg)),
       'Cache-Control': 'public, max-age=3600',
+      'X-Content-Type-Options': 'nosniff',
+      'Cross-Origin-Resource-Policy': 'cross-origin',
+      'Access-Control-Allow-Origin': '*',
     },
   });
 }

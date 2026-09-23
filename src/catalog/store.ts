@@ -93,11 +93,53 @@ export function getCatalog(): CatalogEntry[] {
   return items;
 }
 
+export function catalogSlug(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+const TITLE_ALIASES: Record<string, string> = {
+  semilla: 'it-1547894245',
+  'radio-semilla': 'it-1547894245',
+  acres: 'it-1747339811',
+  'acres-usa': 'it-1747339811',
+  'acres-u-s-a': 'it-1747339811',
+  'the-acres-u-s-a-podcast': 'it-1747339811',
+};
+
+function findByIdOrSlug(
+  items: CatalogEntry[],
+  raw: string,
+): CatalogEntry | undefined {
+  const id = raw;
+  const exact = items.find((item) => item.id === id);
+  if (exact) return exact;
+  const slug = catalogSlug(id);
+  const aliased = TITLE_ALIASES[slug];
+  if (aliased) {
+    const hit = items.find((item) => item.id === aliased);
+    if (hit) return hit;
+  }
+  return items.find(
+    (item) => catalogSlug(item.id) === slug || catalogSlug(item.title) === slug,
+  );
+}
+
 export function getEntry(id: string): CatalogEntry | undefined {
-  const shelf = getShelfCatalog().find((item) => item.id === id);
+  let decoded = id;
+  try {
+    decoded = decodeURIComponent(id);
+  } catch {
+    decoded = id;
+  }
+  const shelf = findByIdOrSlug(getShelfCatalog(), decoded);
   if (shelf) return shelf;
   if (!shouldLoadFullSnapshot()) return undefined;
-  return getCatalog().find((item) => item.id === id);
+  return findByIdOrSlug(getCatalog(), decoded);
 }
 
 export function catalogStats(items = getCatalog()) {

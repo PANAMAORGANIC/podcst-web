@@ -153,11 +153,11 @@ export function SearchResults({ q, tab }: { q: string; tab: SearchTab }) {
                 {/* biome-ignore lint/performance/noImgElement: same-origin cover route */}
                 <img
                   className="search-hit-cover"
-                  src={generatedCoverPath(item.id)}
+                  src={item.cover || generatedCoverPath(item.id)}
                   alt=""
                   width={56}
                   height={56}
-                  decoding="async"
+                  decoding="sync"
                   referrerPolicy="no-referrer"
                 />
                 <span className="search-hit-copy">

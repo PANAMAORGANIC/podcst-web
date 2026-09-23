@@ -12,6 +12,7 @@ export type SearchShowHit = {
   language: string;
   tags: string[];
   boosted: boolean;
+  cover?: string;
 };
 
 export type SearchEpisodeHit = {

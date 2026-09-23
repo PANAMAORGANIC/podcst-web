@@ -1,5 +1,6 @@
 import { cachedRssEpisodes } from '@/player/feed';
 import type { Playable } from '@/player/types';
+import { coverUrl } from './cover';
 import { EDITORIAL_RECIPES } from './editorial';
 import { bundledFavoriteIds } from './favorites-data';
 import { queryCatalog } from './query';
@@ -53,6 +54,7 @@ export function searchShows(
       language: item.originalLanguage,
       tags: [...item.genres, ...item.tags].slice(0, 6),
       boosted: boost.has(item.id),
+      cover: coverUrl(item),
     })),
   };
 }
