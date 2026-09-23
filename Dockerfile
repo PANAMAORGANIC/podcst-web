@@ -1,52 +1,33 @@
-# syntax = docker/dockerfile:1
+# syntax=docker/dockerfile:1
 
-# Adjust NODE_VERSION as desired
-ARG NODE_VERSION=24.9.0
+ARG NODE_VERSION=20
 FROM node:${NODE_VERSION}-slim AS base
-
-LABEL fly_launch_runtime="Next.js"
-
-# Next.js app lives here
 WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Set production environment
-ENV NODE_ENV="production"
-ARG YARN_VERSION=1.22.19
-RUN npm install -g yarn@$YARN_VERSION --force
+FROM base AS deps
+COPY package.json package-lock.json ./
+RUN npm ci
 
-
-# Throw-away build stage to reduce size of final image
 FROM base AS build
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
-
-# Install node modules
-COPY .yarnrc.yml package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production=false
-
-# Copy application code
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ENV NODE_ENV=production
+RUN npm run build
 
-# Build application
-RUN --mount=type=secret,id=ALL_SECRETS \
-    eval "$(base64 -d /run/secrets/ALL_SECRETS)" && \
-    npx next build
-
-# Remove development dependencies
-RUN yarn install --production=true
-
-
-# Final stage for app image
-FROM base
-
-# Copy built application
-COPY --from=build /app /app
-
-# Entrypoint sets up the container.
-ENTRYPOINT [ "/app/docker-entrypoint.js" ]
-
-# Start the server by default, this can be overwritten at runtime
+FROM base AS runner
+ENV NODE_ENV=production
+# Do not set PORT here. Railway injects it; listen.cjs defaults to 3000
+# only when PORT is unset. Forcing 3000 while the proxy targets another
+# port is a common 502.
+ENV HOSTNAME=0.0.0.0
+RUN groupadd --system --gid 1001 nodejs \
+  && useradd --system --uid 1001 --gid nodejs nextjs
+COPY --from=build /app/public ./public
+COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=build --chown=nextjs:nodejs /app/data ./data
+COPY --from=build --chown=nextjs:nodejs /app/scripts/listen.cjs ./listen.cjs
+USER nextjs
 EXPOSE 3000
-CMD [ "yarn", "run", "start" ]
+CMD ["node", "listen.cjs"]

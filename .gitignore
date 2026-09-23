@@ -29,10 +29,19 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
+.env
+!.env.example
 
 .vercel
+data/ingest/*.json
+# Uncompressed catalog is a local cache; git tracks data/catalog.json.gz
+# when the snapshot is large. The app reads gz first, then json.
+data/catalog.json
+# Browser/API likes for recommend ingest. Seeds stay in favorites.json.
+data/sources/liked.json
+# Dated For You snapshots; latest.json is the committed mix.
+data/for-you/20*.json
 
 # Typescript
 *.tsbuildinfo
-.env*.local
-.env*

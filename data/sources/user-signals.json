@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "user": "RED",
+  "learnedAt": "2026-09-13T19:33:59.732Z",
+  "note": "Learned from WAR likes, favorites, and optional YouTube Data API signals. Not a youtube.com homepage scrape.",
+  "sources": [
+    "favorites"
+  ],
+  "youtubeChannelUrls": [],
+  "youtubeVideoUrls": [],
+  "importedYoutubeChannelIds": [],
+  "importedYoutubeVideoIds": [],
+  "weights": {
+    "society-culture": 21.504,
+    "science": 20.104,
+    "ecology": 13.473,
+    "climate": 13.431,
+    "news": 8.602,
+    "agroecology": 7.202,
+    "energy": 7.16,
+    "interviews": 7.16,
+    "seeds": 7.16,
+    "ecojustice": 7.117,
+    "longform": 7.075,
+    "research": 7.033,
+    "andes": 6.948,
+    "pacifica": 6.906,
+    "conversation": 6.863,
+    "politics": 6.736,
+    "red-de-guardianes": 6.144,
+    "kpfk": 6.144,
+    "public-radio": 6.144,
+    "christopher-ryan": 6.144,
+    "rachel-donald": 6.144,
+    "economy": 6.144,
+    "nate-hagens": 6.144,
+    "regeneration": 0.973,
+    "semillas": 0.931,
+    "lecture": 0.889,
+    "systems": 0.889,
+    "collapse": 0.762
+  }
+}

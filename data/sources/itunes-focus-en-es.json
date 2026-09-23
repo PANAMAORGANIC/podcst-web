@@ -1,0 +1,102 @@
+{
+  "comment": "Extra Apple storefront packs for INGEST_FOCUS=en,es. Mainstream + regional favorites. Public search only.",
+  "defaultGenreIds": [1311, 1324, 1303, 1489, 1321, 1316, 1487, 1304, 1318, 1491],
+  "storefronts": [
+    {
+      "country": "us",
+      "language": "en",
+      "region": "north-america",
+      "terms": ["podcast", "interview", "news", "comedy", "true crime", "daily", "sports", "business", "history", "politics"]
+    },
+    {
+      "country": "gb",
+      "language": "en",
+      "region": "uk-ireland",
+      "terms": ["podcast", "interview", "news", "comedy", "bbc", "sport", "history", "culture"]
+    },
+    {
+      "country": "au",
+      "language": "en",
+      "region": "oceania",
+      "terms": ["podcast", "news", "interview", "comedy", "sport"]
+    },
+    {
+      "country": "ca",
+      "language": "en",
+      "region": "north-america",
+      "terms": ["podcast", "news", "interview", "comedy", "cbc"]
+    },
+    {
+      "country": "ie",
+      "language": "en",
+      "region": "uk-ireland",
+      "terms": ["podcast", "news", "interview"]
+    },
+    {
+      "country": "nz",
+      "language": "en",
+      "region": "oceania",
+      "terms": ["podcast", "news", "interview"]
+    },
+    {
+      "country": "us",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["podcast", "entrevistas", "noticias", "humor", "radio"]
+    },
+    {
+      "country": "mx",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["podcast", "entrevistas", "noticias", "humor", "cultura", "historia", "política", "radio"]
+    },
+    {
+      "country": "es",
+      "language": "es",
+      "region": "iberia",
+      "terms": ["podcast", "entrevistas", "noticias", "humor", "cultura", "historia", "política", "actualidad"]
+    },
+    {
+      "country": "ar",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["podcast", "entrevistas", "noticias", "humor", "fútbol", "política"]
+    },
+    {
+      "country": "co",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["podcast", "entrevistas", "noticias", "humor", "cultura"]
+    },
+    {
+      "country": "cl",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["podcast", "entrevistas", "noticias", "humor"]
+    },
+    {
+      "country": "pe",
+      "language": "es",
+      "region": "andes",
+      "terms": ["podcast", "entrevistas", "noticias", "radio"]
+    },
+    {
+      "country": "uy",
+      "language": "es",
+      "region": "latin-america",
+      "terms": ["podcast", "entrevistas", "noticias"]
+    },
+    {
+      "country": "cr",
+      "language": "es",
+      "region": "mesoamerica",
+      "terms": ["podcast", "noticias"]
+    },
+    {
+      "country": "gt",
+      "language": "es",
+      "region": "mesoamerica",
+      "terms": ["podcast", "noticias"]
+    }
+  ]
+}

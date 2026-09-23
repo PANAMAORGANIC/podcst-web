@@ -1,0 +1,12 @@
+# Do not set PORT in Railway Variables unless Settings → Networking →
+# Target port is the same number. Railway injects PORT; listen.cjs uses it.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

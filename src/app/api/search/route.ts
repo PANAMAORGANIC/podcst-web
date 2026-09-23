@@ -1,22 +1,25 @@
-/**
- * Podcast Search API
- */
-import { type NextRequest, NextResponse } from 'next/server';
-import { search } from './search';
+import { NextResponse } from 'next/server';
+import { searchWar } from '@/catalog/search';
 
-export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
-  const term = params.get('term') || undefined;
-  const locale = params.get('locale') || undefined;
-  if (!term) {
-    return NextResponse.json(
-      {
-        message: 'parameter `term` cannot be empty',
-      },
-      { status: 400 },
-    );
+const SEARCH_TTL_MS = 45_000;
+const cache = new Map<string, { at: number; body: unknown }>();
+
+/** Shelf search by default. Full 120k snapshot only if CATALOG_FULL=1. */
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const q = url.searchParams.get('q') ?? '';
+  const boost = (url.searchParams.get('boost') ?? '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
+    .slice(0, 40);
+  const key = `${q}\t${boost.join(',')}`;
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.at < SEARCH_TTL_MS) {
+    return NextResponse.json(hit.body);
   }
 
-  const res = await search(term, locale);
-  return NextResponse.json(res);
+  const body = await searchWar({ q, boostIds: boost });
+  cache.set(key, { at: Date.now(), body });
+  return NextResponse.json(body);
 }

@@ -1,63 +1,64 @@
-import Script from 'next/script';
-
-import { CastManager } from '@/components/CastManager/CastManager';
-import { TranslationProvider } from '@/shared/i18n';
-import { Player } from '@/shared/player/Player';
-import { QueryProvider } from '@/shared/query/QueryProvider';
-import { ThemeListener } from '@/shared/theme/ThemeListener';
-import { Toast } from '@/shared/toast/Toast';
-import { Init } from './Init';
-
-import '@/styles/global.css';
 import type { Metadata, Viewport } from 'next';
-import { WebSiteSchema } from '@/components/Schema';
-import { SiteHeader } from '@/ui/SiteHeader';
-import styles from './PodcstApp.module.css';
+import { AppFooter } from '@/components/AppFooter';
+import { AppHeader } from '@/components/AppHeader';
+import { PwaRegister } from '@/components/PwaRegister';
+import { PlayerRoot } from '@/components/player/PlayerRoot';
+import { ThemeListener } from '@/theme/ThemeListener';
+import '@/styles/global.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.podcst.app'),
+  metadataBase: new URL('https://worldaudiorepository.org'),
   title: {
-    default: 'Podcst',
-    template: '%s — Podcst',
+    default: 'World Audio Repository',
+    template: '%s — World Audio Repository',
   },
-  description: 'A beautiful way to discover and listen to podcasts',
-  authors: {
-    name: 'Shantanu Raj',
-    url: 'https://sraj.me/',
-  },
-  alternates: {
-    canonical: '/',
-  },
+  description:
+    'A library for RED — For You on the home screen, Shelf for subscriptions. Source streams only.',
+  applicationName: 'World Audio Repository',
+  manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
-    title: 'Podcst',
+    title: 'WAR',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      {
+        url: '/icons/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
   },
   openGraph: {
-    url: 'https://www.podcst.app',
-    locale: 'en_US',
-    siteName: 'Podcst',
+    title: 'World Audio Repository',
+    siteName: 'World Audio Repository',
     type: 'website',
-    title: 'Podcst',
-    description: 'A beautiful way to discover and listen to podcasts',
-  },
-  twitter: {
-    card: 'summary',
-    creator: '@shantanuraj',
+    locale: 'en_US',
+    description:
+      'Personalized mix from owner favorites, likes, and YouTube signals.',
   },
 };
 
 export const viewport: Viewport = {
-  initialScale: 1.0,
+  initialScale: 1,
   width: 'device-width',
-  themeColor: '#FAF9F7',
+  themeColor: '#141311',
+  viewportFit: 'cover',
 };
 
-export default function App({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
-        <meta charSet="utf-8" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -70,30 +71,15 @@ export default function App({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body>
-        <WebSiteSchema />
-        <QueryProvider>
-          <TranslationProvider>
-            <Init />
-            <ThemeListener />
-            <SiteHeader />
-            <main className={styles.main}>{children}</main>
-            <Player />
-            <Toast />
-            <CastManager />
-          </TranslationProvider>
-        </QueryProvider>
-        <Script id="castsetup">
-          {`window['__onGCastApiAvailable'] = function(isAvailable) {
-            if (isAvailable && window.chrome && window.cast && window.chrome.cast && window.chrome.cast.media && window.cast.framework) {
-              window.cast.framework.CastContext.getInstance().setOptions({
-                receiverApplicationId: '5152FC99',
-                autoJoinPolicy: window.chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
-              });
-              document.dispatchEvent(new CustomEvent('cast-available', {}));
-            }
-          };`}
-        </Script>
-        <Script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
+        <ThemeListener />
+        <PwaRegister />
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
+        <AppHeader />
+        <main id="main">{children}</main>
+        <AppFooter />
+        <PlayerRoot />
       </body>
     </html>
   );

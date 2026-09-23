@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: world-audio-repository
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOSTNAME
+        value: 0.0.0.0

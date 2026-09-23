@@ -1,0 +1,52 @@
+[
+  {
+    "id": "pub-half-of-a-yellow-sun",
+    "title": "Half of a Yellow Sun",
+    "language": "en",
+    "creators": ["Chimamanda Ngozi Adichie"],
+    "description": "A novel of Biafra still in copyright. Catalogued as a card with publisher links only — no audio file is stored.",
+    "tags": ["nigeria", "novel", "copyrighted"],
+    "genres": ["fiction", "modern-classics"],
+    "region": "west-africa",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "year": 2006,
+    "store": "https://www.harpercollins.com/products/half-of-a-yellow-sun-chimamanda-ngozi-adichie"
+  },
+  {
+    "id": "pub-the-vegetarian",
+    "title": "채식주의자",
+    "language": "ko",
+    "creators": ["한강"],
+    "description": "한강의 소설. 저작권 하의 현대작: 서점 링크만, 오디오 파일은 없음.",
+    "tags": ["korea", "novel", "copyrighted"],
+    "genres": ["fiction", "contemporary"],
+    "region": "east-asia",
+    "country": "South Korea",
+    "countryCode": "KR",
+    "year": 2007,
+    "store": "https://www.portobellobooks.com/books/the-vegetarian",
+    "english": {
+      "title": "The Vegetarian",
+      "description": "Han Kang’s novel. A contemporary work in copyright: store links only, no audio file."
+    }
+  },
+  {
+    "id": "pub-el-aleph",
+    "title": "El Aleph",
+    "language": "es",
+    "creators": ["Jorge Luis Borges"],
+    "description": "Cuentos bajo derechos en muchas ediciones. Ficha de catálogo y editorial, no el audio.",
+    "tags": ["argentina", "stories", "copyrighted"],
+    "genres": ["fiction", "modern-classics"],
+    "region": "latin-america",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "year": 1949,
+    "store": "https://www.penguinrandomhouse.com/books/17370/the-aleph-and-other-stories-by-jorge-luis-borges/",
+    "english": {
+      "title": "The Aleph",
+      "description": "Stories still protected in many editions. A catalogue card and publisher link, not the audio."
+    }
+  }
+]

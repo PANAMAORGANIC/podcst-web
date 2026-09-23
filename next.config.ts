@@ -1,67 +1,40 @@
 import type { NextConfig } from 'next';
 
-import pkg from './package.json' with { type: 'json' };
+const catalogTrace = [
+  './data/catalog.json.gz',
+  './data/sources/**/*',
+  './data/for-you/**/*',
+];
 
 const config: NextConfig = {
-  env: {
-    appVersion: pkg.version,
+  output: 'standalone',
+  experimental: {
+    cpus: 1,
+    workerThreads: false,
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*',
-        port: '',
-        pathname: '**',
-      },
-    ],
-  },
-  async headers() {
-    return [
-      {
-        source: '/api/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value:
-              'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
-          },
-        ],
-      },
-    ];
+  outputFileTracingIncludes: {
+    '*': catalogTrace,
   },
   async redirects() {
     return [
       {
-        source: '/',
-        destination: '/feed/top',
+        source: '/library',
+        destination: '/',
         permanent: false,
       },
+    ];
+  },
+  async headers() {
+    return [
       {
-        source: '/episode',
-        destination: '/feed/top',
-        permanent: false,
-      },
-      {
-        source: '/episodes',
-        destination: '/feed/top',
-        permanent: false,
-      },
-      {
-        source: '/episode/:feed/:guid',
-        destination: '/episodes/:feed/:guid',
-        permanent: true,
-      },
-      {
-        source: '/recents',
-        destination: '/subs',
-        permanent: true,
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+          { key: 'Service-Worker-Allowed', value: '/' },
+        ],
       },
     ];
   },
