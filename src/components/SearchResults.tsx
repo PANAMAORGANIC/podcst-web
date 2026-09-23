@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { generatedCoverPath } from '@/catalog/cover';
 import {
   SEARCH_TABS,
   type SearchTab,
@@ -145,15 +146,30 @@ export function SearchResults({ q, tab }: { q: string; tab: SearchTab }) {
         <ul className="search-hits">
           {data.shows.map((item) => (
             <li key={item.id}>
-              <Link href={`/title/${encodeURIComponent(item.id)}`}>
-                <strong>
-                  {item.title}
-                  {item.boosted ? <em>Favorite</em> : null}
-                </strong>
-                <span>
-                  {item.type}
-                  {item.creators[0] ? ` · ${item.creators[0]}` : ''}
-                  {item.tags[0] ? ` · ${item.tags[0]}` : ''}
+              <Link
+                href={`/title/${encodeURIComponent(item.id)}`}
+                className="search-show"
+              >
+                {/* biome-ignore lint/performance/noImgElement: same-origin cover route */}
+                <img
+                  className="search-hit-cover"
+                  src={generatedCoverPath(item.id)}
+                  alt=""
+                  width={56}
+                  height={56}
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                />
+                <span className="search-hit-copy">
+                  <strong>
+                    {item.title}
+                    {item.boosted ? <em>Favorite</em> : null}
+                  </strong>
+                  <span>
+                    {item.type}
+                    {item.creators[0] ? ` · ${item.creators[0]}` : ''}
+                    {item.tags[0] ? ` · ${item.tags[0]}` : ''}
+                  </span>
                 </span>
               </Link>
             </li>

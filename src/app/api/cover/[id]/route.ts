@@ -6,7 +6,7 @@ import { getEntry } from '@/catalog/store';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const MAX_BYTES = 400_000;
+const MAX_BYTES = 800_000;
 const proxyCache = new Map<
   string,
   { body: Uint8Array; type: string; at: number }

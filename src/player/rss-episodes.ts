@@ -158,6 +158,17 @@ export function episodeId(
   return `${showId}:${hash.toString(36)}`;
 }
 
+/** Channel / show artwork from a podcast RSS document. Never an enclosure. */
+export function parseRssChannelArtwork(xml: string): string | undefined {
+  const itunes =
+    tagAttr(xml, 'itunes:image', 'href') || tagAttr(xml, 'itunes:image', 'url');
+  if (isHttpUrl(itunes)) return preferHttps(itunes);
+  const block = xml.match(/<image\b[^>]*>([\s\S]*?)<\/image>/i)?.[1];
+  const url = block ? tagText(block, ['url']) : undefined;
+  if (isHttpUrl(url)) return preferHttps(url);
+  return undefined;
+}
+
 export function parseRssEpisodes(
   xml: string,
   show: {
@@ -167,11 +178,8 @@ export function parseRssEpisodes(
   },
   limit = 50,
 ): Playable[] {
-  const channelImage =
-    tagAttr(xml, 'itunes:image', 'href') || tagAttr(xml, 'itunes:image', 'url');
-  const artwork = isHttpUrl(channelImage)
-    ? preferHttps(channelImage)
-    : show.artwork;
+  const channelImage = parseRssChannelArtwork(xml);
+  const artwork = channelImage ?? show.artwork;
 
   const out: Playable[] = [];
   const seen = new Set<string>();

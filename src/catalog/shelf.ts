@@ -54,7 +54,11 @@ export function buildShelfCatalog(): CatalogEntry[] {
     byId.set(entry.id, entry);
   }
   for (const item of SEED_CATALOG) {
-    byId.set(item.id, item);
+    const previous = byId.get(item.id);
+    byId.set(item.id, {
+      ...item,
+      coverArt: item.coverArt || previous?.coverArt,
+    });
   }
   return [...byId.values()];
 }

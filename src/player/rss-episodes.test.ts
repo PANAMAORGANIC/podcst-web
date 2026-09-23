@@ -4,6 +4,7 @@ import {
   clipDescription,
   episodeId,
   parseDurationSeconds,
+  parseRssChannelArtwork,
   parseRssEpisodes,
   preferHttps,
 } from './rss-episodes';
@@ -46,6 +47,7 @@ describe('RSS episode parser', () => {
     assert.equal(episodes[0]?.enclosureUrl, 'https://cdn.example.com/soil.mp3');
     assert.equal(episodes[0]?.durationSeconds, 3723);
     assert.equal(episodes[0]?.sourceUrl, 'https://example.com/soil-week');
+    assert.equal(episodes[0]?.artwork, 'https://example.com/show.jpg');
     assert.equal(
       episodes[0]?.description,
       'Notes from the field about living soil.',
@@ -54,6 +56,17 @@ describe('RSS episode parser', () => {
     assert.ok(!JSON.stringify(episodes).includes('never-fetch'));
     assert.equal(episodes[1]?.kind, 'youtube');
     assert.equal(episodes[1]?.youtubeId, 'abcdefghijk');
+  });
+
+  it('reads channel artwork from itunes:image or image/url', () => {
+    assert.equal(parseRssChannelArtwork(FEED), 'https://example.com/show.jpg');
+    const withUrl = `<?xml version="1.0"?><rss><channel>
+      <image><url>http://cdn.example.com/cover.png</url><title>Show</title></image>
+    </channel></rss>`;
+    assert.equal(
+      parseRssChannelArtwork(withUrl),
+      'https://cdn.example.com/cover.png',
+    );
   });
 
   it('skips items without a stream or watch URL', () => {

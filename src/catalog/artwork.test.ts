@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { appleIdFromCatalogId } from './artwork';
+import { appleIdFromCatalogId, resolveArtworkUrl } from './artwork';
 import { getEntry } from './store';
 
 describe('artwork resolver', () => {
@@ -16,5 +16,12 @@ describe('artwork resolver', () => {
     const acres = getEntry('it-1747339811');
     assert.match(semilla?.coverArt ?? '', /mzstatic\.com/);
     assert.match(acres?.coverArt ?? '', /mzstatic\.com/);
+  });
+
+  it('prefers stored publisher artwork over a live iTunes lookup', async () => {
+    const acres = getEntry('it-1747339811');
+    assert.ok(acres);
+    const url = await resolveArtworkUrl(acres);
+    assert.equal(url, acres.coverArt);
   });
 });
