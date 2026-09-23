@@ -4,6 +4,7 @@ import { knownYoutubeChannelId } from '@/catalog/youtube-channel-ids';
 import {
   isYoutubeChannelId,
   parseYoutubeAtomFeed,
+  parseYoutubeChannelPageUploads,
   uploadsPlaylistId,
   youtubeVideosXmlUrl,
 } from './youtube-feed';
@@ -60,6 +61,24 @@ describe('YouTube Atom upload feed', () => {
   it('caps the list', () => {
     const episodes = parseYoutubeAtomFeed(ATOM, { id: 'v', title: 'V' }, 1);
     assert.equal(episodes.length, 1);
+  });
+});
+
+describe('YouTube channel page uploads', () => {
+  it('reads videoRenderer cards from ytInitialData without fetching watch pages', () => {
+    const html = `<!doctype html><script>var ytInitialData = {"contents":{"videoRenderer":{"videoId":"dQw11w9WgXc","title":{"runs":[{"text":"Soil is not dirt"}]}}}};</script>`;
+    const episodes = parseYoutubeChannelPageUploads(html, {
+      id: 'veritasium',
+      title: 'Veritasium',
+    });
+    assert.equal(episodes.length, 1);
+    assert.equal(episodes[0]?.youtubeId, 'dQw11w9WgXc');
+    assert.equal(episodes[0]?.title, 'Soil is not dirt');
+    assert.equal(episodes[0]?.kind, 'youtube');
+    assert.equal(
+      episodes[0]?.sourceUrl,
+      'https://www.youtube.com/watch?v=dQw11w9WgXc',
+    );
   });
 });
 

@@ -9,7 +9,7 @@ import { loadYoutubeEpisodes } from '@/player/youtube-feed';
 export const dynamic = 'force-dynamic';
 
 const SUCCESS_CACHE_MS = 10 * 60 * 1000;
-const EMPTY_CACHE_MS = 45 * 1000;
+const EMPTY_CACHE_MS = 15 * 1000;
 
 const cache = new Map<
   string,

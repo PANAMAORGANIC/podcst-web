@@ -13,9 +13,9 @@ const UA =
   'WorldAudioRepository/1.0 (+https://github.com/PANAMAORGANIC/podcst-web)';
 const CHANNEL_ID = /^UC[\w-]{20,24}$/;
 const SUCCESS_CACHE_MS = 10 * 60 * 1000;
-const FAIL_CACHE_MS = 45 * 1000;
+const FAIL_CACHE_MS = 15 * 1000;
 const RESOLVE_CACHE_MS = 24 * 60 * 60 * 1000;
-const MAX_BODY = 2_500_000;
+const MAX_BODY = 6_000_000;
 
 export type YoutubeEpisodeShow = {
   id: string;
@@ -28,7 +28,7 @@ export type YoutubeEpisodeShow = {
 export type YoutubeEpisodeResult = {
   episodes: Playable[];
   resolvedChannelId?: string;
-  via: 'video' | 'atom' | 'data-api' | 'none';
+  via: 'video' | 'atom' | 'data-api' | 'channel-page' | 'none';
   message?: string;
 };
 
@@ -165,6 +165,115 @@ export function parseYoutubeAtomFeed(
       description: clipDescription(
         tagText(entry, ['media:description', 'summary', 'content']),
       ),
+    });
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
+function extractYtInitialData(html: string): unknown {
+  const marker = html.search(/ytInitialData["']?\s*=\s*\{/);
+  if (marker < 0) return undefined;
+  const brace = html.indexOf('{', marker);
+  if (brace < 0) return undefined;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = brace; i < html.length; i += 1) {
+    const char = html[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (char === '\\') escaped = true;
+      else if (char === '"') inString = false;
+      continue;
+    }
+    if (char === '"') inString = true;
+    else if (char === '{') depth += 1;
+    else if (char === '}') {
+      depth -= 1;
+      if (depth === 0) {
+        try {
+          return JSON.parse(html.slice(brace, i + 1));
+        } catch {
+          return undefined;
+        }
+      }
+    }
+  }
+  return undefined;
+}
+
+function rendererTitle(record: Record<string, unknown>): string | undefined {
+  const titleObj = record.title as
+    | string
+    | { simpleText?: string; content?: string; runs?: { text?: string }[] }
+    | undefined;
+  if (typeof titleObj === 'string' && titleObj.trim()) return titleObj.trim();
+  if (!titleObj || typeof titleObj !== 'object') return undefined;
+  const fromRuns = titleObj.runs?.map((run) => run.text).join('');
+  return titleObj.simpleText || titleObj.content || fromRuns || undefined;
+}
+
+function collectVideoRenderers(
+  node: unknown,
+  out: { videoId: string; title?: string }[],
+) {
+  if (!node || typeof node !== 'object') return;
+  const record = node as Record<string, unknown>;
+  const directId =
+    (typeof record.videoId === 'string' && record.videoId) ||
+    (typeof record.contentId === 'string' && record.contentId) ||
+    '';
+  if (/^[\w-]{11}$/.test(directId)) {
+    const metadata = record.metadata as Record<string, unknown> | undefined;
+    const lockupMeta = metadata?.lockupMetadataViewModel as
+      | Record<string, unknown>
+      | undefined;
+    const title =
+      rendererTitle(record) ||
+      (lockupMeta ? rendererTitle(lockupMeta) : undefined);
+    out.push({ videoId: directId, title });
+  }
+  for (const value of Object.values(record)) {
+    if (Array.isArray(value)) {
+      for (const item of value) collectVideoRenderers(item, out);
+    } else {
+      collectVideoRenderers(value, out);
+    }
+  }
+}
+
+/** Uploads listed on a channel page. Not a watch-page or homepage scrape. */
+export function parseYoutubeChannelPageUploads(
+  html: string,
+  show: { id: string; title: string; artwork?: string },
+  limit = 50,
+): Playable[] {
+  const found: { videoId: string; title?: string }[] = [];
+  const data = extractYtInitialData(html);
+  if (data) collectVideoRenderers(data, found);
+  if (!found.length) {
+    const ids = [...html.matchAll(/"videoId":"([\w-]{11})"/g)].map(
+      (match) => match[1],
+    );
+    for (const videoId of ids) found.push({ videoId });
+  }
+  const titled = found.filter((row) => row.title);
+  const ranked = titled.length ? titled : found;
+  const out: Playable[] = [];
+  const seen = new Set<string>();
+  for (const row of ranked) {
+    if (seen.has(row.videoId)) continue;
+    seen.add(row.videoId);
+    out.push({
+      id: `${show.id}:${row.videoId}`,
+      showId: show.id,
+      showTitle: show.title,
+      title: row.title || show.title,
+      kind: 'youtube',
+      sourceUrl: `https://www.youtube.com/watch?v=${row.videoId}`,
+      artwork: show.artwork,
+      youtubeId: row.videoId,
     });
     if (out.length >= limit) break;
   }
@@ -511,6 +620,26 @@ export async function loadYoutubeEpisodes(
     };
     cacheSet(episodeCache, show.id, result, SUCCESS_CACHE_MS);
     return result;
+  }
+
+  if (show.youtube && parseYoutubeUrl(show.youtube).kind === 'channel') {
+    const page = await fetchText(
+      show.youtube,
+      timeoutMs,
+      'text/html,application/xhtml+xml',
+    );
+    const fromPage = page?.text
+      ? parseYoutubeChannelPageUploads(page.text, show, limit)
+      : [];
+    if (fromPage.length) {
+      const result: YoutubeEpisodeResult = {
+        episodes: fromPage,
+        resolvedChannelId: resolved.channelId,
+        via: 'channel-page',
+      };
+      cacheSet(episodeCache, show.id, result, SUCCESS_CACHE_MS);
+      return result;
+    }
   }
 
   const result = emptyResult(
